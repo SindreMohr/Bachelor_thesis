@@ -6,12 +6,11 @@
 # -----------------------------------------------------------
 
 import pandas as pd
-import numpy as np      # Not used yet...
 import os
 
 # Saving project directory to return cur to directory after file reads
 project_directory = os.getcwd()
-# Change directory name to the name of the datasetfolder
+# Change directory name to the name of the dataset directory
 data_directory = "./data" 
 
 # Dataset directory for daily and halfhourly datasets
@@ -42,7 +41,3 @@ def load_data_into_dataframe(dataset_option):
     else:
         raise FileNotFoundError(f"No files available for dataset option: '{dataset_option}'")
     return df
-
-if __name__ == "__main__":
-    dataframe = load_data_into_dataframe("halfhourly")
-    print(dataframe.head())
