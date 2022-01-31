@@ -36,7 +36,7 @@ def load_data_into_dataframe(dataset_option):
 
     # Check if there is actually data in the list before reading to dataframe
     if dataset_files_csv:
-        df = pd.concat((pd.read_csv(file) for file in dataset_files_csv))
+        df = pd.concat((pd.read_csv(file) for file in dataset_files_csv), ignore_index=True)
         os.chdir(project_directory)
     else:
         raise FileNotFoundError(f"No files available for dataset option: '{dataset_option}'")
