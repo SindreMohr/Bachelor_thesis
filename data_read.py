@@ -64,7 +64,7 @@ def load_data_into_dataframe(dataset_option):
             df = pd.concat((pd.read_csv(file) for file in dataset_files_csv), ignore_index=False)
         os.chdir(project_directory)
         print(df.head())
-        print(start - time.time())
+        print(time.time() - start)
     else:
         raise FileNotFoundError(f"No files available for dataset option: '{dataset_option}'")
     
