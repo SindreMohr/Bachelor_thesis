@@ -60,8 +60,7 @@ Most data does seem to be within 2012-2014, with only 2013 being complete, the v
         C mature Money 2.7%
   * category 2 rising prosperity
     D city sophisticates 5.2%
-    E Career Climbers 28.2 %
-  * category 3 comfortable communities
+0 96*- * category 3 comfortable communities
     F Countryside Communities 12.3 %
     G Successful Suburbs 3.7 %
     H steady Neighbourhoods 8.2 %
