@@ -57,8 +57,8 @@ def load_data_into_dataframe(dataset_option):
     if dataset_files_csv:
         start = time.time()
         if index_opt == "tstp":
-            df = pd.concat((pd.read_csv(file, converters={'tstp': unix_time}) for file in dataset_files_csv), ignore_index=False)
-            #df = pd.concat((pd.read_csv(file) for file in dataset_files_csv), ignore_index=False)
+            #df = pd.concat((pd.read_csv(file, converters={'tstp': unix_time}) for file in dataset_files_csv), ignore_index=False)
+            df = pd.concat((pd.read_csv(file) for file in dataset_files_csv), ignore_index=False)
             #df["tstp"] = df["tstp"].apply(unix_time)
         else:
             df = pd.concat((pd.read_csv(file) for file in dataset_files_csv), ignore_index=False)
