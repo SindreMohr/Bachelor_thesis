@@ -1,3 +1,4 @@
+from operator import index
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
@@ -41,4 +42,5 @@ def house_filtration_select(house_select="ACORN-E", num=10):
     return filtered_hh_data
 
 if __name__ == "__main__":
-    house_filtration_select()
+    df = house_filtration_select()
+    df.to_csv("ouput.csv", index=False)

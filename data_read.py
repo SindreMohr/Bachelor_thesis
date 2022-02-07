@@ -10,6 +10,7 @@ import os
 import time
 import datetime
 
+
 # Saving project directory to return cur to directory after file reads
 project_directory = os.getcwd()
 # Change directory name to the name of the dataset directory
@@ -35,7 +36,7 @@ def unix_time(timestamp):
     minute = int(clock[1])
     second = int(0)
     clock = datetime.time(hour, minute, second)
-    return datetime.datetime.combine(date, clock).timestamp()
+    return datetime.datetime.combine(date, clock)
 
 def load_data_into_dataframe(dataset_option):
     """Returns dataframe for given dataset_option"""
