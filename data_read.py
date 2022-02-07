@@ -25,18 +25,21 @@ halfhourly_dataset_files = os.listdir(halfhourly_dataset_directory)
 def load_data_into_dataframe(dataset_option):
     """Returns dataframe for given dataset_option"""
     dataset_files_csv = []
+    index_opt = ""
 
     # Populates the list based on argument
     if dataset_option == "daily":
+        index_opt = "day"
         dataset_files_csv = daily_dataset_files
         os.chdir(daily_dataset_directory)       # Change to directory to enable reading of csv files
     elif dataset_option == "halfhourly":
+        index_opt = "tstp"
         dataset_files_csv = halfhourly_dataset_files
         os.chdir(halfhourly_dataset_directory)  # Change to directory to enable reading of csv files
 
     # Check if there is actually data in the list before reading to dataframe
     if dataset_files_csv:
-        df = pd.concat((pd.read_csv(file) for file in dataset_files_csv), ignore_index=True)
+        df = pd.concat((pd.read_csv(file) for file in dataset_files_csv), ignore_index=False)
         os.chdir(project_directory)
     else:
         raise FileNotFoundError(f"No files available for dataset option: '{dataset_option}'")
