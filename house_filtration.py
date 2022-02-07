@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-from data_read import load_data_into_dataframe
+from cleaning_data import data_preprocessing
 
 
 def house_filtration_select(house_select="ACORN-E", num=10):
@@ -18,7 +18,7 @@ def house_filtration_select(house_select="ACORN-E", num=10):
     '''
 
     # Loading data
-    h_df = load_data_into_dataframe("halfhourly")
+    h_df = data_preprocessing("halfhourly")
     hhi_df = pd.read_csv("./data/informations_households.csv")
 
     acorn_e_filter = hhi_df["Acorn"] == house_select
@@ -36,7 +36,9 @@ def house_filtration_select(house_select="ACORN-E", num=10):
     n_households_filter =h_df["LCLid"].isin(house_datacount_most_data)
     filtered_hh_data = h_df[n_households_filter]
 
-    print(filtered_hh_data["LCLid"].unique())
+    #print(filtered_hh_data["LCLid"].unique())
 
     return filtered_hh_data
 
+if __name__ == "__main__":
+    house_filtration_select()

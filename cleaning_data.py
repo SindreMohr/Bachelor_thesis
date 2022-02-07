@@ -25,10 +25,11 @@ def data_preprocessing(dataset_option, drop_row=True):
     missing_values_percentage = missing_values/len(df)*100      # Percentage of cells empty
     #print(missing_values_percentage)
 
+
+
     if drop_row:
         df.dropna(axis=0, inplace=True)                         # Removing rows with missing data
     elif not drop_row:
         pass # Interpolating?
+    return df
 
-if __name__ == "__main__":
-    data_preprocessing("daily")
