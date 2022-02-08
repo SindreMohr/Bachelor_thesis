@@ -1,3 +1,4 @@
+from unicodedata import name
 from data_read import load_data_into_dataframe
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,7 +7,7 @@ from datetime import datetime
 
 #is giga slow
 def find_correlation():
-    df = load_data_into_dataframe("halfhourly")
+    df = pd.read_csv('./data/ouput.csv')
     df["tstp"] = pd.to_datetime(df["tstp"])
     df = df.set_index("tstp")
     df["energy(kWh/hh)"] = pd.to_numeric(df["energy(kWh/hh)"], downcast="float", errors="coerce")
@@ -32,8 +33,14 @@ def find_correlation():
         weather_data_f = weather_data[temp_df.index[0]:temp_df.index[-1]]
         correlation = temp_df["energy(kWh/hh)"].corr(weather_data_f["temperature"])
         temp_energy_corr.append(correlation)
-        print(temp_energy_corr[0])
-    print(temp_energy_corr)
+        print(temp_energy_corr[count-1])
+    
+
+    temp_energy_corr = pd.Series(data=temp_energy_corr, name="Correlation")
+    houses = pd.Series(name="LCLid", data=houses)
+    corr_df = pd.merge(houses, temp_energy_corr, right_index= True, left_index= True)
+
+    print(corr_df)            
 
 if __name__ == "__main__":
     find_correlation()
