@@ -1,7 +1,9 @@
 
+from operator import mod
 import pandas as pd
 import numpy as np
-from keras.models import Sequential
+import math
+from keras.models import Sequential, load_model
 from keras.layers import LSTM, Dense
 
 class LSTMModel():
@@ -150,3 +152,52 @@ class LSTMModel():
             X = np.reshape(X, (1, len(X), 1))
 
         return yhat    
+    
+    def save_lstm_model(self):
+        #consider saving and loading other parameters
+        self.model.save("./saved_models/lstm_model")
+    def load_lstm_model(self):
+        #currently doesnt load other class parameters ...
+        # add options for households perhaps
+        model_load =  load_model("./saved_models/lstm_model")
+        self.model = model_load
+       
+    def evaluateMSE(self):
+        predictions = self.predict()
+
+         # Getting actual y 
+        _, _, _, y_test = self.create_data_for_NN()   
+        n = len(y_test)
+        squared_error = 0
+        for i in range(n):
+            squared_error += (y_test[i] - predictions[i]) ** 2
+        squared_error = squared_error / n
+        return squared_error
+
+    def evaluateRMSE(self):
+        
+        return math.sqrt(self.evaluateMSE())
+
+    def evaluateMAE(self):
+        predictions = self.predict()
+
+         # Getting actual y 
+        _, _, _, y_test = self.create_data_for_NN()   
+        n = len(y_test)
+        error = 0
+        for i in range(n):
+            error += abs(y_test[i] - predictions[i])
+        error = error / n
+        return error
+
+    def evaluateMAPE(self):
+        predictions = self.predict()
+
+         # Getting actual y 
+        _, _, _, y_test = self.create_data_for_NN()   
+        n = len(y_test)
+        error = 0
+        for i in range(n):
+            error += (abs(y_test[i] - predictions[i])/y_test[i])*100
+        error = error / n
+        return error
