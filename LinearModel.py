@@ -4,18 +4,17 @@ import pandas as pd
 import numpy as np
 import math
 from keras.models import Sequential, load_model
-from keras.layers import LSTM, Dense
+from keras.layers import  Input, Dense
 
-class LSTMModel():
+class LinearModel():
     """
     A class to create a deep time series model
     """
 
-    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, LSTM_layer_depth: int, epochs=10, batch_size=256, train_test_split=0):
+    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, epochs=10, batch_size=256, train_test_split=0):
         self.data = data 
         self.Y_var = Y_var 
         self.lag = lag 
-        self.LSTM_layer_depth = LSTM_layer_depth
         self.batch_size = batch_size
         self.epochs = epochs
         self.train_test_split = train_test_split
@@ -37,7 +36,7 @@ class LSTMModel():
 
         X, Y = np.array(X), np.array(Y)
 
-        # Reshaping the X array to an LSTM input shape 
+        # Reshaping the X array to an linear input shape 
         X = np.reshape(X, (X.shape[0], X.shape[1], 1))
         return X, Y         
 
@@ -75,16 +74,19 @@ class LSTMModel():
 
         return X_train, X_test, Y_train, Y_test
 
-    def LSTModel(self):
+    def LinearModel(self):
         """
-        A method to fit the LSTM model 
+        A method to fit the Linear model 
         """
         # Getting the data 
         X_train, X_test, Y_train, Y_test = self.create_data_for_NN()
 
+       # print(X_train)
+        #print(Y_train)
+
         # Defining the model
         model = Sequential()
-        model.add(LSTM(self.LSTM_layer_depth, activation='relu', input_shape=(self.lag, 1)))
+        model.add(Input(shape=(self.lag),))
         model.add(Dense(1))
         model.compile(optimizer='adam', loss='mse')
 
@@ -140,7 +142,7 @@ class LSTMModel():
         for _ in range(n_ahead):
             # Making the prediction
             fc = self.model.predict(X)
-            print(fc)
+            #print(fc)
             yhat.append(fc)
 
             # Creating a new input matrix for forecasting
