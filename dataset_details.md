@@ -42,14 +42,14 @@ Most data does seem to be within 2012-2014, with only 2013 being complete, the v
   * What is Acorn?
     Acorn is a geodemographic segmentation of
     the UK’s population. It segments households,
-    postcodes and neighbourhoods into 6
-    categories, 18 groups and 62 types. By analysing
+    postcodes and neighbourhoods into 5
+    categories, 17 groups and 59 types. By analysing
     significant social factors and population
     behaviour, it provides precise information and
     an in-depth understanding of the different
     types of people.    
 
-  see excel sheet here for more detail: https://acorn.caci.co.uk/what-is-acorn
+  see excel sheet here for more detail: https://acorn.caci.co.uk/what-is-acor
  
   * Category 1 Affluent AChievers
     // percentages are from pi diagram of acorn categories in our dataset
