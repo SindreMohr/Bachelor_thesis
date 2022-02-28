@@ -1,0 +1,12 @@
+.Workspace {
+    width: 100%;
+    min-height: 100px;
+    right: 0px;
+    display: flex;
+    justify-content: center;
+}
+
+.Workspace-content {
+    background-color: white;
+}
+

@@ -1,0 +1,12 @@
+.Datamenu {
+    background: white;
+    width: 40%;
+    max-width: 300px;
+    min-height: 200px;
+}
+
+.Datamenu-content {
+    background: rgb(238, 233, 233);
+    min-height: 200px;
+    padding: 10px;
+}

@@ -1,0 +1,7 @@
+.Workspace-nav {
+    background: rgb(151, 211, 233);
+    width: 100%;
+    display: flex;
+    padding: 10px 0px;
+    justify-content: center;
+}

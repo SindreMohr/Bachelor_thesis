@@ -1,0 +1,38 @@
+h1 {
+    margin: 5px;
+    display: inline;
+    color: rgb(255, 255, 255);
+}
+
+header  {
+    background: rgb(4, 154, 255);
+}
+
+nav {
+    display: inline;
+    position: absolute;
+    right: 0px;
+    top: 10px;
+}
+
+ul {
+    display: inline;
+    margin: 0px;
+}
+
+ul li {
+    display: inline;
+    margin-right: 20px;
+    margin-top: 0px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    font-weight: bolder;
+}
+
+a:hover {
+    color: white;
+}
+
