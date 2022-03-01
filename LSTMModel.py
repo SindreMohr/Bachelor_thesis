@@ -6,6 +6,8 @@ import math
 from keras.models import Sequential, load_model
 from keras.layers import LSTM, Dense
 
+from NN_data_creator import plain_data_creator
+
 class LSTMModel():
     """
     A class to create a deep time series model
@@ -19,68 +21,70 @@ class LSTMModel():
         self.batch_size = batch_size
         self.epochs = epochs
         self.train_test_split = train_test_split
+        self.dc = plain_data_creator()
     
-    @staticmethod
-    def create_X_Y(ts: list, lag: int) -> tuple:
-        """
-        A method to create X and Y matrix from a time series list for the training of 
-        deep learning models 
-        """
-        X, Y = [], []
+    # @staticmethod
+    # def create_X_Y(ts: list, lag: int) -> tuple:
+    #     """
+    #     A method to create X and Y matrix from a time series list for the training of 
+    #     deep learning models 
+    #     """
+    #     X, Y = [], []
 
-        if len(ts) - lag <= 0:
-            X.append(ts)
-        else:
-            for i in range(len(ts) - lag):
-                Y.append(ts[i + lag])
-                X.append(ts[i:(i + lag)])
+    #     if len(ts) - lag <= 0:
+    #         X.append(ts)
+    #     else:
+    #         for i in range(len(ts) - lag):
+    #             Y.append(ts[i + lag])
+    #             X.append(ts[i:(i + lag)])
 
-        X, Y = np.array(X), np.array(Y)
+    #     X, Y = np.array(X), np.array(Y)
 
-        # Reshaping the X array to an LSTM input shape 
-        X = np.reshape(X, (X.shape[0], X.shape[1], 1))
-        return X, Y         
+    #     # Reshaping the X array to an LSTM input shape 
+    #     X = np.reshape(X, (X.shape[0], X.shape[1], 1))
+    #     return X, Y         
 
-    def create_data_for_NN(
-        self,
-        use_last_n=None
-        ):
-        """
-        A method to create data for the neural network model
-        """
-        # Extracting the main variable we want to model/forecast
-        y = self.data[self.Y_var].tolist()
+    # def create_data_for_NN(
+    #     self,
+    #     use_last_n=None
+    #     ):
+    #     """
+    #     A method to create data for the neural network model
+    #     """
+    #     # Extracting the main variable we want to model/forecast
+    #     y = self.data[self.Y_var].tolist()
 
-        # Subseting the time series if needed
-        if use_last_n is not None:
-            y = y[-use_last_n:]
+    #     # Subseting the time series if needed
+    #     if use_last_n is not None:
+    #         y = y[-use_last_n:]
 
-        # The X matrix will hold the lags of Y 
-        X, Y = self.create_X_Y(y, self.lag)
+    #     # The X matrix will hold the lags of Y 
+    #     X, Y = self.create_X_Y(y, self.lag)
 
-        # Creating training and test sets 
-        X_train = X
-        X_test = []
+    #     # Creating training and test sets 
+    #     X_train = X
+    #     X_test = []
 
-        Y_train = Y
-        Y_test = []
+    #     Y_train = Y
+    #     Y_test = []
 
-        if self.train_test_split > 0:
-            index = round(len(X) * self.train_test_split)
-            X_train = X[:(len(X) - index)]
-            X_test = X[-index:]     
+    #     if self.train_test_split > 0:
+    #         index = round(len(X) * self.train_test_split)
+    #         X_train = X[:(len(X) - index)]
+    #         X_test = X[-index:]     
             
-            Y_train = Y[:(len(X) - index)]
-            Y_test = Y[-index:]
+    #         Y_train = Y[:(len(X) - index)]
+    #         Y_test = Y[-index:]
 
-        return X_train, X_test, Y_train, Y_test
+    #     return X_train, X_test, Y_train, Y_test
 
     def LSTModel(self):
         """
         A method to fit the LSTM model 
         """
         # Getting the data 
-        X_train, X_test, Y_train, Y_test = self.create_data_for_NN()
+        #X_train, X_test, Y_train, Y_test = self.create_data_for_NN()
+        X_train, X_test, Y_train, Y_test = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)
 
         # Defining the model
         model = Sequential()
@@ -121,7 +125,8 @@ class LSTMModel():
         if(self.train_test_split > 0):
         
             # Getting the last n time series 
-            _, X_test, _, _ = self.create_data_for_NN()        
+            # _, X_test, _, _ = self.create_data_for_NN()
+            _, X_test, _, _ = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)              
 
             # Making the prediction list 
             yhat = [y[0] for y in self.model.predict(X_test)]
@@ -132,7 +137,8 @@ class LSTMModel():
         """
         A method to predict n time steps ahead
         """    
-        X, _, _, _ = self.create_data_for_NN(use_last_n=self.lag)        
+        #X, _, _, _ = self.create_data_for_NN(use_last_n=self.lag)        
+        X, _, _, _ = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split, use_last_n=self.lag)
 
         # Making the prediction list 
         yhat = []
@@ -140,7 +146,6 @@ class LSTMModel():
         for _ in range(n_ahead):
             # Making the prediction
             fc = self.model.predict(X)
-            print(fc)
             yhat.append(fc)
 
             # Creating a new input matrix for forecasting
@@ -167,7 +172,8 @@ class LSTMModel():
         predictions = self.predict()
 
          # Getting actual y 
-        _, _, _, y_test = self.create_data_for_NN()   
+        #_, _, _, y_test = self.create_data_for_NN()   
+        _, _, _, y_test = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)
         n = len(y_test)
         squared_error = 0
         for i in range(n):
@@ -183,7 +189,7 @@ class LSTMModel():
         predictions = self.predict()
 
          # Getting actual y 
-        _, _, _, y_test = self.create_data_for_NN()   
+        _, _, _, y_test = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)
         n = len(y_test)
         error = 0
         for i in range(n):
@@ -195,7 +201,7 @@ class LSTMModel():
         predictions = self.predict()
 
          # Getting actual y 
-        _, _, _, y_test = self.create_data_for_NN()   
+        _, _, _, y_test = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)
         n = len(y_test)
         error = 0
         for i in range(n):
