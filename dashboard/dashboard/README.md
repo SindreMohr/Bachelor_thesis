@@ -4,10 +4,14 @@
 The application is a dashboard used to interact with a deep learning model.
 
 The model lets the user select which parts of a dataset to use in the model.
+
+
 The dataset can be shown visually, and the user will be presented with information about the data:
 - how many missing values are there
 - how many values are there
 - max-min values
+
+
 The choosen data can be loaded, and the user is be able to manipulate the data with the following options:
 - Remove
 	- Holidays
@@ -16,12 +20,16 @@ The choosen data can be loaded, and the user is be able to manipulate the data w
 - Interpolate data for missing values
 - Remove columns
 - Scale data in a column by a factor(?)
+
+
 The user then selects which model to use on the dataset. The user should is able to:
 - Select training/test split
 - Select which columns to use in the model
 - Number of Epochs
 - Length of lag
 - When the predictions should be made for
+
+
 The results from the model is presented in a default setup. The user is presented with:
 - Accuracy
 - Predicted values
@@ -37,5 +45,7 @@ The reasoning for using python on the backend is to have access to the code alre
 
 ## Frontend
 Frontend is a react.js application fetching data from the API using ASYNC methods. The frontend utilizes forms for posting parameters to the API which will be used when running the model. The frontend is solely written for desktop, as there is little to no usage from mobile devices.
+
+
 Usage:
 	Either load existing project or create new
