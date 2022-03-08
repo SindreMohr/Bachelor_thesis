@@ -1,12 +1,11 @@
 .Workspace {
     width: 100%;
-    min-height: 100px;
+    height: calc(100vh - 38px);
     right: 0px;
     display: flex;
     justify-content: center;
+    overflow: scroll;
+    background: rgb(152, 152, 253);
 }
 
-.Workspace-content {
-    background-color: white;
-}
 

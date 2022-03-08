@@ -2,10 +2,10 @@ footer {
     position:fixed;
     bottom:0;
     width: 100%;
-    background: rgb(1, 67, 87);
+    background: rgb(46, 54, 56);
     color: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 50px 0px;
+    padding: 30px 0px;
 }

@@ -12,7 +12,6 @@ function App() {
          <Datamenu />
          <Workspace />
       </main>
-      <Footer />
     </div>
   );
 }
