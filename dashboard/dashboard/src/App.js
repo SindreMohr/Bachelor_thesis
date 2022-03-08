@@ -4,13 +4,23 @@ import Footer from './components/Footer/Footer';
 
 import Datamenu from './components/Datamenu/Datamenu';
 import Workspace from './components/Workspace/Workspace';
+import ProjectData from './components/ProjectData/ProjectData';
+
+
+
 function App() {
+
+  
+
+
+
   return (
     <div className="App">
       <Navigation />
       <main>
-         <Datamenu />
-         <Workspace />
+          <Datamenu />
+          <Workspace />
+          <ProjectData />
       </main>
     </div>
   );

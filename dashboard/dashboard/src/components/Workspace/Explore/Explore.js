@@ -1,10 +1,15 @@
 import './Explore.css';
 
+import DataPlot from '../../DataPlot/DataPlot';
+
 
 function Explore() {
     let lclid = 123123;
     let energy = 12341234;
     let tstp = 12341234;
+
+    
+
     return (
         <div className="Exploration-view">
             <div className="Exploration-table-wrapper">
@@ -27,13 +32,14 @@ function Explore() {
                     </tr>
                 </table>
             </div>
+        
             <div className="Exploration-plot-wrapper">
-                <img src="plot.png" alt="plot" />
+                <DataPlot />
             </div>
             <div className="Exploration-data-head">
-
+                head
             </div>
-        </div>
+        </div>       
     );
 }
 

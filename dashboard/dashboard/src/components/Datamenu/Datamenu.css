@@ -1,5 +1,26 @@
 .Datamenu {
-    background: grey;
+    background: darkblue;
     height: calc(100vh - 38px);
     width: 300px;
+    overflow-y: scroll;
+}
+
+.Datamenu-header {
+    color: white;
+    padding: 5px;
+}
+
+.Datamenu ul {
+    padding: 0px;
+    margin: 0px;
+}
+
+.data-menu-output {
+    color: white;
+    list-style-type: none;
+    padding: 5px;
+}
+
+.data-menu-output:hover {
+    color: grey;
 }

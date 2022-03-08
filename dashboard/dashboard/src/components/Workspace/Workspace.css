@@ -4,8 +4,10 @@
     right: 0px;
     display: flex;
     justify-content: center;
-    overflow: scroll;
     background: rgb(152, 152, 253);
 }
 
+.Workspace-content {
+    width: 100%;
+}
 

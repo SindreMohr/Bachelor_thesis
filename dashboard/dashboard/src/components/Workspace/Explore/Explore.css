@@ -1,6 +1,8 @@
 .Exploration-view {
     display: grid;
     grid-template-columns: 1fr 2fr;
+    overflow-y: scroll;
+    height: calc(100vh - 51px - 38px);
 }
 
 .Exploration-table-wrapper {
@@ -21,7 +23,11 @@
         border: 1px solid black;
     }
 
-    .Exploration-table tr:nth-child(even){background-color: #f2f2f2;}
+    .Exploration-table tr {
+        background: white;
+    }
+
+    .Exploration-table tr:nth-child(even){background: #f2f2f2;}
 
 .Exploration-plot-wrapper {
     padding: 10px;

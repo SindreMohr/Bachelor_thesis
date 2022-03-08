@@ -1,0 +1,6 @@
+.ProjectData {
+    background: rgb(124, 66, 66);
+    height: calc(100vh - 38px);
+    width: 400px;
+    overflow-y: scroll;
+}
