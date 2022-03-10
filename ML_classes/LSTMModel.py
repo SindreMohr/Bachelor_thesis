@@ -6,7 +6,8 @@ import math
 from keras.models import Sequential, load_model
 from keras.layers import LSTM, Dense
 
-from NN_data_creator import plain_data_creator
+ 
+from ML_classes.NN_data_creator import plain_data_creator
 
 class LSTMModel():
     """

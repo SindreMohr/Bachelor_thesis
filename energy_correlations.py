@@ -3,7 +3,7 @@ from calendar import month
 from data_read import load_data_into_dataframe
 import pandas as pd
 import matplotlib.pyplot as plt
-from datetime import datetime
+from datetime import date, datetime
 
 
 #is giga slow
@@ -28,12 +28,22 @@ def find_correlation():
         }
     days = []
     weekends = []
-    for _, val in df["day"].iteritems():
-        days.append(days_dict[val])
-        if val == "Sunday" or val == "Saturday":
+
+    bank_holidays=  pd.read_csv('./data/uk_bank_holidays.csv')
+    bank_holidays["Bank holidays"] = pd.to_datetime(bank_holidays["Bank holidays"])
+
+
+    for _, val in df["tstp"].iteritems():
+        name = val.day_name()
+        days.append(days_dict[name])
+        if name == "Sunday" or name == "Saturday":
             weekends.append(1)
         else:
             weekends.append(0)
+        for _, bh in bank_holidays["Bank holidays"].iteritems():
+            if val.date() == bh.date():
+                weekends[-1] = 1
+                #print( weekends[-1])
     df["day"]= pd.Series(days, name="day")
     df["weekend"]= pd.Series(weekends, name="weekend")
     
@@ -157,7 +167,8 @@ def find_correlation():
     corr_df["weekend"] = weekend_correlations
 
     #assuming energy is x variable, negative temperature correlation means 
-    print(corr_df)            
+    print(corr_df)     
+    return corr_df       
 
 if __name__ == "__main__":
     find_correlation()
