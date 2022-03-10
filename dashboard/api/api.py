@@ -1,5 +1,8 @@
-from flask import Flask, request, redirect, json
+from flask import Flask, request, redirect, json, g
 from flask_cors import CORS
+
+from setup_db import setup, select_housedata_db
+import sqlite3
 
 import pandas as pd
 from datetime import datetime
@@ -7,6 +10,21 @@ from datetime import datetime
 app = Flask(__name__)
 
 CORS(app)
+DATABASE = './database.db'
+
+#setting the database up
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        g._database = sqlite3.connect(DATABASE)
+        db = g._database
+    return db
+
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
 
 @app.after_request
 def add_header(response):
