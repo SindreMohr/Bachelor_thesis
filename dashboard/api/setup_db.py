@@ -90,6 +90,16 @@ def init_database(conn):
             energy = line[2]
             add_data_db(conn, lclid, tstp, energy)
 
+def init_house_info(conn):
+     with open("informations_households.csv", "r") as rf:
+        for line in rf:
+            line = line.split(",")
+            lclid = line[0]
+            acorn = line[2]
+            affluency = line[3]
+            print(f"lclid: {lclid}, acorn: {acorn}, affluiency: {affluency} ")
+            #idk where get rest info perse only 10 houses so far could hardcode.
+
 
 def select_interactions_db(conn, post_id):
     cur = conn.cursor()
@@ -114,8 +124,9 @@ def setup():
     conn = create_connection(database)
     if conn is not None:
         #create_table(conn, sql_create_house_table)
-        create_table(conn, sql_create_dataset_table)
-        init_database(conn)
+        #create_table(conn, sql_create_dataset_table)
+        #init_database(conn)
+        init_house_info(conn)
         conn.close()
 
 if __name__ == '__main__':
