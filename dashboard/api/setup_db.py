@@ -37,6 +37,17 @@ sql_create_house_table = """ CREATE TABLE IF NOT EXISTS houses
     stop_date TEXT NOT NULL
     );"""
 
+#not entirely sure all fields of this maybe split into tables for each modeltype instead of single one with potentially unused fields
+sql_create_model_info_table = """CREATE TABLE IF NOT EXISTS model_info(
+     mid INTEGER PRIMARY KEY AUTOINCREMENT,
+     mtype TEXT NOT NULL,
+     lag INTEGER,
+     layer_depth INTEGER,
+     batches INTEGER,
+     epochs INTEGER,
+     train_test_split REAL
+);"""
+
 
 def create_table(conn, create_table_sql):
     """ create a table from the create_table_sql statement
