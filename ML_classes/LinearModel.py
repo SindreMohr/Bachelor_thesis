@@ -208,6 +208,7 @@ class LinearModel():
         for i in range(n):
             #cant divide by 0
             if y_test[i] == 0:
+                print(i)
                 continue
             error += (abs(y_test[i] - predictions[i])/y_test[i])*100
         error = error / n
