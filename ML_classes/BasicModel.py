@@ -1,3 +1,4 @@
+import math
 from operator import mod
 from textwrap import indent
 from typing_extensions import Self
@@ -15,15 +16,18 @@ class Baseline():
 
 
    def predictions(self):
-       predictions = self.y[0:len(self.y)-2]
+       predictions = self.y[0:len(self.y)-1]
        predictions.insert(0,self.y[0])
 
        return predictions
 
    def test_predictions(self):
        index = round(len(self.y) * self.train_test_split)
-       predictions = self.y[index:len(self.y)-2]
-       predictions.insert(0,self.y[0])
+       #predictions = self.y[-index:-1]
+       #predictions.insert(0,self.y[-index-1])
+
+       predictions = self.predictions()
+       predictions = predictions[-index:]
 
        return predictions
 
@@ -33,7 +37,50 @@ class Baseline():
            predictions.append(self.y[-1])
        return predictions
 
+   def evaluateMSE(self):
+        predictions = self.test_predictions()
 
+         # Getting actual y 
+        index = round(len(self.y) * self.train_test_split)
+        y_test = self.y[-index:]
+
+        print(len(predictions))
+        print(len(y_test))
+
+        n = len(y_test)
+        squared_error = 0
+        for i in range(n):
+            squared_error += (y_test[i] - predictions[i]) ** 2
+        squared_error = squared_error / n
+        return squared_error
+
+   def evaluateRMSE(self):
+        
+        return math.sqrt(self.evaluateMSE())
+   def evaluateMAE(self):
+        predictions = self.test_predictions()
+
+         # Getting actual y 
+        index = round(len(self.y) * self.train_test_split)
+        y_test = self.y[-index:]
+        error = 0
+        n = len(y_test)
+        for i in range(n):
+            error += abs(y_test[i] - predictions[i])
+        error = error / n
+        return error
+   def evaluateMAPE(self):
+        predictions = self.test_predictions()
+
+         # Getting actual y 
+        index = round(len(self.y) * self.train_test_split)
+        y_test = self.y[-index:]
+        n = len(y_test)
+        error = 0
+        for i in range(n):
+            error += (abs(y_test[i] - predictions[i])/y_test[i])*100
+        error = error / n
+        return error
 
 
 
