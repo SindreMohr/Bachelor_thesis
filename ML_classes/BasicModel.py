@@ -44,8 +44,8 @@ class Baseline():
         index = round(len(self.y) * self.train_test_split)
         y_test = self.y[-index:]
 
-        print(len(predictions))
-        print(len(y_test))
+        # print(len(predictions))
+        # print(len(y_test))
 
         n = len(y_test)
         squared_error = 0
@@ -78,6 +78,9 @@ class Baseline():
         n = len(y_test)
         error = 0
         for i in range(n):
+            #cant divide by 0
+            if y_test[i] == 0:
+                continue
             error += (abs(y_test[i] - predictions[i])/y_test[i])*100
         error = error / n
         return error

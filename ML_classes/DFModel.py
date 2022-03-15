@@ -171,6 +171,9 @@ class DFModel():
         n = len(y_test)
         error = 0
         for i in range(n):
+            #cant divide by 0
+            if y_test[i] == 0:
+                continue
             error += (abs(y_test[i] - predictions[i])/y_test[i])*100
         error = error / n
         return error
