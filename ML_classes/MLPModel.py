@@ -15,11 +15,12 @@ class MLPModel():
     A class to create a deep time series model
     """
 
-    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, layer_depth: int, epochs=10, batch_size=256, train_test_split=0):
+    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, layer_depths: list, layer_count: int, epochs=10, batch_size=256, train_test_split=0):
         self.data = data 
         self.Y_var = Y_var 
         self.lag = lag 
-        self.layer_depth = layer_depth 
+        self.layer_count = layer_count
+        self.layer_depths = layer_depths
         self.batch_size = batch_size
         self.epochs = epochs
         self.train_test_split = train_test_split
@@ -40,8 +41,9 @@ class MLPModel():
         # Defining the model
         model = Sequential()
         model.add(Input(shape=(self.lag),))
-        model.add(Dense(self.layer_depth, activation="relu"))
-        model.add(Dense(self.layer_depth, activation="relu"))
+        #building layers to specification, activation method can be passed in as part of list as a tuple
+        for j in range(self.layer_count):
+            model.add(Dense(self.layer_depths[j], activation="relu"))
         model.add(Dense(1))
         model.compile(optimizer='adam', loss='mse')
 
