@@ -17,18 +17,27 @@ function Explore() {
                     <thead>
                         <td>Column</td>
                         <td>Count</td>
+                        <td>Mean</td>
+                        <td>Std.</td>
+                        <td>Min.</td>
+                        <td>Max.</td>
                     </thead>
-                    <tr>
-                        <td>LCLID</td>
-                        <td>{ lclid }</td>
-                    </tr>
+
                     <tr>
                         <td>Energy</td>
                         <td>{ energy }</td>
+                        <td>{ lclid }</td>
+                        <td>{ lclid }</td>
+                        <td>{ lclid }</td>
+                        <td>{ lclid }</td>
                     </tr>
                     <tr>
                         <td>tstp</td>
                         <td>{ tstp }</td>
+                        <td>{ lclid }</td>
+                        <td>{ lclid }</td>
+                        <td>{ lclid }</td>
+                        <td>{ lclid }</td>
                     </tr>
                 </table>
             </div>
