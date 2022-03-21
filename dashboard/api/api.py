@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect, json, g
 from flask_cors import CORS
 
-from setup_db import setup, select_housedata_db, select_lclids
+from setup_db import setup, select_housedata_curve_db, select_housedata_count_db, select_lclids
 import sqlite3
 
 import pandas as pd
@@ -41,36 +41,17 @@ def data():
     print(data)
     return json.dumps({'data': data})
 
-@app.route("/household/<lclid>", methods=['GET'])
-def get_household_data(lclid):
+@app.route("/household_data_curve/<lclid>", methods=['GET'])
+def get_household_data_curve(lclid):
     conn = get_db()
-
-    datalist = select_housedata_db(conn,lclid)
-    time = datalist['time']
-    values = datalist['values']
-
-    # df = pd.read_csv('../../../data/ouput.csv')
-    #df =  pd.DataFrame(datalist)
-    # df['tstp'] = [datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in df['tstp']]
-    # df["tstp"] = pd.to_datetime(df["tstp"])
-    # #df["energy(kWh/hh)"] = pd.to_numeric(df["energy(kWh/hh)"], downcast="float", errors="coerce")
-
-    # #max_value_energy = df["energy(kWh/hh)"].max()
-    # #df['energy(kWh/hh)'] = df['energy(kWh/hh)'].apply(lambda x: x / max_value_energy)
-    # # Sorting the values
-    # df.sort_values('tstp', inplace=True)
-
-    # #lclid_list = df['LCLid'].unique()
-    
-    # filt = df["LCLid"] == lclid
-    # hh = df[filt]
-    
-    # hh.pop("LCLid")
-    # hh = hh.set_index("tstp")
-    # hh = hh.resample("H").sum()
-    # hh = hh.reset_index()
-    
+    datalist = select_housedata_curve_db(conn,lclid)
     return json.dumps({'house_data': datalist})
+
+@app.route("/household_data_count/<lclid>", methods=['GET'])
+def get_household_data_count(lclid):
+    conn = get_db()
+    datalist = select_housedata_count_db(conn,lclid)
+    return json.dumps({'house_data_count': datalist})
 
 
 if __name__ == "__main__":

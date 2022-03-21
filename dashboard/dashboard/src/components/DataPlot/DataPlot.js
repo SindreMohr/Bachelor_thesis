@@ -9,7 +9,7 @@ function DataPlot() {
     const api_call = {content: 'MAC000150'}
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/household/` + api_call.content, {
+        fetch(`http://127.0.0.1:5000/household_data_curve/` + api_call.content, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application.json',

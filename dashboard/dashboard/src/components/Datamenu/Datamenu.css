@@ -1,18 +1,30 @@
 .Datamenu {
-    background: darkblue;
+    background: rgb(236, 226, 226);
     height: calc(100vh - 38px);
     width: 300px;
     overflow-y: scroll;
 }
 
 .Datamenu-header {
-    color: white;
-    padding: 5px;
+    color: black;
+    font-weight: lighter;
+    text-align: center;
+    font-size: 1.5em;
 }
 
 .Datamenu ul {
     padding: 0px;
     margin: 0px;
+}
+
+.Datamenu li {
+    list-style-type: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.Datamenu li:hover {
+    color: grey;
 }
 
 .data-menu-output {

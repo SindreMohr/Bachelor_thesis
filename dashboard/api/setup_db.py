@@ -121,7 +121,7 @@ def select_interactions_db(conn, post_id):
     cur = conn.cursor()
     cur.execute(f"SELECT id, comment, username FROM interactions WHERE post_id={post_id} and interaction_type='comment'") 
 
-def select_housedata_db(conn, lclid):
+def select_housedata_curve_db(conn, lclid):
     cur = conn.cursor()
     cur.execute(f"SELECT tstp, energy FROM dataset WHERE lclid='{lclid}' ORDER BY id ASC") 
     result = {}
@@ -133,6 +133,25 @@ def select_housedata_db(conn, lclid):
         values.append(val)
     result['time'] = time
     result['values'] = values
+    return result
+
+def select_housedata_count_db(conn, lclid):
+    cur = conn.cursor()
+    result = {}
+    cur.execute(f"SELECT COUNT(tstp) FROM dataset WHERE lclid='{lclid}'") 
+    result['count_tstp'] = cur
+    cur.execute(f"SELECT COUNT(energy) FROM dataset WHERE lclid='{lclid}'")
+    result['count_energy'] = cur
+
+    cur.execute(f"SELECT AVG(energy) FROM dataset WHERE lclid='{lclid}'")
+    result['avg_energy'] = cur 
+    cur.execute(f"SELECT AVG(tstp) FROM dataset WHERE lclid='{lclid}'")
+    result['avg_tstp'] = cur
+
+    cur.execute(f"SELECT MIN(energy) FROM dataset WHERE lclid='{lclid}'")
+    result['avg_energy'] = cur 
+    cur.execute(f"SELECT MAX(energy) FROM dataset WHERE lclid='{lclid}'")
+    result['avg_energy'] = cur 
     return result
 
 def select_lclids(conn):

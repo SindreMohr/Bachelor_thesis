@@ -1,5 +1,5 @@
 .Workspace-nav {
-    background: rgb(151, 211, 233);
+    background: rgb(134, 134, 134);
     width: 100%;
     display: flex;
     justify-content: center;
@@ -16,5 +16,5 @@
 }
 
 .Workspace-nav a:hover {
-    color: lightslategray;
+    color: white;
 }
