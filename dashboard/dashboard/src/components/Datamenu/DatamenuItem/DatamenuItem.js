@@ -7,7 +7,7 @@ function DatamenuItem({data}) {
     const { LCLID, Url } = useContext(GlobalContext);
     function sayYo() {
         console.log(Url);
-        setLCLID(data);
+        //setLCLID(data);
         console.log("f" +LCLID +"f")
     }
 
