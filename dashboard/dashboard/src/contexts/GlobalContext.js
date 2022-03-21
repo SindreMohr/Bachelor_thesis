@@ -7,6 +7,7 @@ const GlobalContextProvider = (props) => {
          <GlobalContext.Provider 
             value={{
                 LCLID,
+                setLCLID,
                 Url
              }}>
                {props.children}

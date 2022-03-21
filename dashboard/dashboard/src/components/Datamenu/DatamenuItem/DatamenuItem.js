@@ -4,10 +4,11 @@ import {GlobalContext} from '../../../contexts/GlobalContext'
 
 function DatamenuItem({data}) {
     //const [info, setinfo] = useState([]);
-    const { LCLID, Url } = useContext(GlobalContext);
+    const { LCLID,setLCLID , Url } = useContext(GlobalContext);
 
     function changeLCL() {
-        console.log("f" +LCLID +"f")
+        console.log(LCLID)
+        setLCLID(data)
     }
 
     return (
