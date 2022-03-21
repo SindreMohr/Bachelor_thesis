@@ -32,7 +32,7 @@ function Explore() {
                         <td>{ lclid }</td>
                     </tr>
                     <tr>
-                        <td>tstp</td>
+                        <td>Date</td>
                         <td>{ tstp }</td>
                         <td>{ lclid }</td>
                         <td>{ lclid }</td>
