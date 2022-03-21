@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect, json, g
 from flask_cors import CORS
 
-from setup_db import setup, select_housedata_db
+from setup_db import setup, select_housedata_db, select_lclids
 import sqlite3
 
 import pandas as pd
@@ -34,44 +34,44 @@ def add_header(response):
     return response
 
 # split up into different get routes instead of post or replace with actual csv/db call routes 
-@app.route("/get_data", methods=['GET', 'POST'])
+@app.route("/get_lclids", methods=['GET'])
 def data():
-    if request.method == "POST":
-        content = request.get_json('content')
-        content = content['content']
-        if content == 'all':
-            houses = ["MAC000150", "MAC000152", "MAC000153", "MAC000165", "MAC000169", "MAC000168","MAC000159","MAC000173", "MAC000179","MAC000181", "MAC000152", "MAC000153", "MAC000165", "MAC000169", "MAC000168","MAC000159","MAC000173", "MAC000179","MAC000181", "MAC000152", "MAC000153", "MAC000165", "MAC000169", "MAC000168","MAC000159","MAC000173", "MAC000179","MAC000181", "MAC000152", "MAC000153", "MAC000165", "MAC000169", "MAC000168","MAC000159","MAC000173", "MAC000179","MAC000181" ]
-            loaded_data = houses
-            return {'data': loaded_data}
-        elif "MAC" in content:
-            # Make db call to get information about house
-            loaded_data = [1,10,5,3,5,6,3]
-            return json.dumps({'data': loaded_data})
-    return ""
+    conn = get_db()
+    data = select_lclids(conn)
+    print(data)
+    return json.dumps({'data': data})
 
 @app.route("/household/<lclid>", methods=['GET'])
 def get_household_data(lclid):
-    df = pd.read_csv('../../../data/ouput.csv')
-    df['tstp'] = [datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in df['tstp']]
-    #df["tstp"] = pd.to_datetime(df["tstp"])
-    df["energy(kWh/hh)"] = pd.to_numeric(df["energy(kWh/hh)"], downcast="float", errors="coerce")
+    conn = get_db()
 
-    max_value_energy = df["energy(kWh/hh)"].max()
-    df['energy(kWh/hh)'] = df['energy(kWh/hh)'].apply(lambda x: x / max_value_energy)
-    # Sorting the values
-    df.sort_values('tstp', inplace=True)
+    datalist = select_housedata_db(conn,lclid)
+    time = datalist['time']
+    values = datalist['values']
 
-    #lclid_list = df['LCLid'].unique()
+    # df = pd.read_csv('../../../data/ouput.csv')
+    #df =  pd.DataFrame(datalist)
+    # df['tstp'] = [datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in df['tstp']]
+    # df["tstp"] = pd.to_datetime(df["tstp"])
+    # #df["energy(kWh/hh)"] = pd.to_numeric(df["energy(kWh/hh)"], downcast="float", errors="coerce")
+
+    # #max_value_energy = df["energy(kWh/hh)"].max()
+    # #df['energy(kWh/hh)'] = df['energy(kWh/hh)'].apply(lambda x: x / max_value_energy)
+    # # Sorting the values
+    # df.sort_values('tstp', inplace=True)
+
+    # #lclid_list = df['LCLid'].unique()
     
-    filt = df["LCLid"] == lclid
-    hh = df[filt]
+    # filt = df["LCLid"] == lclid
+    # hh = df[filt]
     
-    hh.pop("LCLid")
-    hh = hh.set_index("tstp")
-    hh = hh.resample("H").sum()
-    hh = hh.reset_index()
+    # hh.pop("LCLid")
+    # hh = hh.set_index("tstp")
+    # hh = hh.resample("H").sum()
+    # hh = hh.reset_index()
+    
+    return json.dumps({'house_data': datalist})
 
-    return json.dumps({'data': hh})
 
 if __name__ == "__main__":
     app.run(debug=True)

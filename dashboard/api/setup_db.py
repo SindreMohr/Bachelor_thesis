@@ -81,8 +81,22 @@ def add_data_db(conn, lclid, tstp, energy):
         print(e)
         return False
 
+
+def add_house_info_db(conn, lclid, acorn, affluency):
+    sql = ''' INSERT INTO houses(lclid,acorn_class,affluency)
+              VALUES(?,?,?) '''
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, (lclid, acorn, affluency))
+        conn.commit()
+        return True
+    except Error as e:
+        print(e)
+        return False
+
 def init_database(conn):
     with open("ouput.csv", "r") as rf:
+        rf.readline()
         for line in rf:
             line = line.split(",")
             lclid = line[0]
@@ -92,6 +106,7 @@ def init_database(conn):
 
 def init_house_info(conn):
      with open("informations_households.csv", "r") as rf:
+        rf.readline()
         for line in rf:
             line = line.split(",")
             lclid = line[0]
@@ -99,6 +114,7 @@ def init_house_info(conn):
             affluency = line[3]
             print(f"lclid: {lclid}, acorn: {acorn}, affluiency: {affluency} ")
             #idk where get rest info perse only 10 houses so far could hardcode.
+            add_house_info_db(conn, lclid, acorn, affluency)
 
 
 def select_interactions_db(conn, post_id):
@@ -107,15 +123,26 @@ def select_interactions_db(conn, post_id):
 
 def select_housedata_db(conn, lclid):
     cur = conn.cursor()
-    cur.execute(f"SELECT lclid, tstp, energy FROM dataset WHERE lclid={lclid}") 
-    result = []
+    cur.execute(f"SELECT tstp, energy FROM dataset WHERE lclid='{lclid}' ORDER BY id ASC") 
+    result = {}
+    time = []
+    values = []
     for row in cur:
-        content = {}
-        id, time, val = row
-        content["id"] = id
-        content["time"] = time
-        content["val"] = val
-        result.append(content)
+        tstp, val = row
+        time.append(tstp)
+        values.append(val)
+    result['time'] = time
+    result['values'] = values
+    return result
+
+def select_lclids(conn):
+    cur = conn.cursor()
+    cur.execute(f"SELECT DISTINCT lclid FROM dataset") 
+    result = {}
+    lclid = []
+    for row in cur:
+        lclid.append(row)
+    result['lclid'] = lclid
     return result
 
 #### SETUP ####

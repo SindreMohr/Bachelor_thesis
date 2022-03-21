@@ -1,29 +1,29 @@
 import { useState, useEffect } from 'react';
+import DatamenuItem from './DatamenuItem/DatamenuItem';
+
 
 import './Datamenu.css';
 
 function Datamenu() {
 
     const [data, setData] = useState([]);
-    const api_call = {content: 'all'}
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/get_data`, {
-            method: 'POST',
+        fetch(`http://127.0.0.1:5000/get_lclids`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application.json',
             },
-            body: JSON.stringify(api_call),
         }).then(
             res => res.json()
         ).then(
             data => {
-                setData(data.data);
+                setData(data.data.lclid);
             }
         )
     }, []);
 
-    const listItems = data.map((d) =>  <li className="data-menu-output">{d}</li>);
+    const listItems = data.map((d) =>  <DatamenuItem data={d} />);
 
     return (
         <div className="Datamenu">
