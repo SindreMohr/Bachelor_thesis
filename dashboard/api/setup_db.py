@@ -139,19 +139,28 @@ def select_housedata_count_db(conn, lclid):
     cur = conn.cursor()
     result = {}
     cur.execute(f"SELECT COUNT(tstp) FROM dataset WHERE lclid='{lclid}'") 
-    result['count_tstp'] = cur
+    result['count_tstp'] = cur.fetchone()
     cur.execute(f"SELECT COUNT(energy) FROM dataset WHERE lclid='{lclid}'")
-    result['count_energy'] = cur
+    result['count_energy'] = cur.fetchone()
 
     cur.execute(f"SELECT AVG(energy) FROM dataset WHERE lclid='{lclid}'")
-    result['avg_energy'] = cur 
+    result['avg_energy'] = cur.fetchone()
     cur.execute(f"SELECT AVG(tstp) FROM dataset WHERE lclid='{lclid}'")
-    result['avg_tstp'] = cur
+    result['avg_tstp'] = cur.fetchone()
 
+    cur.execute(f"SELECT AVG(energy) FROM dataset WHERE lclid='{lclid}'")
+    result['std_energy'] = cur.fetchone()
     cur.execute(f"SELECT MIN(energy) FROM dataset WHERE lclid='{lclid}'")
-    result['avg_energy'] = cur 
+    result['min_energy'] = cur.fetchone()
     cur.execute(f"SELECT MAX(energy) FROM dataset WHERE lclid='{lclid}'")
-    result['avg_energy'] = cur 
+    result['max_energy'] = cur.fetchone()
+
+    cur.execute(f"SELECT AVG(tstp) FROM dataset WHERE lclid='{lclid}'")
+    result['std_tstp'] = cur.fetchone()
+    cur.execute(f"SELECT MIN(tstp) FROM dataset WHERE lclid='{lclid}'")
+    result['min_tstp'] = cur.fetchone()
+    cur.execute(f"SELECT MAX(tstp) FROM dataset WHERE lclid='{lclid}'")
+    result['max_tstp'] = cur.fetchone()
     return result
 
 def select_lclids(conn):

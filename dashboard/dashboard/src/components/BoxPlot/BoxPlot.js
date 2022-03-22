@@ -5,7 +5,7 @@ import {GlobalContext} from '../../contexts/GlobalContext'
 
 import { useState, useEffect, useContext } from 'react';
 
-function DataPlot({house}) {
+function BoxPlot({house}) {
 
     const [data, setData] = useState([]);
 
@@ -51,4 +51,4 @@ function DataPlot({house}) {
     );
 }
 
-export default DataPlot;
+export default BoxPlot;

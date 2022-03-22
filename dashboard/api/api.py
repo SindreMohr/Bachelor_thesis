@@ -38,7 +38,7 @@ def add_header(response):
 def data():
     conn = get_db()
     data = select_lclids(conn)
-    print(data)
+    #print(data)
     return json.dumps({'data': data})
 
 @app.route("/household_data_curve/<lclid>", methods=['GET'])
