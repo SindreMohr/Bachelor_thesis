@@ -1,17 +1,21 @@
 import './Explore.css';
+import React, { useContext } from 'react';
 
 import DataPlot from '../../DataPlot/DataPlot';
-
+import {GlobalContext} from '../../contexts/GlobalContext'
 
 function Explore() {
     let lclid = 123123;
     let energy = 12341234;
     let tstp = 12341234;
 
+    const { LCLID } = useContext(GlobalContext);
+
     
 
     return (
         <div className="Exploration-view">
+            <h2> {LCLID} </h2>
             <div className="Exploration-table-wrapper">
                 <table className="Exploration-table">
                     <thead>
