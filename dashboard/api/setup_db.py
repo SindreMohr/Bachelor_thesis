@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import date, timedelta
 from sqlite3 import Error
+from time import pthread_getcpuclockid
 # Most of this stuff is re-used from lectures
 
 database = "./database.db"
@@ -138,23 +139,41 @@ def select_housedata_curve_db(conn, lclid):
 def select_housedata_count_db(conn, lclid):
     cur = conn.cursor()
     result = {}
+
+    # Frequency of data, these two queries should return the same result
     cur.execute(f"SELECT COUNT(tstp) FROM dataset WHERE lclid='{lclid}'") 
     result['count_tstp'] = cur.fetchone()
     cur.execute(f"SELECT COUNT(energy) FROM dataset WHERE lclid='{lclid}'")
     result['count_energy'] = cur.fetchone()
 
+    #data average/mean
+    # is time mean/sd necessary? at least in this format
     cur.execute(f"SELECT AVG(energy) FROM dataset WHERE lclid='{lclid}'")
     result['avg_energy'] = cur.fetchone()
     cur.execute(f"SELECT AVG(tstp) FROM dataset WHERE lclid='{lclid}'")
     result['avg_tstp'] = cur.fetchone()
-
+    
+    #energy min max
     cur.execute(f"SELECT AVG(energy) FROM dataset WHERE lclid='{lclid}'")
     result['std_energy'] = cur.fetchone()
     cur.execute(f"SELECT MIN(energy) FROM dataset WHERE lclid='{lclid}'")
     result['min_energy'] = cur.fetchone()
-    cur.execute(f"SELECT MAX(energy) FROM dataset WHERE lclid='{lclid}'")
-    result['max_energy'] = cur.fetchone()
+    cur.execute(f"SELECT  energy FROM dataset WHERE lclid='{lclid}' AND NOT energy=Null")
+    #result['max_energy'] = cur.fetchall()
+    result['max_energy'] = 0.0
+    max = 0.1
+    for val in cur:
+        print(val[0])
+        print(type(val[0]))
+        if val[0] > max:
+            max = val[0]
+    result['max_energy'] = max
+        #print(val)
+        #print(type(val))
+    #print( type(result['max_energy'][0][0]))
+    #print( result['max_energy'])
 
+    #timestamp min max sd
     cur.execute(f"SELECT AVG(tstp) FROM dataset WHERE lclid='{lclid}'")
     result['std_tstp'] = cur.fetchone()
     cur.execute(f"SELECT MIN(tstp) FROM dataset WHERE lclid='{lclid}'")
