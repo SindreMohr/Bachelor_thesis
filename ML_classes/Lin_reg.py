@@ -51,10 +51,10 @@ class Lin_reg_baseline():
            
 
 
-            print(self.x_train)
-            print( f"one vector:  {self.x_train[0]}")
-            print(self.x_train.shape)
-            print(len(self.y_train))
+            #print(self.x_train)
+            #print( f"one vector:  {self.x_train[0]}")
+            #print(self.x_train.shape)
+            #print(len(self.y_train))
             
 
         else:
@@ -117,6 +117,23 @@ class Lin_reg_baseline():
                 predict_from += 3600
                 x = np.array(predict_from).reshape((-1,1))
                 predictions.append(self.model.predict(x))
+       elif self.mode == "auto":
+            X, _, _, _ = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split, use_last_n=self.lag)
+            X = self.alter_x_shape(X)
+            for _ in range(n):
+                # Making the prediction
+                fc = self.model.predict(X)
+                #print(fc)
+                predictions.append(fc)
+
+                # Creating a new input matrix for forecasting
+                X = np.append(X, fc)
+
+                # Ommiting the first variable
+                X = np.delete(X, 0)
+
+                # Reshaping for the next iteration
+                X = np.reshape(X, (1, len(X)))
        return predictions
 
    def evaluateMSE(self):

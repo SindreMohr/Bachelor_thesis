@@ -62,7 +62,7 @@ class MLPModel():
             })
 
         # Fitting the model 
-        model.fit(
+        self.history = model.fit(
             **keras_dict
         )
 
