@@ -216,7 +216,7 @@ def select_lclids(conn):
 def setup():
     conn = create_connection(database)
     if conn is not None:
-        #create_table(conn, sql_create_house_table)
+        create_table(conn, sql_create_house_table)
         #create_table(conn, sql_create_dataset_table)
         #init_database(conn)
         init_house_info(conn)
