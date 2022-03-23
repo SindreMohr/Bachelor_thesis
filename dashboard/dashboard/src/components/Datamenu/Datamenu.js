@@ -23,7 +23,7 @@ function Datamenu() {
         )
     }, []);
 
-    const listItems = data.map((d) =>  <DatamenuItem data={d} />);
+    const listItems = data.map((d) =>  <DatamenuItem key={d} data={d} />);
 
     return (
         <div className="Datamenu">

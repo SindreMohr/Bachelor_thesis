@@ -2,16 +2,15 @@ import './Explore.css';
 import { useState, useEffect, useContext } from 'react';
 
 import DataPlot from '../../DataPlot/DataPlot';
-import GlobalContextProvider, {GlobalContext} from '../../../contexts/GlobalContext'
+import Head from './Head/Head';
+import {GlobalContext} from '../../../contexts/GlobalContext'
 
 function Explore() {
 
     const { LCLID } = useContext(GlobalContext);
 
-    const [data, setData] = useState([]);
-
+    const [tableData, settableData] = useState([]);
     
-
     useEffect(() => {
         fetch(`http://127.0.0.1:5000/household_data_count/` + LCLID, {
             method: 'GET',
@@ -21,13 +20,12 @@ function Explore() {
         }).then(
             res => res.json()
         ).then(
-            data => {
-                setData(data.house_data_count);
+            tableData => {
+                settableData(tableData.house_data_count);
             }
         )
     }, [LCLID]);
 
-  
     return (
         <div className="Exploration-view">
             <div className="Exploration-table-wrapper">
@@ -35,30 +33,33 @@ function Explore() {
                     <h2> {LCLID} </h2>
                     <table className="Exploration-table">
                         <thead>
-                            <td>Column</td>
-                            <td>Count</td>
-                            <td>Mean</td>
-                            <td>Std.</td>
-                            <td>Min.</td>
-                            <td>Max.</td>
+                            <tr>
+                                <th>Column</th>
+                                <th>Count</th>
+                                <th>Mean</th>
+                                <th>Std.</th>
+                                <th>Min.</th>
+                                <th>Max.</th>
+                            </tr>
                         </thead>
-
-                        <tr>
-                            <td>Energy</td>
-                            <td>{ data.count_energy }</td>
-                            <td>{ data.avg_energy }</td>
-                            <td>{ data.std_energy }</td>
-                            <td>{ data.min_energy }</td>
-                            <td>{ data.max_energy }</td>
-                        </tr>
-                        <tr>
-                            <td>Date</td>
-                            <td>{ data.count_tstp }</td>
-                            <td>{ data.avg_tstp }</td>
-                            <td>{ data.std_tstp }</td>
-                            <td>{ data.min_tstp }</td>
-                            <td>{ data.max_tstp }</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>Energy</td>
+                                <td>{ tableData.count_energy }</td>
+                                <td>{ tableData.avg_energy }</td>
+                                <td>{ tableData.std_energy }</td>
+                                <td>{ tableData.min_energy }</td>
+                                <td>{ tableData.max_energy }</td>
+                            </tr>
+                            <tr>
+                                <td>Date</td>
+                                <td>{ tableData.count_tstp }</td>
+                                <td>{ tableData.avg_tstp }</td>
+                                <td>{ tableData.std_tstp }</td>
+                                <td>{ tableData.min_tstp }</td>
+                                <td>{ tableData.max_tstp }</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -67,7 +68,18 @@ function Explore() {
                  <DataPlot house={LCLID} />
             </div>
             <div className="Exploration-data-head">
-                head
+                <p>First 10 rows of {LCLID} data</p>
+                <table className="Exploration-table">
+                        <thead>
+                            <tr>
+                                <td>id</td>
+                                <td>LCLID</td>
+                                <td>tstp</td>
+                                <td>Energy</td>
+                            </tr>
+                        </thead>
+                        <Head tableData={tableData} />
+                </table>
             </div>
         </div>       
     );
