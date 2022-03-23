@@ -1,8 +1,12 @@
+import imp
 import sqlite3
 from datetime import date, timedelta
 from sqlite3 import Error
 from time import pthread_getcpuclockid
 # Most of this stuff is re-used from lectures
+
+#hack for sd
+import pandas as pd
 
 database = "./database.db"
 
@@ -153,25 +157,23 @@ def select_housedata_count_db(conn, lclid):
     cur.execute(f"SELECT AVG(tstp) FROM dataset WHERE lclid='{lclid}'")
     result['avg_tstp'] = cur.fetchone()
     
+    #energy sd
+    #consider making less queries and let pandas do the work
+    query = (f"SELECT energy FROM dataset WHERE lclid='{lclid}'")
+    df = pd.read_sql(query,conn)
+    sd = df["energy"].std()
+    result['std_energy'] = sd
+
+
+
     #energy min max
-    cur.execute(f"SELECT AVG(energy) FROM dataset WHERE lclid='{lclid}'")
-    result['std_energy'] = cur.fetchone()
     cur.execute(f"SELECT MIN(energy) FROM dataset WHERE lclid='{lclid}'")
     result['min_energy'] = cur.fetchone()
-    cur.execute(f"SELECT  energy FROM dataset WHERE lclid='{lclid}' AND NOT energy=Null")
-    #result['max_energy'] = cur.fetchall()
-    result['max_energy'] = 0.0
-    max = 0.1
-    for val in cur:
-        print(val[0])
-        print(type(val[0]))
-        if val[0] > max:
-            max = val[0]
-    result['max_energy'] = max
-        #print(val)
-        #print(type(val))
-    #print( type(result['max_energy'][0][0]))
-    #print( result['max_energy'])
+    cur.execute(f"SELECT  MAX(energy) FROM dataset WHERE lclid='{lclid}'")
+    result['max_energy'] = cur.fetchone()
+    
+    
+     
 
     #timestamp min max sd
     cur.execute(f"SELECT AVG(tstp) FROM dataset WHERE lclid='{lclid}'")
@@ -180,6 +182,8 @@ def select_housedata_count_db(conn, lclid):
     result['min_tstp'] = cur.fetchone()
     cur.execute(f"SELECT MAX(tstp) FROM dataset WHERE lclid='{lclid}'")
     result['max_tstp'] = cur.fetchone()
+
+    #Getting dataset head
     cur.execute(f"SELECT * FROM dataset WHERE lclid='{lclid}' LIMIT 10")
     id = []
     lcl = []
