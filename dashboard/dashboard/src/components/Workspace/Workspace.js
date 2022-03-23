@@ -16,11 +16,11 @@ function Workspace() {
                 <Workspacenav />
                 { PAGE === "Explore" ?
                 <Explore />
-                : PAGE == "Modify" ?
+                : PAGE === "Modify" ?
                 <Modify />
-                : PAGE == "Model" ?
+                : PAGE === "Model" ?
                 <Model />
-                : PAGE == "Run" ?
+                : PAGE === "Run" ?
                 <Run />
                 : null }
            </div>

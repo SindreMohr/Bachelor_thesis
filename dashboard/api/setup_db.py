@@ -180,11 +180,30 @@ def select_housedata_count_db(conn, lclid):
     result['min_tstp'] = cur.fetchone()
     cur.execute(f"SELECT MAX(tstp) FROM dataset WHERE lclid='{lclid}'")
     result['max_tstp'] = cur.fetchone()
+    cur.execute(f"SELECT * FROM dataset WHERE lclid='{lclid}' LIMIT 10")
+    id = []
+    lcl = []
+    tstp = []
+    energy = []
+    for row in cur:
+        i, l, t, e = row
+        id.append(i)
+        lcl.append(l)
+        tstp.append(t)
+        energy.append(e)
+    head = {}
+    head['id'] = id
+    head['lclid'] = lcl
+    head['tstp'] = tstp
+    head['energy'] = energy
+    result['head'] = head
+    print("THIS IS RESULTS")
+    print(result)
     return result
 
 def select_lclids(conn):
     cur = conn.cursor()
-    cur.execute(f"SELECT DISTINCT lclid FROM dataset") 
+    cur.execute(f"SELECT DISTINCT lclid FROM dataset ORDER BY lclid") 
     result = {}
     lclid = []
     for row in cur:

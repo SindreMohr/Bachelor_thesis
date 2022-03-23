@@ -1,15 +1,11 @@
 import Plot from 'react-plotly.js';
 
-import {GlobalContext} from '../../contexts/GlobalContext'
-
-
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 
 function DataPlot({house}) {
 
     const [data, setData] = useState([]);
 
-    console.log(house)
     useEffect(() => {
         fetch(`http://127.0.0.1:5000/household_data_curve/` + house, {
             method: 'GET',
