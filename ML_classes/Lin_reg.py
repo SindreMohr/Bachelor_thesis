@@ -33,7 +33,7 @@ class Lin_reg_baseline():
         #
         self.x_train = []
         self.x_test = []
-        self. y_train = np.array(self.y[:-index])
+        self.y_train = np.array(self.y[:-index])
         self.y_test = np.array(self.y[-index:])
         if self.mode == "basic":
             self.x_train = np.array(x[:-index]).reshape((-1,1))
