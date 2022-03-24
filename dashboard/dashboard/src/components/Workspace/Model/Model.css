@@ -1,0 +1,13 @@
+.Model-menu {
+    background-color: red;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.Model-menu ul li {
+    display: inline;
+    margin-right: 40px;
+    cursor: pointer;
+}
