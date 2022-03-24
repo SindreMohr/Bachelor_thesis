@@ -28,8 +28,8 @@ function Explore() {
 
     return (
         <div className="Exploration-view">
-            <div className="Exploration-table-wrapper">
-                <div className="">
+            <div className="Exploration-first-wrapper">
+                <div>
                     <h2> {LCLID} </h2>
                     <table className="Exploration-table">
                         <thead>
@@ -64,21 +64,23 @@ function Explore() {
                 </div>
             </div>
         
-            <div className="Exploration-plot-wrapper">
+            <div className="Exploration-second-wrapper">
                  <DataPlot house={LCLID} />
             </div>
             <div className="Exploration-data-head">
-                <p>First 10 rows of {LCLID} data</p>
                 <table className="Exploration-table">
-                        <thead>
-                            <tr>
-                                <td>id</td>
-                                <td>LCLID</td>
-                                <td>tstp</td>
-                                <td>Energy</td>
-                            </tr>
-                        </thead>
-                        <Head tableData={tableData} />
+                    <thead>
+                        <tr>
+                            <th colspan="4">Dataset head:</th>
+                        </tr>
+                        <tr>
+                            <th>id</th>
+                            <th>LCLID</th>
+                            <th>tstp</th>
+                            <th>Energy</th>
+                        </tr>
+                    </thead>
+                    <Head tableData={tableData} />
                 </table>
             </div>
         </div>       

@@ -3,6 +3,8 @@ h1 {
     display: inline;
     color: rgb(87, 87, 87);
     font-weight: lighter;
+    cursor: default;
+    user-select: none;
 }
 
 header  {

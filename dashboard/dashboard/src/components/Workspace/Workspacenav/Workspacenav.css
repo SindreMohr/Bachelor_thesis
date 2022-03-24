@@ -8,13 +8,10 @@
 .Workspace-nav ul li {
     display: inline;
     padding: 0px 20px;
+    transition: 0.15s ease;
+    cursor: pointer;
 }
 
-.Workspace-nav a {
-    padding: 10px;
-    transition: 0.1s;
-}
-
-.Workspace-nav a:hover {
+.Workspace-nav li:hover {
     color: white;
 }
