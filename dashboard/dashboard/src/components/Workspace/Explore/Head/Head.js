@@ -5,13 +5,12 @@ function Head({tableData}) {
     const [head, sethead] = useState("");
     
     useEffect(() => {
-        console.log(head);
         console.log(tableData);
         if (tableData.head) {
             sethead(                  
                 tableData.head.id.map(function(obj, i){
                     return (
-                        <tr key={tableData.head.id}>
+                        <tr key={tableData.head.id[i]}>
                             <td>{ tableData.head.id[i] }</td>
                             <td>{ tableData.head.lclid[i] }</td>
                             <td>{ tableData.head.tstp[i] }</td>
@@ -21,7 +20,6 @@ function Head({tableData}) {
                 })
             );
         };
-        console.log(head);
     }, [tableData]);
 
     return (

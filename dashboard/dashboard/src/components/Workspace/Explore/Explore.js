@@ -70,15 +70,15 @@ function Explore() {
             <div className="Exploration-data-head">
                 <p>First 10 rows of {LCLID} data</p>
                 <table className="Exploration-table">
-                        <thead>
-                            <tr>
-                                <td>id</td>
-                                <td>LCLID</td>
-                                <td>tstp</td>
-                                <td>Energy</td>
-                            </tr>
-                        </thead>
-                        <Head tableData={tableData} />
+                    <thead>
+                        <tr>
+                            <td>id</td>
+                            <td>LCLID</td>
+                            <td>tstp</td>
+                            <td>Energy</td>
+                        </tr>
+                    </thead>
+                    <Head tableData={tableData} />
                 </table>
             </div>
         </div>       
