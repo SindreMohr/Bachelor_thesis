@@ -11,22 +11,28 @@ from keras.layers import  Input, Dense
 from sklearn import tree
 
 #
-from ML_classes.NN_data_creator import plain_data_creator
+from ML_classes.NN_data_creator import plain_data_creator, temperature_data_creator
 
 class DTModel():
     """
     A class to create a deep time series model
     """
 
-    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, epochs=10, batch_size=256, train_test_split=0):
+    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, epochs=10, batch_size=256, train_test_split=0, data_creator = "plain"):
         self.data = data 
         self.Y_var = Y_var 
         self.lag = lag 
         self.batch_size = batch_size
         self.epochs = epochs
         self.train_test_split = train_test_split
-        self.dc = plain_data_creator()
-    
+
+        #mode for training
+        if data_creator == "plain":
+            self.dc = plain_data_creator()
+        elif data_creator == "temperature":
+            self.dc = temperature_data_creator()
+        else:
+             raise ValueError("unknown dc")
     def alter_x_shape(self, x):
         # naive slow o(n^2)
         res = []
@@ -48,7 +54,7 @@ class DTModel():
         """
         # Getting the data 
         X_train, _, Y_train, _ = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)
-
+        #print(X_train)
         #X_train, Y_train = self.dc.create_X_Y(ts = self.data[self.Y_var], lag = self.lag )
         #X_test = self.alter_x_shape(X_test)
         X_train =  self.alter_x_shape(X_train)
@@ -76,6 +82,8 @@ class DTModel():
             # Getting the last n time series 
             _, X_test, _, _ = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)  
             X_test = self.alter_x_shape(X_test)
+
+            #print(X_test)
             # Making the prediction list 
             yhat = [y for y in self.model.predict(X_test)]
 
