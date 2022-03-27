@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 function Head({tableData}) {
 
-    const [head, sethead] = useState("");
+    const [head, sethead] = useState(<tr></tr>);
     
     useEffect(() => {
         console.log(tableData);

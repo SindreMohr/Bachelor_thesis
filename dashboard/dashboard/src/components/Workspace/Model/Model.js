@@ -1,27 +1,62 @@
 import './Model.css';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+// import Slider from 'react-rangeslider'
+// import 'react-rangeslider/lib/index.css'
+
+import {GlobalContext} from '../../../contexts/GlobalContext'
 
 function Model() {
 
-    const [FormOption, setFormOption] = useState("options")
+    //const [formOption, setFormOption] = useState("options")
+
+    const { setModelParam } = useContext(GlobalContext);
+    const [slideValue, setSlideValue] = useState(70);
 
     function setForm(e) {
-        console.log(FormOption)
-        setFormOption(e)
-        console.log(FormOption)
+        //console.log(formOption)
+        //setFormOption(e)
+        //console.log(formOption)
+        let ModelFormData = {model: "lstm"}
+        setModelParam(ModelFormData)
+    }
+
+    function handleSlideInput(e) {
+        setSlideValue(e.target.value);
+        console.log(slideValue)
     }
 
     const Options = (
-        <form>
-            <label>
-                Model select:
-                <select>
-                    <option selected value="">LSTM</option>
-                    <option value="">LSTM</option>
-                    <option value="">LSTM</option>
-                    <option value="">LSTM</option>
-                </select>
-            </label>
+        <form className="model-form">
+            <fieldset>
+                <legend>Form Parameters</legend>
+                <label>
+                    Select Model:
+                    <select id="model_type">
+                        <option defaultValue="lstm">LSTM</option>
+                        <option value="mlp">MLP</option>
+                        <option value="slp">SLP</option>
+                    </select>
+                </label>
+                <label>
+                    Training / Test splitt
+                    <input id="splitt" type="range" value={slideValue} min="0" max="100" onChange={handleSlideInput} />
+                    Training: {slideValue} %
+                    Test: {100 - slideValue} %
+                </label>
+                <label>
+                    Epochs: 
+                    <input id="epochs" type="textbox" defaultValue="10"/>
+                </label>
+                <label>
+                    Lag: 
+                    <input id="lag" type="textbox" defaultValue="0"/>
+                </label>
+                <label>
+                    Prediction time: 
+                    <input id="prediction" type="textbox" defaultValue="0"/>
+                </label>
+                <button type="submit">Update model</button>
+            </fieldset>
         </form>
     );
   
@@ -62,17 +97,18 @@ function Model() {
             </div>
         
             <div className="Exploration-second-wrapper grey-bg">
-                <div className="Model-menu">
+                {/* <div className="Model-menu">
                     <ul>
                         <li onClick={() => setForm('options')}>Model Options</li>
                         <li onClick={() => setForm('parameters')}>Model Parameters</li>
                     </ul>
-                </div>
-                { FormOption === "options" ?
+                </div> */}
+                { Options }
+                {/* { formOption === "options" ?
                 Options
-                : FormOption === "parameters" ?
+                : formOption === "parameters" ?
                 <h1>Parameters</h1>
-                : null }
+    : null } */}
             </div>
         </div>       
     );

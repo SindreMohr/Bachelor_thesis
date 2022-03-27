@@ -4,6 +4,7 @@ const GlobalContextProvider = (props) => {
     const [PAGE, setPAGE] = useState('Explore')
     const [LCLID, setLCLID] = useState('MAC000150')
     const Url = "http://localhost:3000"
+    const [modelParam, setModelParam] = useState({})
     return (
          <GlobalContext.Provider 
             value={{
@@ -11,7 +12,9 @@ const GlobalContextProvider = (props) => {
                 setPAGE,
                 LCLID,
                 setLCLID,
-                Url
+                Url,
+                modelParam,
+                setModelParam
              }}>
                {props.children}
          </GlobalContext.Provider>

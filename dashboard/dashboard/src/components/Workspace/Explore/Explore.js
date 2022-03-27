@@ -71,7 +71,7 @@ function Explore() {
                 <table className="Exploration-table">
                     <thead>
                         <tr>
-                            <th colspan="4">Dataset head:</th>
+                            <th colSpan="4">Dataset head:</th>
                         </tr>
                         <tr>
                             <th>id</th>

@@ -11,3 +11,21 @@
     margin-right: 40px;
     cursor: pointer;
 }
+
+.model-form label, .model-form input, .model-form select {
+    display: block;
+    margin-top: 10px;
+}
+
+.model-form button {
+    margin-top: 20px;
+    padding: 5px;
+    background-color: rgb(133, 216, 255);
+    border: 1px solid rgb(21, 122, 255);
+    border-radius: 5px;
+    font-size: 1.3em;
+}
+.model-form button:hover {
+    background-color: rgb(78, 199, 255);
+    border: 1px solid rgb(0, 90, 207);
+}
