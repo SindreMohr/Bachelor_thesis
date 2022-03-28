@@ -1,15 +1,12 @@
 import './Model.css';
 import { useState, useContext } from 'react';
-// import Slider from 'react-rangeslider'
-// import 'react-rangeslider/lib/index.css'
 
 import {GlobalContext} from '../../../contexts/GlobalContext'
 
 function Model() {
 
-    //const [formOption, setFormOption] = useState("options")
 
-    const { setModelParam } = useContext(GlobalContext);
+    const { setModelParam, modelParam } = useContext(GlobalContext);
 
     const [modelTypeValue, setModelTypeValue] = useState("lstm");
     const [slideValue, setSlideValue] = useState(70);
@@ -82,51 +79,50 @@ function Model() {
         <div className="Exploration-view">
             <div className="Exploration-first-wrapper">
                 <div className="">
-                    <h2> Model </h2>
+                    <h2> Current Parameters </h2>
                     <table className="Exploration-table">
                         <thead>
                             <tr>
-                                <th>T</th>
-                                <th>A</th>
-                                <th>B</th>
-                                <th>L</th>
-                                <th>E</th>
+                                <th>Model</th>
+                                <th>Training</th>
+                                <th>Test</th>
+                                <th>Epochs</th>
+                                <th>Lag</th>
+                                <th>Layer</th>
+                                <th>Prediction time</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
+                                <td>
+                                    {modelParam.model}                                
+                                </td>
+                                <td>
+                                    {modelParam.training}
+                                </td>
+                                <td>
+                                    {modelParam.training > 0 && 100 - modelParam.training}
+                                </td>
+                                <td>
+                                    {modelParam.epoch}
+                                </td>
+                                <td>
+                                    {modelParam.lag}
+                                </td>
+                                <td>
+                                    {modelParam.layer}
+                                </td>
+                                <td>
+                                    {modelParam.prediction}
+                                </td>
                             </tr>
-                            <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-
                         </tbody>
                     </table>
                 </div>
             </div>
         
             <div className="Exploration-second-wrapper grey-bg">
-                {/* <div className="Model-menu">
-                    <ul>
-                        <li onClick={() => setForm('options')}>Model Options</li>
-                        <li onClick={() => setForm('parameters')}>Model Parameters</li>
-                    </ul>
-                </div> */}
                 { Options }
-                {/* { formOption === "options" ?
-                Options
-                : formOption === "parameters" ?
-                <h1>Parameters</h1>
-    : null } */}
             </div>
         </div>       
     );
