@@ -10,14 +10,27 @@ function Model() {
     //const [formOption, setFormOption] = useState("options")
 
     const { setModelParam } = useContext(GlobalContext);
-    const [slideValue, setSlideValue] = useState(70);
 
-    function setForm(e) {
-        //console.log(formOption)
-        //setFormOption(e)
-        //console.log(formOption)
-        let ModelFormData = {model: "lstm"}
-        setModelParam(ModelFormData)
+    const [modelTypeValue, setModelTypeValue] = useState("lstm");
+    const [slideValue, setSlideValue] = useState(70);
+    const [epochsValue, setEpochsValue] = useState(10);
+    const [lagValue, setLagValue] = useState(24);
+    const [layerValue, setLayerValue] = useState(1);
+    const [predictionValue, setPredictionValue] = useState(0);
+
+    const setForm = (event) => {
+        event.preventDefault();
+
+        let ModelFormData = {
+            model: modelTypeValue,
+            training: slideValue,
+            epoch: epochsValue,
+            lag: lagValue,
+            layer: lagValue,
+            prediction: predictionValue
+        }
+        console.log(ModelFormData);
+        setModelParam(ModelFormData);
     }
 
     function handleSlideInput(e) {
@@ -31,10 +44,11 @@ function Model() {
                 <legend>Form Parameters</legend>
                 <label>
                     Select Model:
-                    <select id="model_type">
+                    <select id="model_type" onChange={(e) => setModelTypeValue(e.target.value)}>
                         <option defaultValue="lstm">LSTM</option>
                         <option value="mlp">MLP</option>
                         <option value="slp">SLP</option>
+                        <option value="dt">Decision Tree</option>
                     </select>
                 </label>
                 <label>
@@ -45,17 +59,21 @@ function Model() {
                 </label>
                 <label>
                     Epochs: 
-                    <input id="epochs" type="textbox" defaultValue="10"/>
+                    <input id="epochs" type="number" value={epochsValue} onChange={(e) => setEpochsValue(e.target.value)}/>
                 </label>
                 <label>
                     Lag: 
-                    <input id="lag" type="textbox" defaultValue="0"/>
+                    <input id="lag" type="number" value={lagValue}  onChange={(e) => setLagValue(e.target.value)}/>
+                </label>
+                <label>
+                    Layer: 
+                    <input id="layer" type="number" value={layerValue}  onChange={(e) => setLayerValue(e.target.value)}/>
                 </label>
                 <label>
                     Prediction time: 
-                    <input id="prediction" type="textbox" defaultValue="0"/>
+                    <input id="prediction" type="number" value={predictionValue}  onChange={(e) => setPredictionValue(e.target.value)}/>
                 </label>
-                <button type="submit">Update model</button>
+                <button onClick={setForm}>Update model</button>
             </fieldset>
         </form>
     );
