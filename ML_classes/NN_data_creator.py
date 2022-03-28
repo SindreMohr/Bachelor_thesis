@@ -74,9 +74,6 @@ class temperature_data_creator():
         """
         X, Y = [], []
 
-        print(len(tlist))
-        print(len(ts))
-
         if len(ts) - lag <= 0:
            temp = ts.copy()
 

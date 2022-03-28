@@ -8,22 +8,27 @@ from keras.models import Sequential, load_model
 from keras.layers import  Input, Dense
 
 #
-from ML_classes.NN_data_creator import plain_data_creator
+from ML_classes.NN_data_creator import plain_data_creator, temperature_data_creator
 
 class LinearModel():
     """
     A class to create a deep time series model
     """
 
-    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, epochs=10, batch_size=256, train_test_split=0):
+    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, epochs=10, batch_size=256, train_test_split=0, data_creator = "plain"):
         self.data = data 
         self.Y_var = Y_var 
         self.lag = lag 
         self.batch_size = batch_size
         self.epochs = epochs
         self.train_test_split = train_test_split
-        self.dc = plain_data_creator()
-    
+           #mode for training
+        if data_creator == "plain":
+            self.dc = plain_data_creator()
+        elif data_creator == "temperature":
+            self.dc = temperature_data_creator()
+        else:
+             raise ValueError("unknown dc")
         self.history = None
 
     def LinearModel(self):
@@ -38,7 +43,7 @@ class LinearModel():
 
         # Defining the model
         model = Sequential()
-        model.add(Input(shape=(self.lag),))
+        model.add(Input(shape=(len(X_train[0])),))
         model.add(Dense(1))
         model.compile(optimizer='adam', loss='mse')
 

@@ -8,14 +8,14 @@ from keras.models import Sequential, load_model
 from keras.layers import  Input, Dense
 
 #
-from ML_classes.NN_data_creator import plain_data_creator
+from ML_classes.NN_data_creator import plain_data_creator, temperature_data_creator
 
 class MLPModel():
     """
     A class to create a deep time series model
     """
 
-    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, layer_depths: list, layer_count: int, epochs=10, batch_size=256, train_test_split=0):
+    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, layer_depths: list, layer_count: int, epochs=10, batch_size=256, train_test_split=0, data_creator = "plain"):
         self.data = data 
         self.Y_var = Y_var 
         self.lag = lag 
@@ -24,9 +24,15 @@ class MLPModel():
         self.batch_size = batch_size
         self.epochs = epochs
         self.train_test_split = train_test_split
-        self.dc = plain_data_creator()
+
+          #mode for training
+        if data_creator == "plain":
+            self.dc = plain_data_creator()
+        elif data_creator == "temperature":
+            self.dc = temperature_data_creator()
+        else:
+             raise ValueError("unknown dc")
     
-   
 
     def MLPModel(self):
         """
@@ -35,12 +41,15 @@ class MLPModel():
         # Getting the data 
         X_train, X_test, Y_train, Y_test = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)
 
-       # print(X_train)
+        #print(len(X_train))
+        #print(len(X_train[0]))
+        #print(len(X_train[0][0]))
+
         #print(Y_train)
 
         # Defining the model
         model = Sequential()
-        model.add(Input(shape=(self.lag),))
+        model.add(Input(shape=(len(X_train[0])),))
         #building layers to specification, activation method can be passed in as part of list as a tuple
         for j in range(self.layer_count):
             model.add(Dense(self.layer_depths[j], activation="relu"))

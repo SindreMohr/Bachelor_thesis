@@ -7,14 +7,14 @@ from keras.models import Sequential, load_model
 from keras.layers import LSTM, Dense
 
  
-from ML_classes.NN_data_creator import plain_data_creator
+from ML_classes.NN_data_creator import plain_data_creator, temperature_data_creator
 
 class LSTMModel():
     """
     A class to create a deep time series model
     """
 
-    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, LSTM_layer_depth: int, epochs=10, batch_size=256, train_test_split=0):
+    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, LSTM_layer_depth: int, epochs=10, batch_size=256, train_test_split=0, data_creator = "plain"):
         self.data = data 
         self.Y_var = Y_var 
         self.lag = lag 
@@ -22,9 +22,13 @@ class LSTMModel():
         self.batch_size = batch_size
         self.epochs = epochs
         self.train_test_split = train_test_split
-        self.dc = plain_data_creator()
-
-       
+        #mode for training
+        if data_creator == "plain":
+            self.dc = plain_data_creator()
+        elif data_creator == "temperature":
+            self.dc = temperature_data_creator()
+        else:
+             raise ValueError("unknown dc")
     
   
 
@@ -38,7 +42,7 @@ class LSTMModel():
 
         # Defining the model
         model = Sequential()
-        model.add(LSTM(self.LSTM_layer_depth, activation='relu', input_shape=(self.lag, 1)))
+        model.add(LSTM(self.LSTM_layer_depth, activation='relu', input_shape=(len(X_train[0]), 1)))
         model.add(Dense(1))
         model.compile(optimizer='adam', loss='mse')
 
