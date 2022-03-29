@@ -11,6 +11,7 @@ from sklearn.preprocessing import PolynomialFeatures
 from datetime import datetime, timedelta
 
 from ML_classes.NN_data_creator import plain_data_creator
+from ML_classes.evaluator import Evaluator
 
 
 class Lin_reg_baseline():
@@ -95,7 +96,8 @@ class Lin_reg_baseline():
    def model_init(self):
      #x_ = PolynomialFeatures(degree=2, include_bias=False).fit_transform(self.x_train)
      self.model = LinearRegression().fit(self.x_train, self.y_train)
-        
+     self.eval = Evaluator(self.y_test,self.data,self.predictions(),self.train_test_split,self.lag)
+
    def predictions(self):
       # x_ = PolynomialFeatures(degree=2, include_bias=False).fit_transform(self.x_test)
        predictions = self.model.predict(self.x_test)
@@ -136,48 +138,4 @@ class Lin_reg_baseline():
                 X = np.reshape(X, (1, len(X)))
        return predictions
 
-   def evaluateMSE(self):
-        predictions = self.predictions()
-
-         # Getting actual y 
-        y_test = self.y_test
-        # print(len(predictions))
-        # print(len(y_test))
-
-        n = len(y_test)
-        squared_error = 0
-        for i in range(n):
-            squared_error += (y_test[i] - predictions[i]) ** 2
-        squared_error = squared_error / n
-        return squared_error
-
-   def evaluateRMSE(self):
-        
-        return math.sqrt(self.evaluateMSE())
-   def evaluateMAE(self):
-        predictions = self.predictions()
-
-         # Getting actual y 
-        y_test = self.y_test
-        error = 0
-        n = len(y_test)
-        for i in range(n):
-            error += abs(y_test[i] - predictions[i])
-        error = error / n
-        return error
-   def evaluateMAPE(self):
-        predictions = self.predictions()
-
-          # Getting actual y 
-        y_test = self.y_test
-        n = len(y_test)
-        error = 0
-        for i in range(n):
-            #cant divide by 0
-            if y_test[i] == 0:
-                continue
-            error += (abs(y_test[i] - predictions[i])/y_test[i])*100
-        error = error / n
-        return error
-   def print_test(self):
-        pass
+   

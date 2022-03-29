@@ -6,6 +6,8 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
+from ML_classes.evaluator import Evaluator
+
 class Baseline():
    def __init__(self, data: pd.DataFrame, Y_var: str, train_test_split=0):
         self.data = data 
@@ -13,6 +15,13 @@ class Baseline():
         self.train_test_split = train_test_split
         # Extracting the main variable we want to model/forecast
         self.y = data[Y_var].tolist()
+
+          # Getting actual y 
+        index = round(len(self.y) * self.train_test_split)
+        y_test = self.y[-index:]
+
+
+        self.eval = Evaluator(y_test,self.data,self.test_predictions(),self.train_test_split,0)
 
 
    def predictions(self):
@@ -23,9 +32,6 @@ class Baseline():
 
    def test_predictions(self):
        index = round(len(self.y) * self.train_test_split)
-       #predictions = self.y[-index:-1]
-       #predictions.insert(0,self.y[-index-1])
-
        predictions = self.predictions()
        predictions = predictions[-index:]
 
@@ -37,53 +43,53 @@ class Baseline():
            predictions.append(self.y[-1])
        return predictions
 
-   def evaluateMSE(self):
-        predictions = self.test_predictions()
+#    def evaluateMSE(self):
+#         predictions = self.test_predictions()
 
-         # Getting actual y 
-        index = round(len(self.y) * self.train_test_split)
-        y_test = self.y[-index:]
+#          # Getting actual y 
+#         index = round(len(self.y) * self.train_test_split)
+#         y_test = self.y[-index:]
 
-        # print(len(predictions))
-        # print(len(y_test))
+#         # print(len(predictions))
+#         # print(len(y_test))
 
-        n = len(y_test)
-        squared_error = 0
-        for i in range(n):
-            squared_error += (y_test[i] - predictions[i]) ** 2
-        squared_error = squared_error / n
-        return squared_error
+#         n = len(y_test)
+#         squared_error = 0
+#         for i in range(n):
+#             squared_error += (y_test[i] - predictions[i]) ** 2
+#         squared_error = squared_error / n
+#         return squared_error
 
-   def evaluateRMSE(self):
+#    def evaluateRMSE(self):
         
-        return math.sqrt(self.evaluateMSE())
-   def evaluateMAE(self):
-        predictions = self.test_predictions()
+#         return math.sqrt(self.evaluateMSE())
+#    def evaluateMAE(self):
+#         predictions = self.test_predictions()
 
-         # Getting actual y 
-        index = round(len(self.y) * self.train_test_split)
-        y_test = self.y[-index:]
-        error = 0
-        n = len(y_test)
-        for i in range(n):
-            error += abs(y_test[i] - predictions[i])
-        error = error / n
-        return error
-   def evaluateMAPE(self):
-        predictions = self.test_predictions()
+#          # Getting actual y 
+#         index = round(len(self.y) * self.train_test_split)
+#         y_test = self.y[-index:]
+#         error = 0
+#         n = len(y_test)
+#         for i in range(n):
+#             error += abs(y_test[i] - predictions[i])
+#         error = error / n
+#         return error
+#    def evaluateMAPE(self):
+#         predictions = self.test_predictions()
 
-         # Getting actual y 
-        index = round(len(self.y) * self.train_test_split)
-        y_test = self.y[-index:]
-        n = len(y_test)
-        error = 0
-        for i in range(n):
-            #cant divide by 0
-            if y_test[i] == 0:
-                continue
-            error += (abs(y_test[i] - predictions[i])/y_test[i])*100
-        error = error / n
-        return error
+#          # Getting actual y 
+#         index = round(len(self.y) * self.train_test_split)
+#         y_test = self.y[-index:]
+#         n = len(y_test)
+#         error = 0
+#         for i in range(n):
+#             #cant divide by 0
+#             if y_test[i] == 0:
+#                 continue
+#             error += (abs(y_test[i] - predictions[i])/y_test[i])*100
+#         error = error / n
+#         return error
 
 
 

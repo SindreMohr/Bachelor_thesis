@@ -1,13 +1,12 @@
 
-from operator import mod
 import pandas as pd
 import numpy as np
-import math
 from keras.models import Sequential, load_model
 from keras.layers import LSTM, Dense
 
  
 from ML_classes.NN_data_creator import plain_data_creator, temperature_data_creator
+from ML_classes.evaluator import Evaluator
 
 class LSTMModel():
     """
@@ -67,6 +66,8 @@ class LSTMModel():
 
         # Saving the model to the class 
         self.model = model
+        self.eval = Evaluator(Y_test,self.data,self.predict(),self.train_test_split,self.lag)
+
 
         return model
 
@@ -122,46 +123,4 @@ class LSTMModel():
         model_load =  load_model("./saved_models/lstm_model")
         self.model = model_load
        
-    def evaluateMSE(self):
-        predictions = self.predict()
-
-         # Getting actual y 
-        #_, _, _, y_test = self.create_data_for_NN()   
-        _, _, _, y_test = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)
-        n = len(y_test)
-        squared_error = 0
-        for i in range(n):
-            squared_error += (y_test[i] - predictions[i]) ** 2
-        squared_error = squared_error / n
-        return squared_error
-
-    def evaluateRMSE(self):
-        
-        return math.sqrt(self.evaluateMSE())
-
-    def evaluateMAE(self):
-        predictions = self.predict()
-
-         # Getting actual y 
-        _, _, _, y_test = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)
-        n = len(y_test)
-        error = 0
-        for i in range(n):
-            error += abs(y_test[i] - predictions[i])
-        error = error / n
-        return error
-
-    def evaluateMAPE(self):
-        predictions = self.predict()
-
-         # Getting actual y 
-        _, _, _, y_test = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)
-        n = len(y_test)
-        error = 0
-        for i in range(n):
-            #cant divide by 0
-            if y_test[i] == 0:
-                continue
-            error += (abs(y_test[i] - predictions[i])/y_test[i])*100
-        error = error / n
-        return error
+   

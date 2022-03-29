@@ -12,6 +12,7 @@ from sklearn import tree
 
 #
 from ML_classes.NN_data_creator import plain_data_creator, temperature_data_creator
+from ML_classes.evaluator import Evaluator
 
 class DTModel():
     """
@@ -53,7 +54,7 @@ class DTModel():
         A method to fit the Linear model 
         """
         # Getting the data 
-        X_train, _, Y_train, _ = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)
+        X_train, _, Y_train, Y_test = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)
         #print(X_train)
         #X_train, Y_train = self.dc.create_X_Y(ts = self.data[self.Y_var], lag = self.lag )
         #X_test = self.alter_x_shape(X_test)
@@ -68,6 +69,9 @@ class DTModel():
        
         # Saving the model to the class 
         self.model = model
+
+        self.eval = Evaluator(Y_test,self.data,self.predict(),self.train_test_split,self.lag)
+
 
         return model
 
@@ -119,45 +123,4 @@ class DTModel():
     def plot_dt(self):
         tree.plot_tree(self.model, max_depth=3)
        
-    def evaluateMSE(self):
-        predictions = self.predict()
-
-         # Getting actual y 
-        _, _, _, y_test = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)
-        n = len(y_test)
-        squared_error = 0
-        for i in range(n):
-            squared_error += (y_test[i] - predictions[i]) ** 2
-        squared_error = squared_error / n
-        return squared_error
-
-    def evaluateRMSE(self):
-        
-        return math.sqrt(self.evaluateMSE())
-
-    def evaluateMAE(self):
-        predictions = self.predict()
-
-         # Getting actual y 
-        _, _, _, y_test = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split)
-        n = len(y_test)
-        error = 0
-        for i in range(n):
-            error += abs(y_test[i] - predictions[i])
-        error = error / n
-        return error
-
-    def evaluateMAPE(self):
-        predictions = self.predict()
-
-         # Getting actual y 
-        _, _, _, y_test = self.dc.create_data_for_NN(self.data, self.Y_var, self.lag, self.train_test_split) 
-        n = len(y_test)
-        error = 0
-        for i in range(n):
-            #cant divide by 0
-            if y_test[i] == 0:
-                continue
-            error += (abs(y_test[i] - predictions[i])/y_test[i])*100
-        error = error / n
-        return error
+    
