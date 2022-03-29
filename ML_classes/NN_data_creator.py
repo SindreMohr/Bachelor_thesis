@@ -61,25 +61,7 @@ class plain_data_creator():
 
         return X_train, X_test, Y_train, Y_test
 
-    def create_data_for_peak_daily_consumption(self,
-        data, Y_var, time_var, lag, train_test_split
-        ):
-        y = data[Y_var].tolist()
-        time = data[time_var].tolist()
-        # The X matrix will hold the lags of Y 
-        X, Y = self.create_X_Y(y, lag)
-
-        X_test = []
-        Y_test = []
-
-        if train_test_split > 0:
-            index = round(len(X) * train_test_split)
-           
-            X_test = X[-index:]    
-            Y_test = Y[-index:]
-
-        return X_test, Y_test
-
+    
 class temperature_data_creator():
     
     @staticmethod

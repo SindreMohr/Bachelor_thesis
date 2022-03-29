@@ -21,6 +21,9 @@ function DataPlot({house}) {
         )
     }, [house]);
     return (
+
+        <div>
+            
         <Plot
 
         data={[
@@ -31,9 +34,9 @@ function DataPlot({house}) {
 
             y: data.values,
 
-            type: 'bar',
+            type: 'scatter',
 
-            mode: 'lines+markers',
+            mode: 'lines',
 
             marker: {color: 'green'},
 
@@ -44,6 +47,35 @@ function DataPlot({house}) {
 
 
         />
+
+        <Plot
+
+        data={[
+
+        {
+
+            y: data.values,
+            
+           
+            type: 'box',
+
+            boxpoints: 'Outliers',
+            //boxmean: 'sd',
+            name: 'Energy measurements',
+
+            marker: {color: 'green'},
+
+        },
+
+
+        ]}
+
+
+        />
+
+
+        </div>
+        
     );
 }
 
