@@ -4,22 +4,77 @@ import GlobalContextProvider, {GlobalContext} from '../../../contexts/GlobalCont
 
 function Modify() {
 
-    const { LCLID } = useContext(GlobalContext);
+    const { LCLID, setProjectDataset, projectDataset, setLCLID } = useContext(GlobalContext);
+
+    const [tableData, settableData] = useState([]);
+    
+    useEffect(() => {
+        fetch(`http://127.0.0.1:5000/household_data_count/` + LCLID, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application.json',
+            }
+        }).then(
+            res => res.json()
+        ).then(
+            tableData => {
+                settableData(tableData.house_data_count);
+            }
+        )
+    }, [LCLID]);
+
+    const addLog = event => {
+        event.preventDefault();
+        console.log(projectDataset);
+        projectDataset.push(LCLID);
+        console.log(projectDataset)
+        setProjectDataset(projectDataset);
+        setLCLID("");
+    }
   
     return (
         <div className="Exploration-view">
-            <div className="Exploration-table-wrapper">
-                <div className="">
-                    <h2> Modify {LCLID} </h2>
-
+                <div className="Exploration-data-head">
+                    <h2> Modify: {LCLID} </h2>
                 </div>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Current value</th>
+                            <th>Modified value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Start date</td>
+                            <td>{tableData.min_tstp}</td>
+                            <td>
+                                <label>
+                                    <input type="text"></input>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Stop date</td>
+                            <td>{tableData.max_tstp}</td>
+                            <td>
+                                <label>
+                                    <input type="text"></input>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button colSpan="3">Update Log</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button onClick={addLog}>Add log to dataset</button>
             </div>
-        
-            <div className="Exploration-plot-wrapper">
-            </div>
-            <div className="Exploration-data-head">
-                
-            </div>
+
         </div>       
     );
 }

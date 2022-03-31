@@ -7,14 +7,20 @@
 
 .Exploration-first-wrapper {
     display: flex;
-    align-items: center;
     justify-content: center;
     padding: 10px;
 
 }
 
+.Exploration-table-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+
 .Exploration-table {
     border-collapse: collapse;
+    width: 100%;
 }
     .Exploration-table thead th {
         background-color: #868686;

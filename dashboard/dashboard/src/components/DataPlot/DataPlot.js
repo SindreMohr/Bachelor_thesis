@@ -23,57 +23,55 @@ function DataPlot({house}) {
     return (
 
         <div>
+            <h3>Plot</h3>
+            <Plot
+
+            data={[
+
+            {
+
+                x: data.time,
+
+                y: data.values,
+
+                type: 'scatter',
+
+                mode: 'lines',
+
+                marker: {color: 'green'},
+
+            },
+
+
+            ]}
+
+
+            />
+            <h3>Box Plot</h3>
+            <Plot
+
+            data={[
+
+            {
+
+                y: data.values,
+                
             
-        <Plot
+                type: 'box',
 
-        data={[
+                boxpoints: 'Outliers',
+                //boxmean: 'sd',
+                name: 'Energy measurements',
 
-        {
+                marker: {color: 'green'},
 
-            x: data.time,
-
-            y: data.values,
-
-            type: 'scatter',
-
-            mode: 'lines',
-
-            marker: {color: 'green'},
-
-        },
+            },
 
 
-        ]}
+            ]}
 
 
-        />
-
-        <Plot
-
-        data={[
-
-        {
-
-            y: data.values,
-            
-           
-            type: 'box',
-
-            boxpoints: 'Outliers',
-            //boxmean: 'sd',
-            name: 'Energy measurements',
-
-            marker: {color: 'green'},
-
-        },
-
-
-        ]}
-
-
-        />
-
-
+            />
         </div>
         
     );

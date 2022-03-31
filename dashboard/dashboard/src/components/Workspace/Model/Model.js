@@ -84,12 +84,12 @@ function Model() {
                         <thead>
                             <tr>
                                 <th>Model</th>
-                                <th>Training</th>
-                                <th>Test</th>
+                                <th>Training [%]</th>
+                                <th>Test [%]</th>
                                 <th>Epochs</th>
                                 <th>Lag</th>
                                 <th>Layer</th>
-                                <th>Prediction time</th>
+                                <th>Prediction time [h]</th>
                             </tr>
                         </thead>
                         <tbody>

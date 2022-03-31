@@ -27,7 +27,7 @@ function Datamenu() {
 
     return (
         <div className="Datamenu">
-            <p className="Datamenu-header">Data</p>
+            <p className="Datamenu-header">Available Data</p>
             <ul>
                 { listItems }
             </ul>

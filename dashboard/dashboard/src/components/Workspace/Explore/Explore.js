@@ -28,60 +28,65 @@ function Explore() {
 
     return (
         <div className="Exploration-view">
+            <div className='Exploration-data-head'>
+                    <h2>Explore: {LCLID} </h2>
+            </div>
+            
             <div className="Exploration-first-wrapper">
                 <div>
-                    <h2> {LCLID} </h2>
-                    <table className="Exploration-table">
-                        <thead>
-                            <tr>
-                                <th>Column</th>
-                                <th>Count</th>
-                                <th>Mean</th>
-                                <th>Std.</th>
-                                <th>Min.</th>
-                                <th>Max.</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Energy</td>
-                                <td>{ tableData.count_energy }</td>
-                                <td>{ tableData.avg_energy }</td>
-                                <td>{ tableData.std_energy }</td>
-                                <td>{ tableData.min_energy }</td>
-                                <td>{ tableData.max_energy }</td>
-                            </tr>
-                            <tr>
-                                <td>Date</td>
-                                <td>{ tableData.count_tstp }</td>
-                                <td>{ tableData.avg_tstp }</td>
-                                <td>{ tableData.std_tstp }</td>
-                                <td>{ tableData.min_tstp }</td>
-                                <td>{ tableData.max_tstp }</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div className='Exploration-table-wrapper'>
+                        <table className="Exploration-table">
+                            <thead>
+                                <tr>
+                                    <th>Column</th>
+                                    <th>Count</th>
+                                    <th>Mean</th>
+                                    <th>Std.</th>
+                                    <th>Min.</th>
+                                    <th>Max.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Energy</td>
+                                    <td>{ tableData.count_energy }</td>
+                                    <td>{ tableData.avg_energy }</td>
+                                    <td>{ tableData.std_energy }</td>
+                                    <td>{ tableData.min_energy }</td>
+                                    <td>{ tableData.max_energy }</td>
+                                </tr>
+                                <tr>
+                                    <td>Date</td>
+                                    <td>{ tableData.count_tstp }</td>
+                                    <td>{ tableData.avg_tstp }</td>
+                                    <td>{ tableData.std_tstp }</td>
+                                    <td>{ tableData.min_tstp }</td>
+                                    <td>{ tableData.max_tstp }</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className='Exploration-table-wrapper'>
+                        <table className="Exploration-table">
+                            <thead>
+                                <tr>
+                                    <th colSpan="4">Dataset head:</th>
+                                </tr>
+                                <tr>
+                                    <th>id</th>
+                                    <th>LCLID</th>
+                                    <th>tstp</th>
+                                    <th>Energy</th>
+                                </tr>
+                            </thead>
+                            <Head tableData={tableData} />
+                        </table>
+                    </div>
                 </div>
             </div>
         
             <div className="Exploration-second-wrapper">
                  <DataPlot house={LCLID} />
-            </div>
-            <div className="Exploration-data-head">
-                <table className="Exploration-table">
-                    <thead>
-                        <tr>
-                            <th colSpan="4">Dataset head:</th>
-                        </tr>
-                        <tr>
-                            <th>id</th>
-                            <th>LCLID</th>
-                            <th>tstp</th>
-                            <th>Energy</th>
-                        </tr>
-                    </thead>
-                    <Head tableData={tableData} />
-                </table>
             </div>
         </div>       
     );
