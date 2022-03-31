@@ -1,4 +1,5 @@
 
+from ast import For
 import pandas as pd
 import numpy as np
 from keras.models import Sequential, load_model
@@ -13,11 +14,12 @@ class LSTMModel():
     A class to create a deep time series model
     """
 
-    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, LSTM_layer_depth: int, epochs=10, batch_size=256, train_test_split=0, data_creator = "plain"):
+    def __init__(self, data: pd.DataFrame, Y_var: str, lag: int, LSTM_layer_depths: list, epochs=10, batch_size=256, train_test_split=0, data_creator = "plain"):
         self.data = data 
         self.Y_var = Y_var 
         self.lag = lag 
-        self.LSTM_layer_depth = LSTM_layer_depth
+        self.LSTM_layer_depths = LSTM_layer_depths
+        #self.LSTM_layers = LSTM_layers
         self.batch_size = batch_size
         self.epochs = epochs
         self.train_test_split = train_test_split
@@ -41,7 +43,19 @@ class LSTMModel():
 
         # Defining the model
         model = Sequential()
-        model.add(LSTM(self.LSTM_layer_depth, activation='relu', input_shape=(len(X_train[0]), 1)))
+        if len(self.LSTM_layer_depths) > 1:
+
+            model.add(LSTM(self.LSTM_layer_depths[0], activation='relu', input_shape=(len(X_train[0]), 1), return_sequences=True))
+            for idx, dephts in enumerate(self.LSTM_layer_depths[1:]):
+                #model.add(LSTM(dephts, activation='relu'))
+
+                if idx+1 == len(self.LSTM_layer_depths)-1:
+                     model.add(LSTM(dephts, activation='relu'))
+                else:
+                     model.add(LSTM(dephts, activation='relu',return_sequences=True))
+
+        else:
+            model.add(LSTM(self.LSTM_layer_depths[0], activation='relu', input_shape=(len(X_train[0]), 1)))
         model.add(Dense(1))
         model.compile(optimizer='adam', loss='mse')
 
@@ -108,7 +122,7 @@ class LSTMModel():
 
             # Ommiting the first variable
             X = np.delete(X, 0)
-
+           
             # Reshaping for the next iteration
             X = np.reshape(X, (1, len(X), 1))
 

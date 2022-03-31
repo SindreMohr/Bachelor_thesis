@@ -9,6 +9,7 @@ from keras.layers import  Input, Dense
 
 #
 from ML_classes.NN_data_creator import plain_data_creator, temperature_data_creator
+from ML_classes.evaluator import Evaluator
 
 class MLPModel():
     """
