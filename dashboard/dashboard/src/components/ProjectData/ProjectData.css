@@ -1,6 +1,27 @@
 .ProjectData {
     background: rgb(236, 226, 226);
     height: calc(100vh - 38px);
-    width: 400px;
+    width: 390px;
+    padding-left: 10px;
     overflow-y: scroll;
+}
+
+
+
+.cross {
+    font-size: 25px;
+    color: red;
+    font-weight: bolder;
+    position: relative;
+    top: 5px;
+    cursor: pointer;
+}
+
+.project-data-list {
+    list-style-type: none;
+    padding: 0px;
+}
+
+.material-icons-outlined {
+    cursor: pointer;
 }

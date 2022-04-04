@@ -1,3 +1,5 @@
+import './Modify.css';
+
 import { useState, useEffect, useContext } from 'react';
 
 import GlobalContextProvider, {GlobalContext} from '../../../contexts/GlobalContext'
@@ -25,11 +27,11 @@ function Modify() {
 
     const addLog = event => {
         event.preventDefault();
-        console.log(projectDataset);
-        projectDataset.push(LCLID);
-        console.log(projectDataset)
-        setProjectDataset(projectDataset);
-        setLCLID("");
+        if (LCLID !== "" && !projectDataset.includes(LCLID) ) {
+            projectDataset.push(LCLID);
+            setProjectDataset(projectDataset);
+            setLCLID("");
+        }
     }
   
     return (
@@ -38,7 +40,7 @@ function Modify() {
                     <h2> Modify: {LCLID} </h2>
                 </div>
             <div>
-                <table>
+                <table className="Exploration-table">
                     <thead>
                         <tr>
                             <th>Column</th>
@@ -66,13 +68,14 @@ function Modify() {
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                                <button colSpan="3">Update Log</button>
+                            <td colSpan="3">
+                                <button>Update Log</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <button onClick={addLog}>Add log to dataset</button>
+                <br />
+                <p className="add-button" onClick={addLog}>Add <b>{LCLID}</b> to dataset</p>
             </div>
 
         </div>       
