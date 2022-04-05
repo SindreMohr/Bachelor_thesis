@@ -1,11 +1,22 @@
+from unicodedata import name
 from flask import Flask, request, redirect, json, g
 from flask_cors import CORS
+from sklearn.model_selection import TimeSeriesSplit
 
 from setup_db import setup, select_housedata_curve_db, select_housedata_count_db, select_lclids
 import sqlite3
 
 import pandas as pd
 from datetime import datetime
+
+# importing sys so we can find ML_classes
+import sys
+  
+# adding ML_classes to the system path
+sys.path.insert(0, '../../')
+
+from ML_classes.MLPModel import MLPModel
+
 
 app = Flask(__name__)
 
@@ -53,6 +64,33 @@ def get_household_data_count(lclid):
     datalist = select_housedata_count_db(conn,lclid)
     return json.dumps({'house_data_count': datalist})
 
+#obtaining a dataframe to feed into model
+def make_model_dataframe(house_list):
+    conn = get_db()
+    df = pd.DataFrame()
+    for house in house_list:
+        datalist = select_housedata_curve_db(conn,house)
+        tlist = datalist["time"]
+        vlist = datalist["values"]
+        tseries = pd.Series(data=tlist,name="tstp")
+        vseries = pd.Series(data=vlist,name="energy")
+        res_df = pd.merge(tseries, vseries, right_index=True, left_index=True)
+    df = pd.concat(df,res_df)
+    return df
+
+#making the dataframe suitable for model
+def dataframe_preprocess(df):
+
+    #for hourly data, consider alternate method with these uncommented
+    #hh = hh.set_index("tstp")
+    #hh = hh.resample("H").sum()
+    #hh = hh.reset_index()
+
+    #normalization
+    df_max = df['energy'].max()
+    df['energy'] = df['energy'].apply(lambda x: x / df_max)
+
+    return df
 
 if __name__ == "__main__":
     app.run(debug=True)
