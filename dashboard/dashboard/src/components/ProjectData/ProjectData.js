@@ -14,9 +14,23 @@ function ProjectData() {
             setProjectDataset([]);
         } else if (index > -1) {
             data.splice(index, 1);
+            setProjectDataset(data);
+            setDatasetlist(createList());
         }
-        setProjectDataset(data);
     }
+
+    function createList() {
+        let content = (
+            projectDataset.map(function(obj, i){
+            return (
+                <li key={i} >{obj} <span onClick={(e) => removeFromDataset(obj)} className="material-icons-outlined  cross">close</span></li>
+                );
+            })
+        );
+        console.log("ok")
+        return content
+    }
+
     const clearData = event => {
         event.preventDefault();
         console.log(projectDataset);
@@ -27,16 +41,12 @@ function ProjectData() {
     useEffect(() => {
         if (projectDataset[0]) {
             setDatasetlist(                  
-                projectDataset.map(function(obj, i){
-                    return (
-                        <li key={i} >{projectDataset[i]} <span onClick={(e) => removeFromDataset(projectDataset[i])} className="material-icons-outlined  cross">close</span></li>
-                    );
-                })
+                createList()
             );
         } else {
             setDatasetlist(<ul></ul>);
         };
-    }, [removeFromDataset]);
+    }, [LCLID]);
 
 
 

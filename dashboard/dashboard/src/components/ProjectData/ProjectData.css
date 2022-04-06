@@ -6,6 +6,9 @@
     overflow-y: scroll;
 }
 
+.ProjectData h3 {
+    margin: 0px;
+}
 
 
 .cross {
@@ -15,6 +18,10 @@
     position: relative;
     top: 5px;
     cursor: pointer;
+}
+
+.cross:hover {
+    color: darkred;
 }
 
 .project-data-list {

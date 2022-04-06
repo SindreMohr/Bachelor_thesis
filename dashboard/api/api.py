@@ -1,7 +1,10 @@
+import imp
+from pyexpat import model
 from unicodedata import name
 from flask import Flask, request, redirect, json, g
 from flask_cors import CORS
-from sklearn.model_selection import TimeSeriesSplit
+from matplotlib.font_manager import json_dump
+from sklearn.model_selection import TimeSeriesSplit, train_test_split
 
 from setup_db import setup, select_housedata_curve_db, select_housedata_count_db, select_lclids
 import sqlite3
@@ -16,7 +19,8 @@ import sys
 sys.path.insert(0, '../../')
 
 from ML_classes.MLPModel import MLPModel
-
+from ML_classes.LSTMModel import LSTMModel
+from ML_classes.DTModel import DTModel
 
 app = Flask(__name__)
 
@@ -73,9 +77,16 @@ def make_model_dataframe(house_list):
         tlist = datalist["time"]
         vlist = datalist["values"]
         tseries = pd.Series(data=tlist,name="tstp")
+        tseries = pd.to_datetime(tseries)
+
         vseries = pd.Series(data=vlist,name="energy")
         res_df = pd.merge(tseries, vseries, right_index=True, left_index=True)
-    df = pd.concat(df,res_df)
+
+      
+
+        df = pd.concat([df,res_df])
+     
+
     return df
 
 #making the dataframe suitable for model
@@ -91,6 +102,135 @@ def dataframe_preprocess(df):
     df['energy'] = df['energy'].apply(lambda x: x / df_max)
 
     return df
+
+@app.route("/run-model", methods=['POST'])
+def run_model():
+    print("running model")
+    if request.json:
+        print(request.json)
+        content = request.json["content"]
+        print(content)
+        house_list = content["dataset"]
+        m_df = make_model_dataframe(house_list)
+        param_dict = content["parameters"]
+        model_str = param_dict["model"]
+        
+        lag = param_dict["lag"]
+        epoch = param_dict["epoch"]
+        
+
+        #model wants traintestsplit as size of test
+        train_test_split = 1- (param_dict["training"]/100)
+        print(train_test_split)
+        projectID = content["projectID"]
+
+        if model_str.lower() == "dt":
+          dict =  DT(m_df,lag,train_test_split,epoch)
+          return json.dumps(dict)
+        elif model_str.lower() == "lstm":
+            #lstm mlp may need additional params from dict
+            layers = param_dict["layer"]
+            dict = LSTM(m_df,lag,train_test_split,epoch)
+            return json.dumps(dict)
+        elif model_str.lower() == "slp" or model_str.lower() == "mlp":
+            layers = param_dict["layer"]
+            #if slp layers=1 perhaps
+            dict = LSTM(m_df,lag,train_test_split,epoch)
+            return json.dumps(dict)
+
+    return "f"
+
+
+def DT(data,lag,train_test,epoch):
+
+    DT = DTModel(
+    data = data,
+    Y_var = 'energy',
+    lag = lag,
+    epochs = epoch,
+    batch_size = 256,
+    train_test_split = train_test
+    )
+    #training
+    DT.DTModel()
+    print("done training")
+    model_result_dict = {}
+    model_result_dict["predictions"] = DT.predict()
+    model_result_dict["mse"] = DT.eval.MSE()
+    model_result_dict["rmse"] = DT.eval.RMSE()
+    model_result_dict["mae"] = DT.eval.MAE()
+    model_result_dict["mape"] = DT.eval.MAPE()
+
+    peaks, peak_dates, peak_indexes, res = DT.eval.peak_daily_consumption()
+    model_result_dict["daily_peaks"] = peaks
+    model_result_dict["daily_peak_dates"] = peak_dates
+    model_result_dict["daily_peaks_indexes"] = peak_indexes
+    model_result_dict["daily_peaks_res"] = res
+
+    return model_result_dict
+
+def LSTM(data,lag,train_test,epoch):
+
+    LSTM = LSTMModel(
+        data = data,
+        Y_var = 'energy',
+        lag = lag,
+        LSTM_layer_depths = [50],
+        epochs =epoch,
+        batch_size = 256,
+        train_test_split = train_test
+    )
+    #training
+    LSTM.LSTModel()
+
+    print("done training")
+    model_result_dict = {}
+    model_result_dict["predictions"] = LSTM.predict()
+    model_result_dict["mse"] = LSTM.eval.MSE()
+    model_result_dict["rmse"] = LSTM.eval.RMSE()
+    model_result_dict["mae"] = LSTM.eval.MAE()
+    model_result_dict["mape"] = LSTM.eval.MAPE()
+
+    peaks, peak_dates, peak_indexes, res = LSTM.eval.peak_daily_consumption()
+    model_result_dict["daily_peaks"] = peaks
+    model_result_dict["daily_peak_dates"] = peak_dates
+    model_result_dict["daily_peaks_indexes"] = peak_indexes
+    model_result_dict["daily_peaks_res"] = res
+
+
+    return model_result_dict
+
+def MLP(data,lag,train_test,epoch):
+
+    MLP = MLPModel(
+        data = data,
+        Y_var = 'energy',
+        lag = lag,
+        layer_depths = [30],
+        layer_count= 1,
+        epochs =epoch,
+        batch_size = 256,
+        train_test_split = train_test
+    )
+    #training
+    MLP.MLPModel()
+
+    print("done training")
+    model_result_dict = {}
+    model_result_dict["predictions"] = MLP.predict()
+    model_result_dict["mse"] = MLP.eval.MSE()
+    model_result_dict["rmse"] = MLP.eval.RMSE()
+    model_result_dict["mae"] = MLP.eval.MAE()
+    model_result_dict["mape"] = MLP.eval.MAPE()
+
+    peaks, peak_dates, peak_indexes, res = LSTM.eval.peak_daily_consumption()
+    model_result_dict["daily_peaks"] = peaks
+    model_result_dict["daily_peak_dates"] = peak_dates
+    model_result_dict["daily_peaks_indexes"] = peak_indexes
+    model_result_dict["daily_peaks_res"] = res
+
+
+    return model_result_dict
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -23,7 +23,7 @@ function Model() {
             training: slideValue,
             epoch: epochsValue,
             lag: lagValue,
-            layer: lagValue,
+            layer: layerValue,
             prediction: predictionValue
         }
         console.log(ModelFormData);

@@ -1,11 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
 
-import {GlobalContext} from '../../../contexts/GlobalContext'
+import {GlobalContext, projectDataset, modelParam, projectID} from '../../../contexts/GlobalContext'
 
 function Run() {
 
     const { ProjectID, modelParam, projectDataset, LCLID } = useContext(GlobalContext);
     const [datasetList, setDatasetlist] = useState(<ul></ul>);
+    const [Results, setResults] = useState();
 
     useEffect(() => {
         if (projectDataset[0]) {
@@ -19,12 +20,32 @@ function Run() {
         };
     }, [LCLID]);
 
+    async function runModel() {
+        let content = {}
+        content.dataset = projectDataset
+        content.parameters = modelParam
+        content.projectID = ProjectID
+        const url = "http://localhost:5000/"
+        const reqOpt = {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              content
+            }),
+          };
+        const respons = await fetch(url + "run-model", reqOpt);
+        const results = await respons.json();
+        setResults(results)
+        console.log(results);
+    }
+
     return (
-        <div className="Exploration-view">
+        <div>
             <div className="Exploration-data-head">
                 <h2>Run {ProjectID}</h2>
             </div>
-            <div className="Exploration-table-wrapper">
+            <div>
                 <h3>Settings:</h3>
                 <table className="Exploration-table">
                     <thead>
@@ -64,16 +85,36 @@ function Run() {
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        
-            <div className="Exploration-plot-wrapper">
                 <h3>Selected data:</h3>
                 <ul>
                     {datasetList}
                 </ul>
             </div>
-            <div className="Exploration-data-head">
-                
+                <button onClick={runModel}>run this thing</button>
+            <div>
+            
+                <table className="Exploration-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Value</th>
+                            <th>Index</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                {Results.daily_peak_dates[0]}                                
+                            </td>
+                            <td>
+                                {Results.daily_peaks[0]}
+                            </td>
+                            <td>
+                                {Results.daily_peaks_indexes[0]}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>       
     );
