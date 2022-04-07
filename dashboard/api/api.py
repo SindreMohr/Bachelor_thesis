@@ -116,27 +116,37 @@ def run_model():
         model_str = param_dict["model"]
         
         lag = param_dict["lag"]
-        epoch = param_dict["epoch"]
+        epoch = int(param_dict["epoch"])
         
-
+        
         #model wants traintestsplit as size of test
-        train_test_split = 1- (param_dict["training"]/100)
+        train_test_split = param_dict["training"]
+        train_test_split = float(train_test_split)
+        train_test_split = 1- (train_test_split/100)
         print(train_test_split)
         projectID = content["projectID"]
-
+        print(m_df)
+        dict = {}
         if model_str.lower() == "dt":
           dict =  DT(m_df,lag,train_test_split,epoch)
-          return json.dumps(dict)
+          #dict["data"] = m_df.to_json()
+          #return json.dumps(dict)
         elif model_str.lower() == "lstm":
             #lstm mlp may need additional params from dict
             layers = param_dict["layer"]
             dict = LSTM(m_df,lag,train_test_split,epoch)
-            return json.dumps(dict)
+            #return json.dumps(dict)
         elif model_str.lower() == "slp" or model_str.lower() == "mlp":
             layers = param_dict["layer"]
             #if slp layers=1 perhaps
-            dict = LSTM(m_df,lag,train_test_split,epoch)
-            return json.dumps(dict)
+            dict = MLP(m_df,lag,train_test_split,epoch)
+        else:
+            return ValueError("No suitable model class was specified")
+
+        dict["energy_data"] = m_df["energy"].tolist()
+        dict["time"] = m_df["tstp"].dt.strftime('%Y-%m-%d').tolist()
+           
+        return json.dumps(dict)
 
     return "f"
 
@@ -186,6 +196,8 @@ def LSTM(data,lag,train_test,epoch):
     print("done training")
     model_result_dict = {}
     model_result_dict["predictions"] = LSTM.predict()
+    model_result_dict["predictions"] =   [ float(x) for x in  model_result_dict["predictions"] ]
+
     model_result_dict["mse"] = LSTM.eval.MSE()
     model_result_dict["rmse"] = LSTM.eval.RMSE()
     model_result_dict["mae"] = LSTM.eval.MAE()
@@ -218,18 +230,24 @@ def MLP(data,lag,train_test,epoch):
     print("done training")
     model_result_dict = {}
     model_result_dict["predictions"] = MLP.predict()
+    model_result_dict["predictions"] =   [ float(x) for x in  model_result_dict["predictions"] ]
+
+
     model_result_dict["mse"] = MLP.eval.MSE()
     model_result_dict["rmse"] = MLP.eval.RMSE()
     model_result_dict["mae"] = MLP.eval.MAE()
     model_result_dict["mape"] = MLP.eval.MAPE()
 
-    peaks, peak_dates, peak_indexes, res = LSTM.eval.peak_daily_consumption()
+    peaks, peak_dates, peak_indexes, res = MLP.eval.peak_daily_consumption()
     model_result_dict["daily_peaks"] = peaks
     model_result_dict["daily_peak_dates"] = peak_dates
     model_result_dict["daily_peaks_indexes"] = peak_indexes
     model_result_dict["daily_peaks_res"] = res
 
-
+    #print(type(model_result_dict["mse"]))
+    #print(type(model_result_dict["predictions"][0]))
+    #print(type(model_result_dict["daily_peaks"][0]))
+    #print(type(model_result_dict["daily_peak_dates"][0]))
     return model_result_dict
 
 if __name__ == "__main__":

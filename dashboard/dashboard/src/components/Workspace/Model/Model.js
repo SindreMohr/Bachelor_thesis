@@ -44,7 +44,6 @@ function Model() {
                     <select id="model_type" onChange={(e) => setModelTypeValue(e.target.value)}>
                         <option defaultValue="lstm">LSTM</option>
                         <option value="mlp">MLP</option>
-                        <option value="slp">SLP</option>
                         <option value="dt">Decision Tree</option>
                     </select>
                 </label>
