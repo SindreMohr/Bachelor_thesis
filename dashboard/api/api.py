@@ -6,7 +6,12 @@ from flask_cors import CORS
 from matplotlib.font_manager import json_dump
 from sklearn.model_selection import TimeSeriesSplit, train_test_split
 
-from setup_db import setup, select_housedata_curve_db, select_housedata_count_db, select_lclids
+from setup_db import setup, select_housedata_curve_db, select_housedata_count_db, select_lclids, update_project
+from setup_db import select_projects, select_project, delete_project, add_project_db
+from setup_db import delete_model, update_model, add_model_db
+
+from helpers import retrieve_LSTM, retrieve_MLP, run_DT,run_LSTM,run_MLP
+
 import sqlite3
 
 import pandas as pd
@@ -68,6 +73,64 @@ def get_household_data_count(lclid):
     datalist = select_housedata_count_db(conn,lclid)
     return json.dumps({'house_data_count': datalist})
 
+
+
+
+
+@app.route("/projects", methods=['GET'])
+def get_projects():
+   conn = get_db()  
+   projects = select_projects(conn)
+   return json.dumps(projects)
+
+@app.route('/projects',methods=["POST"])
+def create_project():
+    conn = get_db()
+    add_project_db(conn)
+    #if any
+    #input_data = request.get_json()
+    return "success"
+   
+
+@app.route('/project/<pid>',methods=["GET"])
+def get_event(pid):
+    conn = get_db()
+    project = select_project(conn,pid)
+
+    if project["mid"] is not None:
+        data = make_model_dataframe( project["houses"])
+        if project["mtype"] == "mlp":
+            lc, layers, model_res = retrieve_MLP(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
+            project["layer_count"] = lc
+            project["layers"] = layers
+            project["model_results"] = model_res
+        elif project["mtype"] == "lstm":
+            lc, layers, model_res = retrieve_LSTM(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
+            project["layer_count"] = lc
+            project["layers"] = layers
+            project["model_results"] = model_res
+    return json.dumps(project)
+
+# perhaps callable in a different manner when model is created
+@app.route('/project/<pid>',methods=["PUT"])
+def server_update_project(pid):
+     conn = get_db()
+     input_data = request.get_json()
+     mid = input_data["mid"]
+     update_project(conn,pid,mid)
+     return "success"
+
+@app.route('/project/<pid>',methods=["DELETE"])
+def server_delete_event(pid):
+    conn = get_db()
+    delete_project(conn,pid)
+    return "succesfully deleted"
+
+#todo
+@app.route('/save_model/<pid>',methods=["PUT"])
+def save_model(pid):
+  pass
+
 #obtaining a dataframe to feed into model
 def make_model_dataframe(house_list):
     conn = get_db()
@@ -128,18 +191,18 @@ def run_model():
         print(m_df)
         dict = {}
         if model_str.lower() == "dt":
-          dict =  DT(m_df,lag,train_test_split,epoch)
+          dict =  run_DT(m_df,lag,train_test_split,epoch)
           #dict["data"] = m_df.to_json()
           #return json.dumps(dict)
         elif model_str.lower() == "lstm":
             #lstm mlp may need additional params from dict
             layers = param_dict["layer"]
-            dict = LSTM(m_df,lag,train_test_split,epoch)
+            dict = run_LSTM(m_df,lag,train_test_split,epoch)
             #return json.dumps(dict)
         elif model_str.lower() == "slp" or model_str.lower() == "mlp":
             layers = param_dict["layer"]
             #if slp layers=1 perhaps
-            dict = MLP(m_df,lag,train_test_split,epoch)
+            dict = run_MLP(m_df,lag,train_test_split,epoch)
         else:
             return ValueError("No suitable model class was specified")
 
@@ -151,104 +214,7 @@ def run_model():
     return "f"
 
 
-def DT(data,lag,train_test,epoch):
 
-    DT = DTModel(
-    data = data,
-    Y_var = 'energy',
-    lag = lag,
-    epochs = epoch,
-    batch_size = 256,
-    train_test_split = train_test
-    )
-    #training
-    DT.DTModel()
-    print("done training")
-    model_result_dict = {}
-    model_result_dict["predictions"] = DT.predict()
-    model_result_dict["mse"] = DT.eval.MSE()
-    model_result_dict["rmse"] = DT.eval.RMSE()
-    model_result_dict["mae"] = DT.eval.MAE()
-    model_result_dict["mape"] = DT.eval.MAPE()
-
-    peaks, peak_dates, peak_indexes, res = DT.eval.peak_daily_consumption()
-    model_result_dict["daily_peaks"] = peaks
-    model_result_dict["daily_peak_dates"] = peak_dates
-    model_result_dict["daily_peaks_indexes"] = peak_indexes
-    model_result_dict["daily_peaks_res"] = res
-
-    return model_result_dict
-
-def LSTM(data,lag,train_test,epoch):
-
-    LSTM = LSTMModel(
-        data = data,
-        Y_var = 'energy',
-        lag = lag,
-        LSTM_layer_depths = [50],
-        epochs =epoch,
-        batch_size = 256,
-        train_test_split = train_test
-    )
-    #training
-    LSTM.LSTModel()
-
-    print("done training")
-    model_result_dict = {}
-    model_result_dict["predictions"] = LSTM.predict()
-    model_result_dict["predictions"] =   [ float(x) for x in  model_result_dict["predictions"] ]
-
-    model_result_dict["mse"] = LSTM.eval.MSE()
-    model_result_dict["rmse"] = LSTM.eval.RMSE()
-    model_result_dict["mae"] = LSTM.eval.MAE()
-    model_result_dict["mape"] = LSTM.eval.MAPE()
-
-    peaks, peak_dates, peak_indexes, res = LSTM.eval.peak_daily_consumption()
-    model_result_dict["daily_peaks"] = peaks
-    model_result_dict["daily_peak_dates"] = peak_dates
-    model_result_dict["daily_peaks_indexes"] = peak_indexes
-    model_result_dict["daily_peaks_res"] = res
-
-
-    return model_result_dict
-
-def MLP(data,lag,train_test,epoch):
-
-    MLP = MLPModel(
-        data = data,
-        Y_var = 'energy',
-        lag = lag,
-        layer_depths = [30],
-        layer_count= 1,
-        epochs =epoch,
-        batch_size = 256,
-        train_test_split = train_test
-    )
-    #training
-    MLP.MLPModel()
-
-    print("done training")
-    model_result_dict = {}
-    model_result_dict["predictions"] = MLP.predict()
-    model_result_dict["predictions"] =   [ float(x) for x in  model_result_dict["predictions"] ]
-
-
-    model_result_dict["mse"] = MLP.eval.MSE()
-    model_result_dict["rmse"] = MLP.eval.RMSE()
-    model_result_dict["mae"] = MLP.eval.MAE()
-    model_result_dict["mape"] = MLP.eval.MAPE()
-
-    peaks, peak_dates, peak_indexes, res = MLP.eval.peak_daily_consumption()
-    model_result_dict["daily_peaks"] = peaks
-    model_result_dict["daily_peak_dates"] = peak_dates
-    model_result_dict["daily_peaks_indexes"] = peak_indexes
-    model_result_dict["daily_peaks_res"] = res
-
-    #print(type(model_result_dict["mse"]))
-    #print(type(model_result_dict["predictions"][0]))
-    #print(type(model_result_dict["daily_peaks"][0]))
-    #print(type(model_result_dict["daily_peak_dates"][0]))
-    return model_result_dict
 
 if __name__ == "__main__":
     app.run(debug=True)

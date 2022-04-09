@@ -7,6 +7,8 @@ from time import pthread_getcpuclockid
 
 #hack for sd
 import pandas as pd
+from sklearn.model_selection import train_test_split
+from zmq import NULL
 
 database = "./database.db"
 
@@ -43,15 +45,35 @@ sql_create_house_table = """ CREATE TABLE IF NOT EXISTS houses
     );"""
 
 #not entirely sure all fields of this maybe split into tables for each modeltype instead of single one with potentially unused fields
-sql_create_model_info_table = """CREATE TABLE IF NOT EXISTS model_info(
+sql_create_models_table = """CREATE TABLE IF NOT EXISTS models(
      mid INTEGER PRIMARY KEY AUTOINCREMENT,
      mtype TEXT NOT NULL,
-     lag INTEGER,
-     layer_depth INTEGER,
+     lag INTEGER ,
      batches INTEGER,
      epochs INTEGER,
      train_test_split REAL
 );"""
+
+ #layer_depth INTEGER,
+ #    layers INTEGER,
+ # these are derivable from a saved modell
+
+#remember to clean fs of model as well on delete
+sql_create_projects_table = """ CREATE TABLE IF NOT EXISTS projects
+    pid INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT
+    mid INTEGER,
+
+    FOREIGN KEY (mid) references models (mid) ON DELETE CASCADE
+    );"""
+
+sql_create_project_houses_table = """ CREATE TABLE IF NOT EXISTS project_houses
+    pid INTEGER,
+    lclid TEXT,
+
+    PRIMARY KEY (pid,lclid)
+    FOREIGN KEY (pid) references projects (pid) ON DELETE CASCADE
+    );"""
 
 
 def create_table(conn, create_table_sql):
@@ -63,6 +85,13 @@ def create_table(conn, create_table_sql):
     try:
         c = conn.cursor()
         c.execute(create_table_sql)
+    except Error as e:
+        print(e)
+
+def drop_table(conn, table_name):
+    try:
+        c = conn.cursor()
+        c.execute("DROP TABLE ?",(table_name,))
     except Error as e:
         print(e)
 
@@ -98,6 +127,33 @@ def add_house_info_db(conn, lclid, acorn, affluency):
     except Error as e:
         print(e)
         return False
+def add_project_db(conn):
+
+    #no params kinda odd
+    sql = ''' INSERT INTO projects()
+              VALUES() '''
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, ())
+        conn.commit()
+        return True
+    except Error as e:
+        print(e)
+        return False
+
+def add_model_db(conn, mtype, lag, batches, epochs, train_test_split):
+    sql = ''' INSERT INTO models(mtype,lag,batches,epochs,train_test_split)
+              VALUES(?,?,?,?,?) '''
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, (mtype, lag, batches,epochs,train_test_split))
+        conn.commit()
+        return True
+    except Error as e:
+        print(e)
+        return False
+
+##### INITS #####
 
 def init_database(conn):
     with open("ouput.csv", "r") as rf:
@@ -121,6 +177,49 @@ def init_house_info(conn):
             #idk where get rest info perse only 10 houses so far could hardcode.
             add_house_info_db(conn, lclid, acorn, affluency)
 
+#### UPDATE #####
+
+def update_project(conn,pid,mid):
+    try:
+        cur = conn.cursor()
+        cur.execute("UPDATE projects SET mid=? WHERE pid = ?",(mid, pid))
+        conn.commit()
+    except Error as e:
+        print(e)
+
+def update_model(conn, mid,mtype,lag,batches,epochs,train_test_split):
+    try:
+        cur = conn.cursor()
+        cur.execute("UPDATE projects SET mtype=?, lag=?, batches=?, epochs=?, train_test_split=? WHERE mid = ?",(mtype, lag, batches, epochs, train_test_split, mid))
+        conn.commit()
+    except Error as e:
+        print(e)
+#### DELETE #####
+
+def delete_project(conn,pid):
+    try:
+        cur = conn.cursor()
+        
+        #deleting model should cascade delete project, but i dont think the opposite applies 
+        cur.execute("SELECT mid FROM projects WHERE pid = ?",(pid,))
+        for (mid) in cur:
+            if mid is not None:
+                delete_model(mid)
+            else:
+                cur.execute("DELETE FROM projects WHERE pid = ?",(pid,))
+                conn.commit()
+    except Error as e:
+        print(e)
+
+def delete_model(conn,mid):
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM models WHERE mid = ?",(mid,))
+        conn.commit()
+    except Error as e:
+        print(e)
+
+##### SELECTS #####
 
 def select_interactions_db(conn, post_id):
     cur = conn.cursor()
@@ -215,15 +314,61 @@ def select_lclids(conn):
     result['lclid'] = lclid
     return result
 
+def select_projects(conn):
+    cur = conn.cursor()
+    cur.execute(f"SELECT pid FROM projects") 
+    result = {}
+    projects = []
+    for row in cur:
+        projects.append(row)
+    result['projects'] = projects
+    return result
+
+def select_project(conn,pid):
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM projects WHERE pid = ?",(pid,))
+    res = {}
+    project = {}
+    
+    for (pid,name,mid) in cur:
+       project["id"] = pid
+       project["name"] = name
+       project["mid"] = mid
+    
+    print(project["mid"])
+    if project["mid"] is not None:
+        cur.execute("SELECT * FROM models WHERE mid = ?",(project["mid"],))
+        for (mid,mtype,lag,batches,epochs,train_test_split) in cur:
+            project["mtype"] = mtype
+            project["lag"] = lag
+            project["mid"] = mid
+            project["batches"] = batches
+            project["epochs"] = epochs
+            project["train_test_split"] = train_test_split
+    cur.execute("SELECT lclid FROM project_houses WHERE pid = ?",(pid,))
+    house_list = []
+    for (lclid) in cur:
+        house_list.append(lclid)
+    project["houses"] = house_list
+    return project
+
+
 #### SETUP ####
 
 def setup():
     conn = create_connection(database)
     if conn is not None:
-        create_table(conn, sql_create_house_table)
+        #create_table(conn, sql_create_house_table)
         #create_table(conn, sql_create_dataset_table)
         #init_database(conn)
-        init_house_info(conn)
+        #init_house_info(conn)
+
+        create_table(conn, sql_create_models_table)
+        create_table(conn, sql_create_projects_table)
+        create_table(conn, sql_create_project_houses_table)
+
+
+
         conn.close()
 
 if __name__ == '__main__':
