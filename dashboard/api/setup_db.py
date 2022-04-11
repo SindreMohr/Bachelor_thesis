@@ -1,9 +1,12 @@
 import imp
 import sqlite3
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from sqlite3 import Error
 from time import pthread_getcpuclockid
+import time
 # Most of this stuff is re-used from lectures
+
+from datetime import datetime as dt
 
 #hack for sd
 import pandas as pd
@@ -221,10 +224,6 @@ def delete_model(conn,mid):
 
 ##### SELECTS #####
 
-def select_interactions_db(conn, post_id):
-    cur = conn.cursor()
-    cur.execute(f"SELECT id, comment, username FROM interactions WHERE post_id={post_id} and interaction_type='comment'") 
-
 def select_housedata_curve_db(conn, lclid):
     cur = conn.cursor()
     cur.execute(f"SELECT tstp, energy FROM dataset WHERE lclid='{lclid}' ORDER BY id ASC") 
@@ -254,7 +253,15 @@ def select_housedata_count_db(conn, lclid):
     cur.execute(f"SELECT AVG(energy) FROM dataset WHERE lclid='{lclid}'")
     result['avg_energy'] = cur.fetchone()
     cur.execute(f"SELECT AVG(tstp) FROM dataset WHERE lclid='{lclid}'")
-    result['avg_tstp'] = cur.fetchone()
+    date_string = float(cur.fetchone()[0])
+    print(date_string)
+    years = int(date_string)
+    months = int((date_string*12) % 12)
+    days = int((date_string*365) % 365 % 31)
+    hours = int((date_string*365*24) % 24)
+    date_string_formated = f"{years}-{months}-{days} {hours}:00:00"
+
+    result['avg_tstp'] = date_string_formated
     
     #energy sd
     #consider making less queries and let pandas do the work
@@ -276,7 +283,7 @@ def select_housedata_count_db(conn, lclid):
 
     #timestamp min max sd
     cur.execute(f"SELECT AVG(tstp) FROM dataset WHERE lclid='{lclid}'")
-    result['std_tstp'] = cur.fetchone()
+    result['std_tstp'] = date_string_formated
     cur.execute(f"SELECT MIN(tstp) FROM dataset WHERE lclid='{lclid}'")
     result['min_tstp'] = cur.fetchone()
     cur.execute(f"SELECT MAX(tstp) FROM dataset WHERE lclid='{lclid}'")
