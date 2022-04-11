@@ -14,7 +14,6 @@ function Workspacenav() {
         <div className="Workspace-nav">
             <ul>
                 <li onClick={() => changeContext('Explore')}>Explore</li>
-                <li onClick={() => changeContext('Modify')}>Modify</li>
                 <li onClick={() => changeContext('Model')}>Model Parameters</li>
                 <li onClick={() => changeContext('Run')}>Run</li>
             </ul>

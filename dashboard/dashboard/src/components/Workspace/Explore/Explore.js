@@ -7,7 +7,7 @@ import {GlobalContext} from '../../../contexts/GlobalContext'
 
 function Explore() {
 
-    const { LCLID } = useContext(GlobalContext);
+    const { LCLID, setProjectDataset, projectDataset, setLCLID} = useContext(GlobalContext);
 
     const [tableData, settableData] = useState([]);
     
@@ -26,10 +26,20 @@ function Explore() {
         )
     }, [LCLID]);
 
+    const addLog = event => {
+        event.preventDefault();
+        if (LCLID !== "" && !projectDataset.includes(LCLID) ) {
+            projectDataset.push(LCLID);
+            setProjectDataset(projectDataset);
+            setLCLID("");
+        }
+    }
+
     return (
         <div className="Exploration-view">
             <div className='Exploration-data-head'>
                     <h2>Explore: {LCLID} </h2>
+                    <p className="add-button" onClick={addLog}>Add <b>{LCLID}</b> to dataset</p>
             </div>
             
             <div className="Exploration-first-wrapper">
