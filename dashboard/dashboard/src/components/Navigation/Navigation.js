@@ -1,19 +1,22 @@
 import './Navigation.css';
-
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { useContext } from 'react';
 
-import {GlobalContext} from '../../contexts/GlobalContext';
 
 function Navigation() {
 
-  const { setPageOverlay } = useContext(GlobalContext);
+  const { setPageOverlay, pageOverlay } = useContext(GlobalContext);
+
+  function handleClickProject() {
+    console.log("page")
+  }
 
   return (
     <header>
         <h1>Dashboard</h1>
         <nav>
           <ul>
-            <li onClick={setPageOverlay("page")}>PROJECTS</li>
+            <li onClick={handleClickProject}>PROJECTS</li>
             <li><a href="#">ABOUT</a></li>
           </ul>
         </nav>

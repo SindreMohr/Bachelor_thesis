@@ -10,20 +10,16 @@ import GlobalContextProvider from './contexts/GlobalContext'
 
 function App() {
 
-  
-
-
-
   return (
     <div className="App">
-      <Navigation />
-      <main>
-        <GlobalContextProvider>
-          <Datamenu />
-          <Workspace />
-          <ProjectData />
-        </GlobalContextProvider>
-      </main>
+      <GlobalContextProvider>
+        <Navigation />
+        <main>
+            <Datamenu />
+            <Workspace />
+            <ProjectData />
+        </main>
+      </GlobalContextProvider>
     </div>
   );
 }
