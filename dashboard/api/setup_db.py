@@ -1,4 +1,3 @@
-import imp
 import sqlite3
 from datetime import date, datetime, timedelta
 from sqlite3 import Error
@@ -62,15 +61,15 @@ sql_create_models_table = """CREATE TABLE IF NOT EXISTS models(
  # these are derivable from a saved modell
 
 #remember to clean fs of model as well on delete
-sql_create_projects_table = """ CREATE TABLE IF NOT EXISTS projects
+sql_create_projects_table = """ CREATE TABLE IF NOT EXISTS projects(
     pid INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT
+    name TEXT,
     mid INTEGER,
 
     FOREIGN KEY (mid) references models (mid) ON DELETE CASCADE
     );"""
 
-sql_create_project_houses_table = """ CREATE TABLE IF NOT EXISTS project_houses
+sql_create_project_houses_table = """ CREATE TABLE IF NOT EXISTS project_houses(
     pid INTEGER,
     lclid TEXT,
 
@@ -130,14 +129,15 @@ def add_house_info_db(conn, lclid, acorn, affluency):
     except Error as e:
         print(e)
         return False
-def add_project_db(conn):
+
+def add_project_db(conn,name):
 
     #no params kinda odd
-    sql = ''' INSERT INTO projects()
-              VALUES() '''
+    sql = ''' INSERT INTO projects(name)
+              VALUES(?,) '''
     try:
         cur = conn.cursor()
-        cur.execute(sql, ())
+        cur.execute(sql, (name))
         conn.commit()
         return True
     except Error as e:

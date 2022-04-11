@@ -1,5 +1,3 @@
-import imp
-from pyexpat import model
 from unicodedata import name
 from flask import Flask, request, redirect, json, g
 from flask_cors import CORS
@@ -86,7 +84,8 @@ def get_projects():
 @app.route('/projects',methods=["POST"])
 def create_project():
     conn = get_db()
-    add_project_db(conn)
+    name = "Marvin"
+    add_project_db(conn,name)
     #if any
     #input_data = request.get_json()
     return "success"

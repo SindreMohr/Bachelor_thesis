@@ -7,6 +7,7 @@ const GlobalContextProvider = (props) => {
     const [ProjectID, setProjectID] = useState('DL_01')
     const [Results, setResults] = useState("");
     const Url = "http://localhost:3000"
+    const [pageOverlay, setPageOverlay] = useState("");
     const [modelParam, setModelParam] = useState(
         {
             model: "",
@@ -32,7 +33,9 @@ const GlobalContextProvider = (props) => {
                 projectDataset,
                 setProjectDataset,
                 Results,
-                setResults
+                setResults,
+                pageOverlay,
+                setPageOverlay
              }}>
                {props.children}
          </GlobalContext.Provider>

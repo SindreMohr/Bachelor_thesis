@@ -9,7 +9,8 @@ import { useContext } from 'react';
 import {GlobalContext} from '../../contexts/GlobalContext'
 
 function Workspace() {
-    const {PAGE} = useContext(GlobalContext)
+    const {PAGE, pageOverlay} = useContext(GlobalContext)
+
     return (
         <div className="Workspace">
            <div className="Workspace-content">
