@@ -6,6 +6,7 @@ import time
 # Most of this stuff is re-used from lectures
 
 from datetime import datetime as dt
+from unicodedata import name
 
 #hack for sd
 import pandas as pd
@@ -325,9 +326,11 @@ def select_projects(conn):
     cur = conn.cursor()
     cur.execute(f"SELECT pid FROM projects") 
     result = {}
+
     projects = []
-    for row in cur:
-        projects.append(row)
+    for (pid,name) in cur:
+        project = {"id": pid, "name": name}
+        projects.append(project)
     result['projects'] = projects
     return result
 

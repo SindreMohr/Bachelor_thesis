@@ -61,9 +61,11 @@ function ProjectData() {
                 <ul className="project-data-list">
                     {datasetList}
                 </ul>
-                <span onClick={clearData} className="material-icons-outlined">
-                    delete
-                </span>
+                <p onClick={clearData}>Clear dataset
+                    <span className="material-icons-outlined">
+                        delete
+                    </span>
+                </p>
             </section>
         </div>
     );

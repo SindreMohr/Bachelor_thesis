@@ -1,0 +1,8 @@
+main {
+    width: 100%;
+    display: flex;
+  }
+  
+  .grey-bg {
+    background-color: rgb(231, 231, 231);
+  }

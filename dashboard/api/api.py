@@ -78,7 +78,9 @@ def get_household_data_count(lclid):
 @app.route("/projects", methods=['GET'])
 def get_projects():
    conn = get_db()  
-   projects = select_projects(conn)
+   #projects = select_projects(conn)
+   print("gell")
+   projects = {"projects": [{"name": "lstmGOD", "id": 1},{"name": "mlpGOD", "id": 2}]}
    return json.dumps(projects)
 
 @app.route('/projects',methods=["POST"])

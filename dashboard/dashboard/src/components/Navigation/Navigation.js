@@ -12,13 +12,24 @@ function Navigation() {
     setPageOverlay("projects");
   }
 
+  function handleClickHome() {
+    console.log("projects");
+    setPageOverlay();
+  }
+
+  function handleClickAbout() {
+    console.log("about");
+    setPageOverlay("about");
+  }
+
   return (
     <header>
-        <h1>Dashboard</h1>
+        <h1 onClick={handleClickHome}>Dashboard</h1>
         <nav>
           <ul>
+            <li onClick={handleClickHome}>HOME</li>
             <li onClick={handleClickProject}>PROJECTS</li>
-            <li><a href="#">ABOUT</a></li>
+            <li onClick={handleClickAbout}>ABOUT</li>
           </ul>
         </nav>
     </header>

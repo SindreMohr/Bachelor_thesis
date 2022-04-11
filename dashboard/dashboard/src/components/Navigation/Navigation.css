@@ -27,16 +27,13 @@ nav ul li {
     display: inline;
     margin-right: 20px;
     margin-top: 0px;
-}
-
-nav a {
-    text-decoration: none;
-    color: inherit;
     color: rgb(87, 87, 87);
     transition: 0.1s;
 }
 
-nav a:hover {
+
+nav li:hover {
     color: rgb(32, 32, 32);
+    cursor: pointer;
 }
 
