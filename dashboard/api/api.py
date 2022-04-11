@@ -78,19 +78,22 @@ def get_household_data_count(lclid):
 @app.route("/projects", methods=['GET'])
 def get_projects():
    conn = get_db()  
-   #projects = select_projects(conn)
+   projects = select_projects(conn)
    print("gell")
-   projects = {"projects": [{"name": "lstmGOD", "id": 1},{"name": "mlpGOD", "id": 2}]}
+   #projects = {"projects": [{"name": "lstmGOD", "id": 1},{"name": "mlpGOD", "id": 2}]}
    return json.dumps(projects)
 
 @app.route('/projects',methods=["POST"])
 def create_project():
     conn = get_db()
-    name = "Marvin"
-    add_project_db(conn,name)
     #if any
-    #input_data = request.get_json()
-    return "success"
+    input_data = request.get_json()
+    print(input_data)
+    name = input_data["data"]["name"]
+    print(name)
+    add_project_db(conn,name)
+   
+    return json.dumps({"success": "success"})
    
 
 @app.route('/project/<pid>',methods=["GET"])
@@ -124,8 +127,9 @@ def server_update_project(pid):
 @app.route('/project/<pid>',methods=["DELETE"])
 def server_delete_event(pid):
     conn = get_db()
+    print("fgeg")
     delete_project(conn,pid)
-    return "succesfully deleted"
+    return json.dumps({"success": "successfully deleted"})
 
 #todo
 @app.route('/save_model/<pid>',methods=["PUT"])

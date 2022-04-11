@@ -1,0 +1,72 @@
+import React, { useContext } from 'react';
+
+import {GlobalContext} from '../../../contexts/GlobalContext'
+
+function ProjectItem({data}) {
+    //const [info, setinfo] = useState([]);
+    const {setModelParam,setProjectID, setProjectName,setProjectDataset,setResults} = useContext(GlobalContext);
+
+    function loadProject() {
+        console.log("hey")
+        //setLCLID(data[0])
+        fetch(`http://127.0.0.1:5000/project/` + String(data.id), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application.json',
+            },
+        }).then(
+            res => res.json()
+        ).then(
+            data => {
+                console.log(data);
+                setProjectID(data.id)
+                setProjectName(data.name)
+                setProjectDataset(data.houses)
+                if(data.mid === null){
+                    setModelParam({
+                        model: "",
+                        training: "",
+                        epoch: "",
+                        lag: "",
+                        layer: "",
+                        prediction: ""
+                    })
+                    setResults("")
+                }
+                else{
+                    console.log("aywant params and results")
+                
+                }
+            }
+        )
+
+    }
+
+    function deleteProject(){
+        console.log("deleting" + String(data.id))
+        fetch(`http://127.0.0.1:5000/project/` + String(data.id), {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application.json',
+            },
+        }).then(
+            res => res.json()
+        ).then(
+            data => {
+              console.log(data)  
+            }
+        )
+    }
+
+    return (
+        <li>
+            <div>
+                { data.name }
+                <button onClick={loadProject} >Load Project</button>
+                <button onClick={deleteProject}>Delete Project</button>
+            </div>
+        </li>
+    );
+}
+
+export default ProjectItem;

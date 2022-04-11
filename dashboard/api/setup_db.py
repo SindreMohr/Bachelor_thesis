@@ -135,10 +135,10 @@ def add_project_db(conn,name):
 
     #no params kinda odd
     sql = ''' INSERT INTO projects(name)
-              VALUES(?,) '''
+              VALUES(?) '''
     try:
         cur = conn.cursor()
-        cur.execute(sql, (name))
+        cur.execute(sql, (name,))
         conn.commit()
         return True
     except Error as e:
@@ -206,9 +206,12 @@ def delete_project(conn,pid):
         
         #deleting model should cascade delete project, but i dont think the opposite applies 
         cur.execute("SELECT mid FROM projects WHERE pid = ?",(pid,))
-        for (mid) in cur:
-            if mid is not None:
-                delete_model(mid)
+        for mid in cur:
+            #empty mid is tuple for some reason
+            print(mid)
+            print(type(mid))
+            if mid[0] is not None:
+                delete_model(conn, mid)
             else:
                 cur.execute("DELETE FROM projects WHERE pid = ?",(pid,))
                 conn.commit()
@@ -324,7 +327,7 @@ def select_lclids(conn):
 
 def select_projects(conn):
     cur = conn.cursor()
-    cur.execute(f"SELECT pid FROM projects") 
+    cur.execute(f"SELECT pid, name FROM projects") 
     result = {}
 
     projects = []

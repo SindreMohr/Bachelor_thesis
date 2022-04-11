@@ -3,7 +3,7 @@ import {GlobalContext} from '../../contexts/GlobalContext'
 import { useContext, useState, useEffect } from 'react';
 
 function ProjectData() {
-    const { ProjectID, projectDataset, setProjectDataset, LCLID } = useContext(GlobalContext);
+    const { ProjectName, projectDataset, setProjectDataset, LCLID } = useContext(GlobalContext);
     const [datasetList, setDatasetlist] = useState(<ul></ul>);
 
     function removeFromDataset(name) {
@@ -53,7 +53,7 @@ function ProjectData() {
     return (
         <div className="ProjectData">
             <section>
-                <h3>Project: {ProjectID}</h3>
+                <h3>Project: {ProjectName}</h3>
             </section>
             <section>
                 <h3>Dataset:
