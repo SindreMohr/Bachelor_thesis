@@ -71,19 +71,20 @@ function Project() {
         console.log(results)
 
         //making new project current project
-        setProjectID(data.id)
-        setProjectName(data.name)
-        setProjectDataset([])
+        // //data.id makes it problematic as that it null ... 
+        // setProjectID(data.id)
+        // setProjectName(data.name)
+        // setProjectDataset([])
              
-        setModelParam({
-            model: "",
-            training: "",
-            epoch: "",
-            lag: "",
-            layer: "",
-            prediction: ""
-                })
-        setResults("")
+        // setModelParam({
+        //     model: "",
+        //     training: "",
+        //     epoch: "",
+        //     lag: "",
+        //     layer: "",
+        //     prediction: ""
+        //         })
+        // setResults("")
     }
 
 

@@ -5,6 +5,8 @@ const GlobalContextProvider = (props) => {
     const [LCLID, setLCLID] = useState('MAC000150')
     const [projectDataset, setProjectDataset] = useState(["MAC000150","MAC000152","MAC000153", "MAC000159"])
     const [ProjectID, setProjectID] = useState(0)
+    const [modelID, setModelID] = useState(null)
+
     const [ProjectName, setProjectName] = useState('DL_01')
 
     const [Results, setResults] = useState("");
@@ -30,6 +32,8 @@ const GlobalContextProvider = (props) => {
                 Url,
                 modelParam,
                 setModelParam,
+                modelID,
+                setModelID,
                 ProjectID,
                 setProjectID,
                 ProjectName,

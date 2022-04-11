@@ -4,7 +4,7 @@ from flask_cors import CORS
 from matplotlib.font_manager import json_dump
 from sklearn.model_selection import TimeSeriesSplit, train_test_split
 
-from setup_db import setup, select_housedata_curve_db, select_housedata_count_db, select_lclids, update_project
+from setup_db import add_house_to_project_db, delete_project_house_db, setup, select_housedata_curve_db, select_housedata_count_db, select_lclids, update_project
 from setup_db import select_projects, select_project, delete_project, add_project_db
 from setup_db import delete_model, update_model, add_model_db
 
@@ -97,7 +97,7 @@ def create_project():
    
 
 @app.route('/project/<pid>',methods=["GET"])
-def get_event(pid):
+def get_project(pid):
     conn = get_db()
     project = select_project(conn,pid)
 
@@ -125,16 +125,39 @@ def server_update_project(pid):
      return "success"
 
 @app.route('/project/<pid>',methods=["DELETE"])
-def server_delete_event(pid):
+def server_delete_project(pid):
     conn = get_db()
     print("fgeg")
     delete_project(conn,pid)
     return json.dumps({"success": "successfully deleted"})
 
+
+#if we want to delete and add house on a house by house basis
+@app.route('/add_house/',methods=["POST"])
+def add_house():
+    conn = get_db()
+    input_data = request.get_json()
+    print(input_data)
+    house= input_data["house"]
+    pid = input_data["pid"]
+    add_house_to_project_db(conn,pid,house)
+    return json.dumps({"success": "successfully added house"})
+
+@app.route('/delete_house/<pid>/<lclid>',methods=["DELETE"])
+def server_delete_project_house(pid,lclid):
+    conn = get_db()
+    print("fgeg")
+    delete_project_house_db(conn,pid,lclid)
+    return json.dumps({"success": "successfully deleted"})
+
+
 #todo
-@app.route('/save_model/<pid>',methods=["PUT"])
-def save_model(pid):
-  pass
+@app.route('/save_project/<pid>',methods=["PUT"])
+def save_project(pid):
+    input_data = request.get_json()
+    house_list = input_data["houses"]
+    print(input_data)
+    return json.dumps({"success": "successfully saved"})
 
 #obtaining a dataframe to feed into model
 def make_model_dataframe(house_list):
@@ -173,6 +196,7 @@ def dataframe_preprocess(df):
 
 @app.route("/run-model", methods=['POST'])
 def run_model():
+    conn = get_db()
     print("running model")
     if request.json:
         print(request.json)
@@ -181,11 +205,16 @@ def run_model():
         house_list = content["dataset"]
         m_df = make_model_dataframe(house_list)
         param_dict = content["parameters"]
-        model_str = param_dict["model"]
+        model_str = param_dict["model"].lower()
         
+        model_id = content["mid"]
+        model = None
+        print(model_id)
+
         lag = param_dict["lag"]
         epoch = int(param_dict["epoch"])
-        
+        #print(type(epoch))
+
         
         #model wants traintestsplit as size of test
         train_test_split = param_dict["training"]
@@ -193,27 +222,34 @@ def run_model():
         train_test_split = 1- (train_test_split/100)
         print(train_test_split)
         projectID = content["projectID"]
-        print(m_df)
+        # print(m_df)
         dict = {}
         if model_str.lower() == "dt":
           dict =  run_DT(m_df,lag,train_test_split,epoch)
           #dict["data"] = m_df.to_json()
           #return json.dumps(dict)
-        elif model_str.lower() == "lstm":
+        elif model_str == "lstm":
             #lstm mlp may need additional params from dict
             layers = param_dict["layer"]
-            dict = run_LSTM(m_df,lag,train_test_split,epoch)
+            model, dict = run_LSTM(m_df,lag,train_test_split,epoch)
             #return json.dumps(dict)
-        elif model_str.lower() == "slp" or model_str.lower() == "mlp":
+        elif model_str == "slp" or model_str.lower() == "mlp":
             layers = param_dict["layer"]
             #if slp layers=1 perhaps
-            dict = run_MLP(m_df,lag,train_test_split,epoch)
+            model, dict = run_MLP(m_df,lag,train_test_split,epoch)
         else:
             return ValueError("No suitable model class was specified")
 
         dict["energy_data"] = m_df["energy"].tolist()
         dict["time"] = m_df["tstp"].dt.strftime('%Y-%m-%d').tolist()
-           
+        
+        #saving the model
+        if model_id is None:
+            model_id = add_model_db(conn,model_str,lag, 256, epoch, train_test_split)
+            print(model_id)
+            update_project(conn,projectID,model_id)
+            if model_str == "lstm" or model_str == "mlp" or model_str == "slp":
+                model.model.save("./saved_models/"+str(model_id))
         return json.dumps(dict)
 
     return "f"

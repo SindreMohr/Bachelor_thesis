@@ -8,7 +8,7 @@ import {GlobalContext} from '../../../contexts/GlobalContext'
 
 function Run() {
 
-    const { ProjectID, modelParam, projectDataset, Results, setResults } = useContext(GlobalContext);
+    const { ProjectID, ProjectName, modelID, modelParam, projectDataset, Results, setResults } = useContext(GlobalContext);
     const [datasetList, setDatasetlist] = useState(<ul></ul>);
     const [runState, setRunState] = useState(false);
 
@@ -41,6 +41,8 @@ function Run() {
         content.dataset = projectDataset
         content.parameters = modelParam
         content.projectID = ProjectID
+        content.mid = modelID
+
         const url = "http://localhost:5000/"
         const reqOpt = {
             method: "POST",
@@ -106,7 +108,7 @@ function Run() {
     return (
         <div>
             <div className="Exploration-data-head">
-                <h2>Run {ProjectID}</h2>
+                <h2>Run {ProjectName}</h2>
             </div>
                 {runState ? <MinimalSpinner className="fidgy-spinny" color="blue" /> : content}
             

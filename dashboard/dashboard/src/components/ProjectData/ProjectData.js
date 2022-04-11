@@ -3,7 +3,7 @@ import {GlobalContext} from '../../contexts/GlobalContext'
 import { useContext, useState, useEffect } from 'react';
 
 function ProjectData() {
-    const { ProjectName, projectDataset, setProjectDataset, LCLID } = useContext(GlobalContext);
+    const { ProjectID, ProjectName, projectDataset, setProjectDataset, LCLID } = useContext(GlobalContext);
     const [datasetList, setDatasetlist] = useState(<ul></ul>);
 
     function removeFromDataset(name) {
@@ -37,6 +37,28 @@ function ProjectData() {
         setProjectDataset([]);
         setDatasetlist(<ul></ul>);
     }
+    
+    async function saveProject(){
+        console.log("im saving")
+        const url = "http://localhost:5000/"
+        let data = {
+            houses: projectDataset,
+        }
+        
+        const reqOpt = {
+            method: "PUT",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              data
+            }),
+          };
+        const respons = await fetch(url + "save_project/" + String(ProjectID), reqOpt);
+        const results = await respons.json();
+        console.log(results)
+
+       
+    }
 
     useEffect(() => {
         if (projectDataset[0]) {
@@ -67,6 +89,8 @@ function ProjectData() {
                     </span>
                 </p>
             </section>
+            <button onClick={saveProject}>Save Project</button>
+
         </div>
     );
 }

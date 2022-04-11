@@ -70,7 +70,7 @@ def retrieve_LSTM(mid, data, lag,batches,epochs,train_test_split):
     layer_count = len(LSTM.model.layers) - 1
     depths = []
     for x in range(layer_count):
-        depths.append(MLPModel.layers[x])
+        depths.append(LSTM.model.layers[x])
     LSTM.LSTM_layer_depths = depths
 
     model_result_dict = {}
@@ -151,7 +151,7 @@ def run_LSTM(data,lag,train_test,epoch):
     model_result_dict["daily_peaks_res"] = res
 
 
-    return model_result_dict
+    return LSTM, model_result_dict
 
 def run_MLP(data,lag,train_test,epoch):
 
@@ -189,4 +189,4 @@ def run_MLP(data,lag,train_test,epoch):
     #print(type(model_result_dict["predictions"][0]))
     #print(type(model_result_dict["daily_peaks"][0]))
     #print(type(model_result_dict["daily_peak_dates"][0]))
-    return model_result_dict
+    return MLP, model_result_dict

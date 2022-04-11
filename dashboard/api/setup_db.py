@@ -151,11 +151,33 @@ def add_model_db(conn, mtype, lag, batches, epochs, train_test_split):
     try:
         cur = conn.cursor()
         cur.execute(sql, (mtype, lag, batches,epochs,train_test_split))
+        #finding value of auto increment
+        cur.execute("SELECT last_insert_rowid();")
+        mid = None
+        for mid in cur:
+            mid = mid[0]
+        conn.commit()
+        return mid
+    except Error as e:
+        print(e)
+        return 0
+
+ 
+
+def add_house_to_project_db(conn, pid, lclid):
+    #no params kinda odd
+    sql = ''' INSERT INTO project_houses(pid,lclid)
+              VALUES(?,?) '''
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, (pid,lclid,))
         conn.commit()
         return True
     except Error as e:
         print(e)
         return False
+
+
 
 ##### INITS #####
 
@@ -204,19 +226,30 @@ def delete_project(conn,pid):
     try:
         cur = conn.cursor()
         
-        #deleting model should cascade delete project, but i dont think the opposite applies 
+        #deleting model should cascade delete project but it does not.
         cur.execute("SELECT mid FROM projects WHERE pid = ?",(pid,))
         for mid in cur:
-            #empty mid is tuple for some reason
-            print(mid)
-            print(type(mid))
-            if mid[0] is not None:
-                delete_model(conn, mid)
-            else:
-                cur.execute("DELETE FROM projects WHERE pid = ?",(pid,))
-                conn.commit()
+             #is tuple for some reason
+             print(mid)
+             print(type(mid[0]))
+             if mid[0] is not None:
+                 delete_model(conn, mid[0])
+            
+        cur.execute("DELETE FROM projects WHERE pid = ?",(pid,))
+        conn.commit()
     except Error as e:
         print(e)
+
+def delete_project_house_db(conn, pid, lclid):
+    #no params kinda odd
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM project_houses where pid = ? AND lclid = ?", (pid,lclid,))
+        conn.commit()
+        return True
+    except Error as e:
+        print(e)
+        return False
 
 def delete_model(conn,mid):
     try:
