@@ -1,3 +1,5 @@
+import os
+import shutil
 import sqlite3
 from datetime import date, datetime, timedelta
 from sqlite3 import Error
@@ -247,6 +249,7 @@ def delete_project(conn,pid):
              print(type(mid[0]))
              if mid[0] is not None:
                  delete_model(conn, mid[0])
+                 delete_all_project_house_db(conn, pid)
             
         cur.execute("DELETE FROM projects WHERE pid = ?",(pid,))
         conn.commit()
@@ -280,6 +283,8 @@ def delete_model(conn,mid):
         cur = conn.cursor()
         cur.execute("DELETE FROM models WHERE mid = ?",(mid,))
         conn.commit()
+        folder_path = "./saved_models/" +str(mid)
+        shutil.rmtree(folder_path)
     except Error as e:
         print(e)
 
