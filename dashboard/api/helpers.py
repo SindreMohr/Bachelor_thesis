@@ -1,4 +1,5 @@
 # importing sys so we can find ML_classes
+from fileinput import filename
 import sys
   
 # adding ML_classes to the system path
@@ -12,10 +13,42 @@ from ML_classes.evaluator import Evaluator
 
 
 from keras.models import load_model
+import pickle
+
+def retrieve_DT(mid,data,lag,batches, epochs,train_test_split):
+   
+    DT = DTModel(
+    data = data,
+    Y_var = 'energy',
+    lag = lag,
+    epochs = epochs,
+    batch_size = batches,
+    train_test_split = train_test_split
+    )
+
+    #loading
+    filename = "./saved_models/" + str(mid) + "/dt.sav"
+    DT.model = pickle.load(open(filename, 'rb'))
+
+    _, _, _, Y_test = DT.dc.create_data_for_NN(DT.data, DT.Y_var, DT.lag, DT.train_test_split)
+
+    DT.eval = Evaluator(Y_test,DT.data,DT.predict(),DT.train_test_split,DT.lag)
 
 
-def retrieve_DT():
-    pass
+    model_result_dict = {}
+    model_result_dict["predictions"] = DT.predict()
+    model_result_dict["mse"] = DT.eval.MSE()
+    model_result_dict["rmse"] = DT.eval.RMSE()
+    model_result_dict["mae"] = DT.eval.MAE()
+    model_result_dict["mape"] = DT.eval.MAPE()
+
+    peaks, peak_dates, peak_indexes, res = DT.eval.peak_daily_consumption()
+    model_result_dict["daily_peaks"] = peaks
+    model_result_dict["daily_peak_dates"] = peak_dates
+    model_result_dict["daily_peaks_indexes"] = peak_indexes
+    model_result_dict["daily_peaks_res"] = res
+
+    return model_result_dict
 
 def retrieve_MLP(mid, data, lag,batches,epochs,train_test_split):
     MLP = MLPModel(
@@ -131,7 +164,7 @@ def run_DT(data,lag,train_test,epoch):
     model_result_dict["daily_peaks_indexes"] = peak_indexes
     model_result_dict["daily_peaks_res"] = res
 
-    return model_result_dict
+    return DT, model_result_dict
 
 def run_LSTM(data,lag,train_test,epoch):
 

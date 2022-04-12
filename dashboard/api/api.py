@@ -1,4 +1,5 @@
 from operator import mod
+import os
 from unicodedata import name
 from flask import Flask, request, redirect, json, g
 from flask_cors import CORS
@@ -10,11 +11,12 @@ from setup_db import select_projects, select_project, delete_project, add_projec
 from setup_db import delete_model, update_model, add_model_db
 from setup_db import add_houses_to_project_db, delete_all_project_house_db
 
-from helpers import retrieve_LSTM, retrieve_MLP, run_DT,run_LSTM,run_MLP
+from helpers import retrieve_DT, retrieve_LSTM, retrieve_MLP, run_DT,run_LSTM,run_MLP
 
 import sqlite3
 
 import pandas as pd
+import pickle
 from datetime import datetime
 
 # importing sys so we can find ML_classes
@@ -102,10 +104,11 @@ def create_project():
 def get_project(pid):
     conn = get_db()
     project = select_project(conn,pid)
-    project["train_test_split"] = (1 - project["train_test_split"])*100
     print(project["mid"])
     if project["mid"] is not None:
         print(project["mtype"])
+        
+        project["train_test_split"] = (1 - project["train_test_split"])*100
         data = make_model_dataframe( project["houses"])
         if project["mtype"] == "mlp":
             lc, layers, model_res = retrieve_MLP(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
@@ -122,7 +125,10 @@ def get_project(pid):
             model_res["energy_data"] = data["energy"].tolist()
             project["model_results"] = model_res
         elif project["mtype"] == "dt":
-            print("decisiontree")
+            model_res = retrieve_DT(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
+            model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d').tolist()
+            model_res["energy_data"] = data["energy"].tolist()
+            project["model_results"] = model_res
     #print(project["layer_count"])
    # print(project["layers"])
 
@@ -238,14 +244,13 @@ def run_model():
         # print(m_df)
         dict = {}
         if model_str.lower() == "dt":
-          dict =  run_DT(m_df,lag,train_test_split,epoch)
-          #dict["data"] = m_df.to_json()
-          #return json.dumps(dict)
+          model, dict =  run_DT(m_df,lag,train_test_split,epoch)
+          
         elif model_str == "lstm":
             #lstm mlp may need additional params from dict
             layers = param_dict["layer"]
             model, dict = run_LSTM(m_df,lag,train_test_split,epoch)
-            #return json.dumps(dict)
+            
         elif model_str == "slp" or model_str.lower() == "mlp":
             layers = param_dict["layer"]
             #if slp layers=1 perhaps
@@ -266,8 +271,20 @@ def run_model():
             update_project(conn,projectID,model_id)
             if model_str == "lstm" or model_str == "mlp" or model_str == "slp":
                 model.model.save("./saved_models/"+str(model_id))
+            elif model_str == "dt":
+                filename = "./saved_models/" + str(model_id) + "/dt.sav"
+                dirpath = "./saved_models/" + str(model_id)
+                os.mkdir(dirpath)
+                pickle.dump(model.model, open(filename, 'wb'))
         else:
             print("update model")
+            update_model(conn, model_id, model_str, lag, 256, epoch, train_test_split)
+            if model_str == "lstm" or model_str == "mlp" or model_str == "slp":
+                model.model.save("./saved_models/"+str(model_id))
+            elif model_str == "dt":
+                filename = "./saved_models/" + str(model_id) + "/dt.sav"
+                os.remove(filename)
+                pickle.dump(model.model, open(filename, 'wb'))
         return json.dumps(dict)
 
     return "f"
