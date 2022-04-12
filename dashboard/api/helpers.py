@@ -45,6 +45,10 @@ def retrieve_DT(mid,data,lag,batches, epochs,train_test_split):
     peaks, peak_dates, peak_indexes, res = DT.eval.peak_daily_consumption()
     model_result_dict["daily_peaks"] = peaks
     model_result_dict["daily_peak_dates"] = peak_dates
+
+    preds = [model_result_dict["predictions"][x] for x in peak_indexes]
+    model_result_dict["daily_peaks_predictions"] = preds
+
     model_result_dict["daily_peaks_indexes"] = peak_indexes
     model_result_dict["daily_peaks_res"] = res
 
@@ -91,6 +95,11 @@ def retrieve_MLP(mid, data, lag,batches,epochs,train_test_split):
     model_result_dict["daily_peaks_indexes"] = peak_indexes
     model_result_dict["daily_peaks_res"] = res
 
+    preds = [model_result_dict["predictions"][x] for x in peak_indexes]
+    model_result_dict["daily_peaks_predictions"] = preds
+
+
+
     return MLP.layer_count, [30], model_result_dict
 
 def retrieve_LSTM(mid, data, lag,batches,epochs,train_test_split):
@@ -135,6 +144,10 @@ def retrieve_LSTM(mid, data, lag,batches,epochs,train_test_split):
     model_result_dict["daily_peaks_indexes"] = peak_indexes
     model_result_dict["daily_peaks_res"] = res
 
+    preds = [model_result_dict["predictions"][x] for x in peak_indexes]
+    model_result_dict["daily_peaks_predictions"] = preds
+
+
     return layer_count, [50], model_result_dict
 
 
@@ -163,6 +176,11 @@ def run_DT(data,lag,train_test,epoch):
     model_result_dict["daily_peak_dates"] = peak_dates
     model_result_dict["daily_peaks_indexes"] = peak_indexes
     model_result_dict["daily_peaks_res"] = res
+
+    preds = [model_result_dict["predictions"][x] for x in peak_indexes]
+    model_result_dict["daily_peaks_predictions"] = preds
+
+
 
     return DT, model_result_dict
 
@@ -195,6 +213,9 @@ def run_LSTM(data,lag,train_test,epoch):
     model_result_dict["daily_peak_dates"] = peak_dates
     model_result_dict["daily_peaks_indexes"] = peak_indexes
     model_result_dict["daily_peaks_res"] = res
+
+    preds = [model_result_dict["predictions"][x] for x in peak_indexes]
+    model_result_dict["daily_peaks_predictions"] = preds
 
 
     return LSTM, model_result_dict
@@ -231,8 +252,7 @@ def run_MLP(data,lag,train_test,epoch):
     model_result_dict["daily_peaks_indexes"] = peak_indexes
     model_result_dict["daily_peaks_res"] = res
 
-    #print(type(model_result_dict["mse"]))
-    #print(type(model_result_dict["predictions"][0]))
-    #print(type(model_result_dict["daily_peaks"][0]))
-    #print(type(model_result_dict["daily_peak_dates"][0]))
+    preds = [model_result_dict["predictions"][x] for x in peak_indexes]
+    model_result_dict["daily_peaks_predictions"] = preds
+
     return MLP, model_result_dict

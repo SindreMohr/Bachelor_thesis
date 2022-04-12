@@ -14,47 +14,94 @@ function ResultsPlot() {
     //console.log(Results.energy_data.length)
     //console.log(xSeries)
     //console.log(ySeries)
+    let ydaily_peaks = Results.daily_peaks;
+    let ydaily_peaks_pred = Results.daily_peaks_predictions;
+    let daily_peak_dates = Results.daily_peak_dates;
+
     return (
-        <Plot
+        <div>
+            <Plot
 
-        data={[
-      
-        {
+            data={[
+        
+            {
 
-            x: xSeries.length,
+                x: xSeries.length,
 
-            y: ySeries,
+                y: ySeries,
+                
+                
+
+                type: 'scatter',
+
+                mode: 'lines',
+
+                marker: {color: 'green'},
+
+            }, 
+            {
+
+                x: xSeries.length,
+
+                y: Results.predictions,
+                
+                
+
+                type: 'scatter',
+
+                mode: 'lines',
+
+                marker: {color: 'orange'},
+
+            }
+
+
+            ]}
+
+
+            />   
+            <Plot
+
+            data={[
+
+            {
+
+                x: ydaily_peaks.length,
+
+                y: ydaily_peaks,
+                
+                
+
+                type: 'scatter',
+
+                mode: 'lines',
+
+                marker: {color: 'green'},
+
+            }, 
+            {
+
+                x: ydaily_peaks.length,
+
+                y: ydaily_peaks_pred,
+                
+                
+
+                type: 'scatter',
+
+                mode: 'lines',
+
+                marker: {color: 'orange'},
+
+            }
+
+
+            ]}
+
+
+/>   
             
-            
-
-            type: 'scatter',
-
-            mode: 'lines',
-
-            marker: {color: 'green'},
-
-        }, 
-        {
-
-            x: xSeries.length,
-
-            y: Results.predictions,
-            
-            
-
-            type: 'scatter',
-
-            mode: 'lines',
-
-            marker: {color: 'orange'},
-
-        }
-
-
-        ]}
-
-
-        />   
+        </div>
     );
 }
 
