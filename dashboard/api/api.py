@@ -1,12 +1,14 @@
+from operator import mod
 from unicodedata import name
 from flask import Flask, request, redirect, json, g
 from flask_cors import CORS
 from matplotlib.font_manager import json_dump
 from sklearn.model_selection import TimeSeriesSplit, train_test_split
 
-from setup_db import add_house_to_project_db, delete_project_house_db, setup, select_housedata_curve_db, select_housedata_count_db, select_lclids, update_project
+from setup_db import add_house_to_project_db, delete_all_project_house_db, delete_project_house_db, setup, select_housedata_curve_db, select_housedata_count_db, select_lclids, update_project
 from setup_db import select_projects, select_project, delete_project, add_project_db
 from setup_db import delete_model, update_model, add_model_db
+from setup_db import add_houses_to_project_db, delete_all_project_house_db
 
 from helpers import retrieve_LSTM, retrieve_MLP, run_DT,run_LSTM,run_MLP
 
@@ -100,19 +102,30 @@ def create_project():
 def get_project(pid):
     conn = get_db()
     project = select_project(conn,pid)
-
+    project["train_test_split"] = (1 - project["train_test_split"])*100
+    print(project["mid"])
     if project["mid"] is not None:
+        print(project["mtype"])
         data = make_model_dataframe( project["houses"])
         if project["mtype"] == "mlp":
             lc, layers, model_res = retrieve_MLP(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
             project["layer_count"] = lc
             project["layers"] = layers
+            model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d').tolist()
+            model_res["energy_data"] = data["energy"].tolist()
             project["model_results"] = model_res
         elif project["mtype"] == "lstm":
             lc, layers, model_res = retrieve_LSTM(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
             project["layer_count"] = lc
             project["layers"] = layers
+            model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d').tolist()
+            model_res["energy_data"] = data["energy"].tolist()
             project["model_results"] = model_res
+        elif project["mtype"] == "dt":
+            print("decisiontree")
+    #print(project["layer_count"])
+   # print(project["layers"])
+
     return json.dumps(project)
 
 # perhaps callable in a different manner when model is created
@@ -243,6 +256,9 @@ def run_model():
         dict["energy_data"] = m_df["energy"].tolist()
         dict["time"] = m_df["tstp"].dt.strftime('%Y-%m-%d').tolist()
         
+        #updating proj data
+        delete_all_project_house_db(conn,projectID)
+        add_houses_to_project_db(conn,projectID,house_list)
         #saving the model
         if model_id is None:
             model_id = add_model_db(conn,model_str,lag, 256, epoch, train_test_split)
@@ -250,6 +266,8 @@ def run_model():
             update_project(conn,projectID,model_id)
             if model_str == "lstm" or model_str == "mlp" or model_str == "slp":
                 model.model.save("./saved_models/"+str(model_id))
+        else:
+            print("update model")
         return json.dumps(dict)
 
     return "f"

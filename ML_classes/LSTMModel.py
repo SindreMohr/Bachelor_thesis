@@ -25,7 +25,7 @@ class LSTMModel():
         self.train_test_split = train_test_split
 
         self.model = None
-
+        self.Eval = None
 
         #mode for training
         if data_creator == "plain":

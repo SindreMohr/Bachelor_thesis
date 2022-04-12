@@ -177,6 +177,19 @@ def add_house_to_project_db(conn, pid, lclid):
         print(e)
         return False
 
+def add_houses_to_project_db(conn, pid, house_list):
+    #no params kinda odd
+    sql = ''' INSERT INTO project_houses(pid,lclid)
+              VALUES(?,?) '''
+    try:
+        for lclid in house_list:
+            cur = conn.cursor()
+            cur.execute(sql, (pid,lclid,))
+            conn.commit()
+        return True
+    except Error as e:
+        print(e)
+        return False
 
 
 ##### INITS #####
@@ -245,6 +258,17 @@ def delete_project_house_db(conn, pid, lclid):
     try:
         cur = conn.cursor()
         cur.execute("DELETE FROM project_houses where pid = ? AND lclid = ?", (pid,lclid,))
+        conn.commit()
+        return True
+    except Error as e:
+        print(e)
+        return False
+
+def delete_all_project_house_db(conn, pid):
+    #no params kinda odd
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM project_houses where pid = ?", (pid,))
         conn.commit()
         return True
     except Error as e:
@@ -394,7 +418,7 @@ def select_project(conn,pid):
     cur.execute("SELECT lclid FROM project_houses WHERE pid = ?",(pid,))
     house_list = []
     for (lclid) in cur:
-        house_list.append(lclid)
+        house_list.append(lclid[0])
     project["houses"] = house_list
     return project
 

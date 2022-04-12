@@ -8,6 +8,9 @@ from ML_classes.DTModel import DTModel
 from ML_classes.LSTMModel import LSTMModel
 from ML_classes.MLPModel import MLPModel
 
+from ML_classes.evaluator import Evaluator
+
+
 from keras.models import load_model
 
 
@@ -19,7 +22,7 @@ def retrieve_MLP(mid, data, lag,batches,epochs,train_test_split):
     data = data,
     Y_var = 'energy',
     lag = lag,
-    layer_layer_depths = [30],
+    layer_depths = [30],
     layer_count= 1,
     epochs = epochs,
     batch_size = batches,
@@ -32,8 +35,12 @@ def retrieve_MLP(mid, data, lag,batches,epochs,train_test_split):
     MLP.layer_count = len(MLP.model.layers) - 1
     depths = []
     for x in range(MLP.layer_count):
-        depths.append(MLPModel.layers[x])
+        depths.append(MLP.model.layers[x].units)
     MLP.layer_depths = depths
+
+    _, _, _, Y_test = MLP.dc.create_data_for_NN(MLP.data, MLP.Y_var, MLP.lag, MLP.train_test_split)
+
+    MLP.eval = Evaluator(Y_test,MLP.data,MLP.predict(),MLP.train_test_split,MLP.lag)
 
     model_result_dict = {}
     model_result_dict["predictions"] = MLP.predict()
@@ -51,7 +58,7 @@ def retrieve_MLP(mid, data, lag,batches,epochs,train_test_split):
     model_result_dict["daily_peaks_indexes"] = peak_indexes
     model_result_dict["daily_peaks_res"] = res
 
-    return MLP.layer_count, depths, model_result_dict
+    return MLP.layer_count, [30], model_result_dict
 
 def retrieve_LSTM(mid, data, lag,batches,epochs,train_test_split):
     LSTM = LSTMModel(
@@ -70,8 +77,14 @@ def retrieve_LSTM(mid, data, lag,batches,epochs,train_test_split):
     layer_count = len(LSTM.model.layers) - 1
     depths = []
     for x in range(layer_count):
-        depths.append(LSTM.model.layers[x])
+        depths.append(LSTM.model.layers[x].units)
+    print(depths)
+    print(depths[0])
     LSTM.LSTM_layer_depths = depths
+
+    _, _, _, Y_test = LSTM.dc.create_data_for_NN(LSTM.data, LSTM.Y_var, LSTM.lag, LSTM.train_test_split)
+
+    LSTM.eval = Evaluator(Y_test,LSTM.data,LSTM.predict(),LSTM.train_test_split,LSTM.lag)
 
     model_result_dict = {}
     model_result_dict["predictions"] = LSTM.predict()
@@ -89,7 +102,7 @@ def retrieve_LSTM(mid, data, lag,batches,epochs,train_test_split):
     model_result_dict["daily_peaks_indexes"] = peak_indexes
     model_result_dict["daily_peaks_res"] = res
 
-    return layer_count, depths, model_result_dict
+    return layer_count, [50], model_result_dict
 
 
 def run_DT(data,lag,train_test,epoch):

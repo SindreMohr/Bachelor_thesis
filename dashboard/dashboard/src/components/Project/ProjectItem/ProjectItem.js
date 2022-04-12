@@ -34,8 +34,17 @@ function ProjectItem({data}) {
                     setResults("")
                 }
                 else{
+
                     console.log("aywant params and results")
-                
+                    setModelParam({
+                        model: data.mtype,
+                        training: data.train_test_split,
+                        epoch: data.epochs,
+                        lag: data.lag,
+                        layer: data.layer_count,
+                        prediction: ""
+                    })
+                    setResults(data.model_results)
                 }
             }
         )

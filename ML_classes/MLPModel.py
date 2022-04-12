@@ -27,6 +27,7 @@ class MLPModel():
         self.train_test_split = train_test_split
 
         self.model = None
+        self.eval = None
           #mode for training
         if data_creator == "plain":
             self.dc = plain_data_creator()
