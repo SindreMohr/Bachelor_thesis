@@ -23,7 +23,7 @@ function ProjectData() {
         let content = (
             projectDataset.map(function(obj, i){
             return (
-                <li key={i} >{obj} <span onClick={(e) => removeFromDataset(obj)} className="material-icons-outlined  cross">close</span></li>
+                <li key={i} >{obj} <span onClick={(e) => removeFromDataset(obj)} className="material-icons-outlined cross">close</span></li>
                 );
             })
         );
@@ -40,6 +40,7 @@ function ProjectData() {
     
     async function saveProject(){
         console.log("im saving")
+        console.log(projectDataset)
         const url = "http://localhost:5000/"
         let data = {
             houses: projectDataset,

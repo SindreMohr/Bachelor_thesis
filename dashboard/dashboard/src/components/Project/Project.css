@@ -1,13 +1,26 @@
-.Workspace {
+.project-wrapper {
     width: 100%;
-    height: calc(100vh - 38px);
-    right: 0px;
     display: flex;
     justify-content: center;
-    background: rgb(255, 255, 255);
-    overflow: scroll;
+    align-items: center;
 }
 
-.Workspace-content {
-    width: 100%;
+.project-content {
+    width: 80%;
+    max-width: 1000px;
+    margin-top: 100px;
+}
+
+.project-list {
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+    width: 500px;
+}
+
+.project-list li {
+    margin: 5px 0px;
+    background-color: white;
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr;
 }

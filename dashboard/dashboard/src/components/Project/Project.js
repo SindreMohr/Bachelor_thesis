@@ -89,16 +89,22 @@ function Project() {
 
 
     return (
-        <div>
-            <ul>
-                {projectItems}
-            </ul>
+        <div className='project-wrapper'>
+            <div className='project-content'>
+                <h2>Projects</h2>
+
+                <h3>Saved Projects:</h3>
+                <ul className='project-list'>
+                    {projectItems}
+                </ul>
 
 
-            <label>
+                <h3>Create New Project:</h3>
+                <label>
                     <input id="name" type="text" value={nameValue}  onChange={(e) => setNameValue(e.target.value)}/>
-            </label>
-            <button onClick={postForm} >New Project</button>
+                </label>
+                <button onClick={postForm}>Create</button>
+            </div>
         </div>       
 
 

@@ -1,0 +1,11 @@
+.about-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.about-content {
+    width: 80%;
+    max-width: 1000px;
+    padding-top: 100px;
+}

@@ -69,11 +69,9 @@ function ProjectItem({data}) {
 
     return (
         <li>
-            <div>
-                { data.name }
-                <button onClick={loadProject} >Load Project</button>
-                <button onClick={deleteProject}>Delete Project</button>
-            </div>
+            { data.name }
+            <button onClick={loadProject} >Load Project</button>
+            <button onClick={deleteProject}>Delete Project</button>
         </li>
     );
 }

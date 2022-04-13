@@ -3,11 +3,11 @@ export const GlobalContext = createContext()
 const GlobalContextProvider = (props) => {
     const [PAGE, setPAGE] = useState('Explore')
     const [LCLID, setLCLID] = useState('MAC000150')
-    const [projectDataset, setProjectDataset] = useState(["MAC000150","MAC000152","MAC000153", "MAC000159"])
+    const [projectDataset, setProjectDataset] = useState([])
     const [ProjectID, setProjectID] = useState(0)
     const [modelID, setModelID] = useState(null)
 
-    const [ProjectName, setProjectName] = useState('DL_01')
+    const [ProjectName, setProjectName] = useState()
 
     const [Results, setResults] = useState("");
     const Url = "http://localhost:3000"
@@ -22,6 +22,7 @@ const GlobalContextProvider = (props) => {
             prediction: ""
         }
         )
+    const [saveData, setSaveData] = useState();
     return (
          <GlobalContext.Provider 
             value={{
@@ -43,7 +44,9 @@ const GlobalContextProvider = (props) => {
                 Results,
                 setResults,
                 pageOverlay,
-                setPageOverlay
+                setPageOverlay,
+                saveData,
+                setSaveData
              }}>
                {props.children}
          </GlobalContext.Provider>

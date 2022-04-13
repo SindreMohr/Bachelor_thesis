@@ -173,9 +173,11 @@ def server_delete_project_house(pid,lclid):
 #todo
 @app.route('/save_project/<pid>',methods=["PUT"])
 def save_project(pid):
-    input_data = request.get_json()
-    house_list = input_data["houses"]
+    input_data = request.get_json()['data']
     print(input_data)
+    house_list = input_data["houses"]
+    conn = get_db()
+    add_houses_to_project_db(conn, pid, house_list)
     return json.dumps({"success": "successfully saved"})
 
 #obtaining a dataframe to feed into model

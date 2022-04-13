@@ -5,6 +5,7 @@ import ProjectData from '../ProjectData/ProjectData';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { useContext } from 'react';
 import Project from '../Project/Project';
+import About from '../About/About';
 
 function Content() {
 
@@ -15,12 +16,11 @@ function Content() {
       <div>
           { pageOverlay === "projects" ?
           <main>
-              Projects
               <Project/>
           </main>
           : pageOverlay === "about" ?
           <main>
-              About
+              <About />
           </main>
           :
           <main>
