@@ -12,7 +12,7 @@ function Project() {
 
 
     //for initing empty project
-    const {setModelParam,setProjectID, setProjectName,setProjectDataset,setResults} = useContext(GlobalContext);
+    const {setModelParam, setProjectID, ProjectName, setProjectName, setProjectDataset, setResults} = useContext(GlobalContext);
 
 
     //form
@@ -92,6 +92,8 @@ function Project() {
         <div className='project-wrapper'>
             <div className='project-content'>
                 <h2>Projects</h2>
+                <h3>Current Project:</h3>
+                <p>{ProjectName}</p>
 
                 <h3>Saved Projects:</h3>
                 <ul className='project-list'>

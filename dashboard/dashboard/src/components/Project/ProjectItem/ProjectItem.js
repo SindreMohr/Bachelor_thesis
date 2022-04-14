@@ -70,8 +70,8 @@ function ProjectItem({data}) {
     return (
         <li>
             { data.name }
-            <button onClick={loadProject} >Load Project</button>
-            <button onClick={deleteProject}>Delete Project</button>
+            <span onClick={loadProject} class="material-icons-outlined project-icon" title="Load Project">sync</span>
+            <span onClick={deleteProject} class="material-icons-outlined project-icon" title="Delete Project">close</span>
         </li>
     );
 }
