@@ -23,8 +23,10 @@ from datetime import datetime
 import sys
   
 # adding ML_classes to the system path
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../models/')
 
+
+#from models.ML_classes
 from ML_classes.MLPModel import MLPModel
 from ML_classes.LSTMModel import LSTMModel
 from ML_classes.DTModel import DTModel
@@ -178,7 +180,11 @@ def save_project(pid):
     house_list = input_data["houses"]
     parameters = input_data["parameters"]
     conn = get_db()
-    add_houses_to_project_db(conn, pid, house_list)
+
+    #updating proj data
+    delete_all_project_house_db(conn,pid)
+    add_houses_to_project_db(conn,pid,house_list)
+    
     #update_model(conn, 1, parameters["model"], parameters["lag"], "", parameters["epoch"], parameters["training"])
     return json.dumps({"success": "successfully saved"})
 
@@ -235,10 +241,10 @@ def run_model():
         print(model_id)
 
         lag = param_dict["lag"]
+        lag = int(lag)
         epoch = int(param_dict["epoch"])
         #print(type(epoch))
 
-        
         #model wants traintestsplit as size of test
         train_test_split = param_dict["training"]
         train_test_split = float(train_test_split)
@@ -252,19 +258,27 @@ def run_model():
           
         elif model_str == "lstm":
             #lstm mlp may need additional params from dict
-            layers = param_dict["layer"]
-            model, dict = run_LSTM(m_df,lag,train_test_split,epoch)
+            layers = param_dict["layerDictionary"]
+            layers = list(layers.values())
+            layers = [int(x) for x in layers]
+            print(layers)
+            print("headfsaf")
+            model, dict = run_LSTM(m_df,lag,train_test_split,epoch,layers)
             
         elif model_str == "slp" or model_str.lower() == "mlp":
-            layers = param_dict["layer"]
+            layers = param_dict["layerDictionary"]
+            layers = list(layers.values())
+            layers = [int(x) for x in layers]
+            print(layers)
             #if slp layers=1 perhaps
-            model, dict = run_MLP(m_df,lag,train_test_split,epoch)
+            model, dict = run_MLP(m_df,lag,train_test_split,epoch,layers)
         else:
             return ValueError("No suitable model class was specified")
 
         dict["energy_data"] = m_df["energy"].tolist()
         dict["time"] = m_df["tstp"].dt.strftime('%Y-%m-%d').tolist()
-        
+        dict["mid"] = model_id
+
         #updating proj data
         delete_all_project_house_db(conn,projectID)
         add_houses_to_project_db(conn,projectID,house_list)
@@ -272,6 +286,7 @@ def run_model():
         if model_id is None:
             model_id = add_model_db(conn,model_str,lag, 256, epoch, train_test_split)
             print(model_id)
+            dict["mid"] = model_id
             update_project(conn,projectID,model_id)
             if model_str == "lstm" or model_str == "mlp" or model_str == "slp":
                 model.model.save("./saved_models/"+str(model_id))

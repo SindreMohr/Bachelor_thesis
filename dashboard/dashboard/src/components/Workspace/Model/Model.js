@@ -12,12 +12,12 @@ function Model() {
     const [slideValue, setSlideValue] = useState(70);
     const [epochsValue, setEpochsValue] = useState(10);
     const [lagValue, setLagValue] = useState(24);
-    const [layerValue, setLayerValue] = useState(0);
+    const [layerValue, setLayerValue] = useState(1);
     const [predictionValue, setPredictionValue] = useState(0);
 
     let layerDict = {};
     const [currentLayer, setCurrentLayer] = useState("1");
-    const [currentLayerValue, setCurrentLayerValue] = useState("0");
+    const [currentLayerValue, setCurrentLayerValue] = useState("30");
     const [layerSelect, setLayerSelect] = useState([]);
 
     useEffect(() => {
@@ -39,7 +39,8 @@ function Model() {
             epoch: epochsValue,
             lag: lagValue,
             layer: layerValue,
-            prediction: predictionValue
+            prediction: predictionValue,
+            layerDictionary: layerDict
         }
         console.log(ModelFormData);
         setModelParam(ModelFormData);
@@ -83,14 +84,14 @@ function Model() {
                     <input id="lag" type="number" value={lagValue}  onChange={(e) => setLagValue(e.target.value)}/>
                 </label>
                 <label>
-                    Layer: 
+                    Layers: 
                     <input id="layer" type="number" value={layerValue}  onChange={(e) => setLayerValue(e.target.value)}/>
                 </label>
                 <label>
                     Prediction time: 
                     <input id="prediction" type="number" value={predictionValue}  onChange={(e) => setPredictionValue(e.target.value)}/>
                 </label>
-                <button onClick={setForm}>Update model</button>
+                
             </fieldset>
         </form>
                 
@@ -177,6 +178,7 @@ function Model() {
                         </fieldset>
                     </form>
                 : null }
+                <button className="blue-btn" onClick={setForm}>Update model</button>
             </div>
         </div>       
     );

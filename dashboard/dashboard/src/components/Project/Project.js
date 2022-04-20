@@ -8,7 +8,9 @@ import {GlobalContext} from '../../contexts/GlobalContext'
 function Project() {
     
     const [projectList, setProjectList] = useState([]);
-    //    const [projectItems, setProjectItems] = useState("");
+    const [projectItems, setProjectItems] = useState([]);
+
+    const [random, setRandom] = useState(0);
 
 
     //for initing empty project
@@ -38,18 +40,19 @@ function Project() {
         //console.log(projectList)
     }, []);
 
-    const projectItems = projectList.map((d) =>  <ProjectItem key={d.id} data={d} />);
-
-    function createProjectList() {
-        let content = (
-            projectList.map(function(obj, i){
-            return (
-                <li key={i} >{obj.name}</li>
-                );
-            })
-        );
-        return content
+    function createList() {
+        let projectItems = projectList.map((d) =>  <ProjectItem key={d.id} data={d} />);
+        return projectItems;
     }
+
+    useEffect(() => {
+        if (projectList[0]) {
+            console.log("writing");
+            setProjectItems(createList());
+        } else {
+            setProjectItems([]);
+        }
+    }, [projectList, ProjectName, random])
 
     function exitProject() {
         setProjectName();
@@ -75,6 +78,8 @@ function Project() {
         const respons = await fetch(url + "projects", reqOpt);
         const results = await respons.json();
         console.log(results)
+        let num = random + 1;
+        setRandom(num);
 
         //making new project current project
         // //data.id makes it problematic as that it null ... 

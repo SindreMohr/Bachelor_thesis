@@ -50,3 +50,7 @@
     margin: 10px;
     /*display: flex;*/
 }
+
+.svg-container {
+    width: 100%;
+}

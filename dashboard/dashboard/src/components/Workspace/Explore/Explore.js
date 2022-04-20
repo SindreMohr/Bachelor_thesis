@@ -41,6 +41,9 @@ function Explore() {
                     <h2>Explore: {LCLID} </h2>
                     <p className="add-button" onClick={addLog}>Add <b>{LCLID}</b> to dataset</p>
             </div>
+            <div className='Exploration-data-head'>
+                <DataPlot house={LCLID} />
+            </div>
             
             <div className="Exploration-first-wrapper">
                 <div>
@@ -76,6 +79,10 @@ function Explore() {
                             </tbody>
                         </table>
                     </div>
+                    
+                </div>
+            </div>
+            <div className="Exploration-second-wrapper">
                     <div className='Exploration-table-wrapper'>
                         <table className="Exploration-table">
                             <thead>
@@ -92,11 +99,6 @@ function Explore() {
                             <Head tableData={tableData} />
                         </table>
                     </div>
-                </div>
-            </div>
-        
-            <div className="Exploration-second-wrapper">
-                 <DataPlot house={LCLID} />
             </div>
         </div>       
     );

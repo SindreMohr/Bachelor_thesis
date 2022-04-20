@@ -23,8 +23,10 @@ function DataPlot({house}) {
     return (
 
         <div>
-            <h3>Plot</h3>
+            <h3>Data overview</h3>
             <Plot
+
+            style={{width: "100%"}}
 
             data={[
 
@@ -38,7 +40,7 @@ function DataPlot({house}) {
 
                 mode: 'lines',
 
-                marker: {color: 'green'},
+                marker: {color: ['lightblue']},
 
             },
 
@@ -50,11 +52,13 @@ function DataPlot({house}) {
             <h3>Box Plot</h3>
             <Plot
 
+            style={{width: "100%"}}
+
             data={[
 
             {
 
-                y: data.values,
+                x: data.values,
                 
             
                 type: 'box',

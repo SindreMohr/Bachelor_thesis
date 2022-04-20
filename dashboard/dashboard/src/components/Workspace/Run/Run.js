@@ -8,7 +8,7 @@ import {GlobalContext} from '../../../contexts/GlobalContext'
 
 function Run() {
 
-    const { ProjectID, ProjectName, modelID, modelParam, projectDataset, Results, setResults } = useContext(GlobalContext);
+    const { ProjectID, ProjectName, modelID, setModelID, modelParam, projectDataset, Results, setResults } = useContext(GlobalContext);
     const [datasetList, setDatasetlist] = useState(<ul></ul>);
     const [runState, setRunState] = useState(false);
 
@@ -55,6 +55,7 @@ function Run() {
         const respons = await fetch(url + "run-model", reqOpt);
         const results = await respons.json();
         setResults(results)
+        setModelID(results.mid)
         console.log(results);
         setRunState(false);
     }

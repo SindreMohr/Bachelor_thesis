@@ -20,12 +20,26 @@
 .model-form button {
     margin-top: 20px;
     padding: 5px;
+    background-color: rgb(185, 233, 255);
+    border: 1px solid rgb(74, 153, 255);
+    border-radius: 5px;
+    font-size: 1em;
+}
+.model-form button:hover {
+    background-color: rgb(74, 153, 255);
+    border: 1px solid rgb(185, 233, 255);
+}
+
+.blue-btn {
+    margin-top: 20px;
+    margin-left: 10px;
+    padding: 5px;
     background-color: rgb(133, 216, 255);
     border: 1px solid rgb(21, 122, 255);
     border-radius: 5px;
     font-size: 1.3em;
 }
-.model-form button:hover {
+.blue-btn:hover {
     background-color: rgb(78, 199, 255);
     border: 1px solid rgb(0, 90, 207);
 }

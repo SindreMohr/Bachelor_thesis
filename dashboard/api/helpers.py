@@ -3,7 +3,7 @@ from fileinput import filename
 import sys
   
 # adding ML_classes to the system path
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../models')
 
 from ML_classes.DTModel import DTModel
 from ML_classes.LSTMModel import LSTMModel
@@ -184,13 +184,13 @@ def run_DT(data,lag,train_test,epoch):
 
     return DT, model_result_dict
 
-def run_LSTM(data,lag,train_test,epoch):
+def run_LSTM(data,lag,train_test,epoch,layers):
 
     LSTM = LSTMModel(
         data = data,
         Y_var = 'energy',
         lag = lag,
-        LSTM_layer_depths = [50],
+        LSTM_layer_depths = layers,
         epochs =epoch,
         batch_size = 256,
         train_test_split = train_test
@@ -220,14 +220,14 @@ def run_LSTM(data,lag,train_test,epoch):
 
     return LSTM, model_result_dict
 
-def run_MLP(data,lag,train_test,epoch):
+def run_MLP(data,lag,train_test,epoch,layers):
 
     MLP = MLPModel(
         data = data,
         Y_var = 'energy',
         lag = lag,
-        layer_depths = [30],
-        layer_count= 1,
+        layer_depths = layers,
+        layer_count= len(layers),
         epochs =epoch,
         batch_size = 256,
         train_test_split = train_test

@@ -236,7 +236,7 @@ def update_model(conn, mid,mtype,lag,batches,epochs,train_test_split):
     # Why model ID?
     try:
         cur = conn.cursor()
-        cur.execute("UPDATE projects SET mtype=?, lag=?, batches=?, epochs=?, train_test_split=? WHERE mid = ?",(mtype, lag, batches, epochs, train_test_split, mid))
+        cur.execute("UPDATE models SET mtype=?, lag=?, batches=?, epochs=?, train_test_split=? WHERE mid = ?",(mtype, lag, batches, epochs, train_test_split, mid))
         conn.commit()
     except Error as e:
         print(e)
