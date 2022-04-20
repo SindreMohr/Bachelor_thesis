@@ -51,6 +51,12 @@ function Project() {
         return content
     }
 
+    function exitProject() {
+        setProjectName();
+        setProjectID();
+        setProjectDataset([]);
+    }
+
 
     async function postForm(){
         const url = "http://localhost:5000/"
@@ -88,12 +94,22 @@ function Project() {
     }
 
 
+    let loadedProject = (
+        <ul className='project-list'>
+            <li>
+                {ProjectName}
+                <span></span>
+                <span onClick={exitProject} class="material-icons-outlined project-icon" title="Load Project">close</span>
+            </li>
+        </ul>
+    );
+
     return (
         <div className='project-wrapper'>
             <div className='project-content'>
                 <h2>Projects</h2>
                 <h3>Current Project:</h3>
-                <p>{ProjectName}</p>
+                {ProjectName ? loadedProject : "No project loaded"}
 
                 <h3>Saved Projects:</h3>
                 <ul className='project-list'>

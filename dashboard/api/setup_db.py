@@ -181,9 +181,13 @@ def add_house_to_project_db(conn, pid, lclid):
 
 def add_houses_to_project_db(conn, pid, house_list):
     #no params kinda odd
-    sql = ''' INSERT INTO project_houses(pid,lclid)
-              VALUES(?,?) '''
+    sql = f"DELETE FROM project_houses WHERE pid='{pid}'"
     try:
+        cur = conn.cursor()
+        cur.execute(sql)
+        conn.commit()
+        sql = ''' INSERT INTO project_houses(pid,lclid)
+                VALUES(?,?) '''
         for lclid in house_list:
             cur = conn.cursor()
             cur.execute(sql, (pid,lclid,))
@@ -229,6 +233,7 @@ def update_project(conn,pid,mid):
         print(e)
 
 def update_model(conn, mid,mtype,lag,batches,epochs,train_test_split):
+    # Why model ID?
     try:
         cur = conn.cursor()
         cur.execute("UPDATE projects SET mtype=?, lag=?, batches=?, epochs=?, train_test_split=? WHERE mid = ?",(mtype, lag, batches, epochs, train_test_split, mid))

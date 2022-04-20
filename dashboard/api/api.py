@@ -176,8 +176,10 @@ def save_project(pid):
     input_data = request.get_json()['data']
     print(input_data)
     house_list = input_data["houses"]
+    parameters = input_data["parameters"]
     conn = get_db()
     add_houses_to_project_db(conn, pid, house_list)
+    #update_model(conn, 1, parameters["model"], parameters["lag"], "", parameters["epoch"], parameters["training"])
     return json.dumps({"success": "successfully saved"})
 
 #obtaining a dataframe to feed into model

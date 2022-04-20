@@ -1,8 +1,10 @@
 .add-button {
-    display: inline;
-    margin: 40px;
-    border-radius: 5px;
+    margin-top: 20px;
     padding: 5px;
-    border: 1px solid black;
-    background: grey;
+    background-color: rgb(133, 216, 255);
+    border: 1px solid rgb(21, 122, 255);
+    border-radius: 5px;
+    font-size: 1.3em;
+    display: inline;
+    cursor: pointer;
 }

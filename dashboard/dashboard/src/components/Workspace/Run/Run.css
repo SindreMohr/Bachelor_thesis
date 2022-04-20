@@ -1,3 +1,15 @@
 .fidgy-spinny {
     width: 100px;
 }
+
+.results-wrapper {
+    padding: 10px;
+}
+
+.select-data-list {
+    padding: 0;
+}
+
+.select-data-list li {
+    list-style-type: none;
+}

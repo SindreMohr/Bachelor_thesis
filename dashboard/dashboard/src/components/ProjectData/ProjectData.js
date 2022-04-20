@@ -3,7 +3,7 @@ import {GlobalContext} from '../../contexts/GlobalContext'
 import { useContext, useState, useEffect } from 'react';
 
 function ProjectData() {
-    const { ProjectID, ProjectName, projectDataset, setProjectDataset, LCLID } = useContext(GlobalContext);
+    const { ProjectID, ProjectName, projectDataset, setProjectDataset, LCLID, modelParam } = useContext(GlobalContext);
     const [datasetList, setDatasetlist] = useState(<ul></ul>);
 
     function removeFromDataset(name) {
@@ -44,6 +44,7 @@ function ProjectData() {
         const url = "http://localhost:5000/"
         let data = {
             houses: projectDataset,
+            parameters: modelParam,
         }
         
         const reqOpt = {
@@ -76,7 +77,7 @@ function ProjectData() {
     return (
         <div className="ProjectData">
             <section>
-                <h3>Project: {ProjectName}</h3>
+                <h3>Project: <i>{ProjectName}</i></h3>
             </section>
             <section>
                 <h3>Dataset:

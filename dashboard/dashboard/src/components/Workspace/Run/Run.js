@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Dots, MinimalSpinner, Spinner, ProgressBar } from 'loading-animations-react';
+import { MinimalSpinner } from 'loading-animations-react';
 
 import './Run.css';
 import ResultsPlot from './Results/ResultsPlot';
@@ -100,19 +100,19 @@ function Run() {
             </tbody>
         </table>
         <h3>Selected data:</h3>
-        <ul>
+        <ul className='select-data-list'>
             {datasetList}
         </ul>
     </div>);
 
     return (
-        <div>
-            <div className="Exploration-data-head">
-                <h2>Run {ProjectName}</h2>
+        <div className="results-wrapper">
+            <div>
+                <h2>Run project: <i>{ProjectName}</i></h2>
             </div>
                 {runState ? <MinimalSpinner className="fidgy-spinny" color="blue" /> : content}
             
-                {runState ? <button loading={runState}>Currently running</button> : <button onClick={runModel}>run this thing</button>}
+                {runState ? <button loading={runState}>Currently running</button> : <button onClick={runModel}>Run model</button>}
             <div>
             
                 <table className="Exploration-table">

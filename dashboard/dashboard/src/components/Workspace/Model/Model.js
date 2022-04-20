@@ -1,5 +1,5 @@
 import './Model.css';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 
 import {GlobalContext} from '../../../contexts/GlobalContext'
 
@@ -12,8 +12,23 @@ function Model() {
     const [slideValue, setSlideValue] = useState(70);
     const [epochsValue, setEpochsValue] = useState(10);
     const [lagValue, setLagValue] = useState(24);
-    const [layerValue, setLayerValue] = useState(1);
+    const [layerValue, setLayerValue] = useState(0);
     const [predictionValue, setPredictionValue] = useState(0);
+
+    let layerDict = {};
+    const [currentLayer, setCurrentLayer] = useState("1");
+    const [currentLayerValue, setCurrentLayerValue] = useState("0");
+    const [layerSelect, setLayerSelect] = useState([]);
+
+    useEffect(() => {
+        let result = [];
+        let item;
+        for (let i=1;i<=layerValue; i++) {
+            item = (<option key={i} value={i}>{i}</option>);
+            result.push(item);
+        }
+        setLayerSelect(result);
+    },[layerValue]);
 
     const setForm = (event) => {
         event.preventDefault();
@@ -35,6 +50,12 @@ function Model() {
         console.log(slideValue)
     }
 
+    const updateLayer = (event) =>  {
+        event.preventDefault();
+        layerDict[currentLayer] = currentLayerValue;
+        console.log(layerDict);
+    }
+
     const Options = (
         <form className="model-form">
             <fieldset>
@@ -42,7 +63,7 @@ function Model() {
                 <label>
                     Select Model:
                     <select id="model_type" onChange={(e) => setModelTypeValue(e.target.value)}>
-                        <option defaultValue="lstm">LSTM</option>
+                        <option defaultValue="lstm" value="lstm">LSTM</option>
                         <option value="mlp">MLP</option>
                         <option value="dt">Decision Tree</option>
                     </select>
@@ -72,6 +93,7 @@ function Model() {
                 <button onClick={setForm}>Update model</button>
             </fieldset>
         </form>
+                
     );
   
     return (
@@ -122,6 +144,39 @@ function Model() {
         
             <div className="Exploration-second-wrapper grey-bg">
                 { Options }
+                { modelTypeValue === "lstm" && layerValue > 0 ?
+                    <form className="model-form">
+                        <fieldset>
+                            <legend>Layer select</legend>
+                            <label>
+                                <select onChange={(e) => setCurrentLayer(e.target.value)}>
+                                    {layerSelect}
+                                </select>
+                            </label>                
+                            <label>
+                                Value:
+                                <input type="number" value={currentLayerValue}  onChange={(e) => setCurrentLayerValue(e.target.value)}/>
+                            </label>
+                            <button onClick={updateLayer}>Update Layer</button>
+                        </fieldset>
+                    </form>
+                : modelTypeValue === "mlp" && layerValue > 0 ?
+                    <form className="model-form">
+                        <fieldset>
+                            <legend>Layer select</legend>
+                            <label>
+                                <select onChange={(e) => setCurrentLayer(e.target.value)}>
+                                {layerSelect}
+                                </select>
+                            </label>                
+                            <label>
+                                Value:
+                                <input type="number" value={currentLayerValue}  onChange={(e) => setCurrentLayerValue(e.target.value)}/>
+                            </label>
+                            <button onClick={updateLayer}>Update Layer</button>
+                        </fieldset>
+                    </form>
+                : null }
             </div>
         </div>       
     );
