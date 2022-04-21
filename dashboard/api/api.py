@@ -4,11 +4,12 @@ from unicodedata import name
 from flask import Flask, request, redirect, json, g
 from flask_cors import CORS
 from matplotlib.font_manager import json_dump
+from numpy import empty
 from sklearn.model_selection import TimeSeriesSplit, train_test_split
 
-from setup_db import add_house_to_project_db, delete_all_project_house_db, delete_project_house_db, setup, select_housedata_curve_db, select_housedata_count_db, select_lclids, update_project
+from setup_db import add_house_to_project_db, add_layers_to_model_db, delete_all_model_layers_db, delete_all_project_house_db, delete_project_house_db, setup, select_housedata_curve_db, select_housedata_count_db, select_lclids, update_project
 from setup_db import select_projects, select_project, delete_project, add_project_db
-from setup_db import delete_model, update_model, add_model_db
+from setup_db import delete_model, update_model, add_model_db, set_project_has_run, add_layers_to_model_db, delete_all_model_layers_db, select_model_layers
 from setup_db import add_houses_to_project_db, delete_all_project_house_db
 
 from helpers import retrieve_DT, retrieve_LSTM, retrieve_MLP, run_DT,run_LSTM,run_MLP
@@ -112,25 +113,33 @@ def get_project(pid):
         
         project["train_test_split"] = (1 - project["train_test_split"])*100
         data = make_model_dataframe( project["houses"])
-        if project["mtype"] == "mlp":
-            lc, layers, model_res = retrieve_MLP(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
-            project["layer_count"] = lc
-            project["layers"] = layers
-            model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d').tolist()
-            model_res["energy_data"] = data["energy"].tolist()
-            project["model_results"] = model_res
-        elif project["mtype"] == "lstm":
-            lc, layers, model_res = retrieve_LSTM(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
-            project["layer_count"] = lc
-            project["layers"] = layers
-            model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d').tolist()
-            model_res["energy_data"] = data["energy"].tolist()
-            project["model_results"] = model_res
-        elif project["mtype"] == "dt":
-            model_res = retrieve_DT(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
-            model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d').tolist()
-            model_res["energy_data"] = data["energy"].tolist()
-            project["model_results"] = model_res
+
+        project["layer_dict"] = {}
+        project["model_results"] = ""
+        if project["mtype"] == "mlp" or project["mtype"] == "lstm":
+            layer_dict = select_model_layers(conn,project["mid"])
+            project["layer_dict"] = layer_dict
+        if project["has_run"]:
+
+            if project["mtype"] == "mlp":
+                lc, layers, model_res = retrieve_MLP(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
+                project["layer_count"] = lc
+                project["layers"] = layers
+                model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d').tolist()
+                model_res["energy_data"] = data["energy"].tolist()
+                project["model_results"] = model_res
+            elif project["mtype"] == "lstm":
+                lc, layers, model_res = retrieve_LSTM(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
+                project["layer_count"] = lc
+                project["layers"] = layers
+                model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d').tolist()
+                model_res["energy_data"] = data["energy"].tolist()
+                project["model_results"] = model_res
+            elif project["mtype"] == "dt":
+                model_res = retrieve_DT(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
+                model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d').tolist()
+                model_res["energy_data"] = data["energy"].tolist()
+                project["model_results"] = model_res
     #print(project["layer_count"])
    # print(project["layers"])
 
@@ -175,16 +184,47 @@ def server_delete_project_house(pid,lclid):
 #todo
 @app.route('/save_project/<pid>',methods=["PUT"])
 def save_project(pid):
+    conn = get_db()
+    result_dict = {}
+
+
     input_data = request.get_json()['data']
     print(input_data)
     house_list = input_data["houses"]
+    pid = input_data["pid"]
+    mid = input_data["mid"]
     parameters = input_data["parameters"]
-    conn = get_db()
-
+    
     #updating proj data
     delete_all_project_house_db(conn,pid)
     add_houses_to_project_db(conn,pid,house_list)
-    
+
+    #crude check to see if parameters are initiated
+    if parameters["model"] != "":
+        #reformating param input
+        model_str = parameters["model"].lower()
+        lag = parameters["lag"]
+        lag = int(lag)
+        epoch = int(parameters["epoch"])
+        train_test_split = parameters["training"]
+        train_test_split = float(train_test_split)
+        train_test_split = 1- (train_test_split/100)
+
+        if mid is None:    
+            mid = add_model_db(conn,model_str, lag,256,epoch,train_test_split)
+            update_project(conn,pid,mid)
+        else:
+            update_model(conn, mid, model_str, lag, 256, epoch, train_test_split)
+
+        if model_str == "lstm" or model_str == "mlp":
+            layers = parameters["layerDictionary"]
+            layers = list(layers.values())
+            layers = [int(x) for x in layers]
+            if len(layers) != 0:
+                add_layers_to_model_db(conn,mid,layers)
+    result_dict["mid"] = mid
+    return result_dict
+
     #update_model(conn, 1, parameters["model"], parameters["lag"], "", parameters["epoch"], parameters["training"])
     return json.dumps({"success": "successfully saved"})
 
@@ -289,21 +329,35 @@ def run_model():
             dict["mid"] = model_id
             update_project(conn,projectID,model_id)
             if model_str == "lstm" or model_str == "mlp" or model_str == "slp":
+                layers = param_dict["layerDictionary"]
+                layers = list(layers.values())
+                layers = [int(x) for x in layers]
+
+                add_layers_to_model_db(conn, model_id,layers)
+
                 model.model.save("./saved_models/"+str(model_id))
             elif model_str == "dt":
                 filename = "./saved_models/" + str(model_id) + "/dt.sav"
                 dirpath = "./saved_models/" + str(model_id)
                 os.mkdir(dirpath)
                 pickle.dump(model.model, open(filename, 'wb'))
+            set_project_has_run(conn,model_id)
         else:
             print("update model")
             update_model(conn, model_id, model_str, lag, 256, epoch, train_test_split)
             if model_str == "lstm" or model_str == "mlp" or model_str == "slp":
+                layers = param_dict["layerDictionary"]
+                layers = list(layers.values())
+                layers = [int(x) for x in layers]
+
+                add_layers_to_model_db(conn, model_id,layers)
                 model.model.save("./saved_models/"+str(model_id))
             elif model_str == "dt":
                 filename = "./saved_models/" + str(model_id) + "/dt.sav"
                 os.remove(filename)
                 pickle.dump(model.model, open(filename, 'wb'))
+            set_project_has_run(conn,model_id)
+
         return json.dumps(dict)
 
     return "f"

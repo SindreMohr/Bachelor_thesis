@@ -4,7 +4,7 @@ import {GlobalContext} from '../../../contexts/GlobalContext'
 
 function ProjectItem({data}) {
     //const [info, setinfo] = useState([]);
-    const {setModelParam,setProjectID, setProjectName,setProjectDataset,setResults} = useContext(GlobalContext);
+    const {setModelParam,setModelID, setProjectID, setProjectName,setProjectDataset,setResults} = useContext(GlobalContext);
 
     function loadProject() {
         console.log("hey")
@@ -23,6 +23,7 @@ function ProjectItem({data}) {
                 setProjectName(data.name)
                 setProjectDataset(data.houses)
                 if(data.mid === null){
+                    setModelID(data.mid)
                     setModelParam({
                         model: "",
                         training: "",
@@ -34,15 +35,16 @@ function ProjectItem({data}) {
                     setResults("")
                 }
                 else{
-
-                    console.log("aywant params and results")
+                    console.log("loading model")
+                    setModelID(data.mid)
                     setModelParam({
                         model: data.mtype,
                         training: data.train_test_split,
                         epoch: data.epochs,
                         lag: data.lag,
                         layer: data.layer_count,
-                        prediction: ""
+                        prediction: "0",
+                        layerDictionary: data.layer_dict
                     })
                     setResults(data.model_results)
                 }

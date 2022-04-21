@@ -1,4 +1,5 @@
 import os
+from pickle import FALSE
 import shutil
 import sqlite3
 from datetime import date, datetime, timedelta
@@ -9,6 +10,8 @@ import time
 
 from datetime import datetime as dt
 from unicodedata import name
+from matplotlib import units
+from matplotlib.pyplot import table
 
 #hack for sd
 import pandas as pd
@@ -49,15 +52,23 @@ sql_create_house_table = """ CREATE TABLE IF NOT EXISTS houses
     stop_date TEXT NOT NULL
     );"""
 
-#not entirely sure all fields of this maybe split into tables for each modeltype instead of single one with potentially unused fields
 sql_create_models_table = """CREATE TABLE IF NOT EXISTS models(
      mid INTEGER PRIMARY KEY AUTOINCREMENT,
      mtype TEXT NOT NULL,
      lag INTEGER ,
      batches INTEGER,
      epochs INTEGER,
-     train_test_split REAL
+     train_test_split REAL,
+     has_run BOOLEAN NOT NULL
 );"""
+
+sql_create_model_layers_table  = """ CREATE TABLE IF NOT EXISTS model_layers(
+    mid INTEGER,
+    layer_nr INTEGER,
+    units INTEGER not null,
+    PRIMARY KEY (mid,layer_nr)
+    FOREIGN KEY (mid) references models (mid) ON DELETE CASCADE
+    );"""
 
  #layer_depth INTEGER,
  #    layers INTEGER,
@@ -96,7 +107,7 @@ def create_table(conn, create_table_sql):
 def drop_table(conn, table_name):
     try:
         c = conn.cursor()
-        c.execute("DROP TABLE ?",(table_name,))
+        c.execute("DROP TABLE "+table_name,())
     except Error as e:
         print(e)
 
@@ -148,11 +159,11 @@ def add_project_db(conn,name):
         return False
 
 def add_model_db(conn, mtype, lag, batches, epochs, train_test_split):
-    sql = ''' INSERT INTO models(mtype,lag,batches,epochs,train_test_split)
-              VALUES(?,?,?,?,?) '''
+    sql = ''' INSERT INTO models(mtype,lag,batches,epochs,train_test_split,has_run)
+              VALUES(?,?,?,?,?,?) '''
     try:
         cur = conn.cursor()
-        cur.execute(sql, (mtype, lag, batches,epochs,train_test_split))
+        cur.execute(sql, (mtype, lag, batches,epochs,train_test_split,False))
         #finding value of auto increment
         cur.execute("SELECT last_insert_rowid();")
         mid = None
@@ -197,6 +208,24 @@ def add_houses_to_project_db(conn, pid, house_list):
         print(e)
         return False
 
+def add_layers_to_model_db(conn, mid, layers_list):
+    #no params kinda odd
+    sql = f"DELETE FROM model_layers WHERE mid='{mid}'"
+    try:
+        cur = conn.cursor()
+        cur.execute(sql)
+        conn.commit()
+        sql = ''' INSERT INTO model_layers(mid,layer_nr,units)
+                VALUES(?,?,?) '''
+        for k in range(len(layers_list)):
+            cur = conn.cursor()
+            cur.execute(sql, (mid,k+1,layers_list[k],))
+            conn.commit()
+        return True
+    except Error as e:
+        print(e)
+        return False
+
 
 ##### INITS #####
 
@@ -233,10 +262,17 @@ def update_project(conn,pid,mid):
         print(e)
 
 def update_model(conn, mid,mtype,lag,batches,epochs,train_test_split):
-    # Why model ID?
     try:
         cur = conn.cursor()
         cur.execute("UPDATE models SET mtype=?, lag=?, batches=?, epochs=?, train_test_split=? WHERE mid = ?",(mtype, lag, batches, epochs, train_test_split, mid))
+        conn.commit()
+    except Error as e:
+        print(e)
+
+def set_project_has_run(conn,mid):
+    try:
+        cur = conn.cursor()
+        cur.execute("UPDATE models SET has_run=? WHERE mid = ?",(True, mid))
         conn.commit()
     except Error as e:
         print(e)
@@ -273,7 +309,6 @@ def delete_project_house_db(conn, pid, lclid):
         return False
 
 def delete_all_project_house_db(conn, pid):
-    #no params kinda odd
     try:
         cur = conn.cursor()
         cur.execute("DELETE FROM project_houses where pid = ?", (pid,))
@@ -283,15 +318,27 @@ def delete_all_project_house_db(conn, pid):
         print(e)
         return False
 
-def delete_model(conn,mid):
+
+def delete_model(conn,mid,has_run):
     try:
         cur = conn.cursor()
         cur.execute("DELETE FROM models WHERE mid = ?",(mid,))
         conn.commit()
-        folder_path = "./saved_models/" +str(mid)
-        shutil.rmtree(folder_path)
+        if has_run:
+            folder_path = "./saved_models/" +str(mid)
+            shutil.rmtree(folder_path)
     except Error as e:
         print(e)
+
+def delete_all_model_layers_db(conn, mid):
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM model_layerss where mid = ?", (mid,))
+        conn.commit()
+        return True
+    except Error as e:
+        print(e)
+        return False       
 
 ##### SELECTS #####
 
@@ -418,13 +465,14 @@ def select_project(conn,pid):
     print(project["mid"])
     if project["mid"] is not None:
         cur.execute("SELECT * FROM models WHERE mid = ?",(project["mid"],))
-        for (mid,mtype,lag,batches,epochs,train_test_split) in cur:
+        for (mid,mtype,lag,batches,epochs,train_test_split,has_run) in cur:
             project["mtype"] = mtype
             project["lag"] = lag
             project["mid"] = mid
             project["batches"] = batches
             project["epochs"] = epochs
             project["train_test_split"] = train_test_split
+            project["has_run"] = has_run
     cur.execute("SELECT lclid FROM project_houses WHERE pid = ?",(pid,))
     house_list = []
     for (lclid) in cur:
@@ -432,6 +480,13 @@ def select_project(conn,pid):
     project["houses"] = house_list
     return project
 
+def select_model_layers(conn,mid):
+ cur = conn.cursor()
+ cur.execute("SELECT layer_nr, units FROM model_layers WHERE mid = ?",(mid,))
+ layer_dict = {}
+ for (layer_nr,units) in cur:
+    layer_dict[str(layer_nr)] = units
+ return layer_dict
 
 #### SETUP ####
 
@@ -443,9 +498,15 @@ def setup():
         #init_database(conn)
         #init_house_info(conn)
 
+        drop_table(conn, "models")
+        drop_table(conn, "projects")
+        drop_table(conn, "project_houses")
+        drop_table(conn, "model_layers")
+
         create_table(conn, sql_create_models_table)
         create_table(conn, sql_create_projects_table)
         create_table(conn, sql_create_project_houses_table)
+        create_table(conn, sql_create_model_layers_table)
 
 
 
