@@ -75,10 +75,12 @@ function Model() {
                     Training: {slideValue} %
                     Test: {100 - slideValue} %
                 </label>
+                { modelTypeValue !== "dt" ? 
                 <label>
                     Epochs: 
                     <input id="epochs" type="number" value={epochsValue} onChange={(e) => setEpochsValue(e.target.value)}/>
                 </label>
+                : null}
                 <label>
                     Lag: 
                     <input id="lag" type="number" value={lagValue}  onChange={(e) => setLagValue(e.target.value)}/>
