@@ -23,22 +23,23 @@
     width: 100%;
 }
     .Exploration-table thead th {
-        background-color: #868686;
+        background-color: rgb(16, 89, 106);
+        color: white;
     }
 
     .Exploration-table td, .Exploration-table th {
         padding: 5px;
-        border: 1px solid black;
+        border: 2px solid rgb(24, 127, 150);
     }
 
     .Exploration-table tr {
         background: white;
     }
 
-    .Exploration-table tr:nth-child(even){background: #f2f2f2;}
+    .Exploration-table tr:nth-child(even){background: #e2f4ff;}
 
 .Exploration-second-wrapper {
-    margin: 10px;
+    padding: 10px;
 }
 
 .Exploration-second-wrapper img {

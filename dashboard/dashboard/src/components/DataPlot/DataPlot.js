@@ -67,7 +67,7 @@ function DataPlot({house}) {
                 //boxmean: 'sd',
                 name: 'Energy measurements',
 
-                marker: {color: 'green'},
+                marker: {color: ['lightblue']},
 
             },
 

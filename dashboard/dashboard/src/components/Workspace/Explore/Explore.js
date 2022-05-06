@@ -7,7 +7,7 @@ import {GlobalContext} from '../../../contexts/GlobalContext'
 
 function Explore() {
 
-    const { LCLID, setProjectDataset, projectDataset, setLCLID} = useContext(GlobalContext);
+    const { LCLID, setProjectDataset, projectDataset, setLCLID, ProjectName} = useContext(GlobalContext);
 
     const [tableData, settableData] = useState([]);
     
@@ -36,10 +36,17 @@ function Explore() {
     }
 
     return (
+        <span>
+            { LCLID !== "" 
+            ?
         <div className="Exploration-view">
             <div className='Exploration-data-head'>
                     <h2>Explore: {LCLID} </h2>
-                    <p className="add-button" onClick={addLog}>Add <b>{LCLID}</b> to dataset</p>
+                    {ProjectName ? 
+                    <p className="add-button" onClick={addLog} title="Add data to project dataset">+ Add to dataset</p>
+                    : 
+                    <p>Load project to add data</p>
+                    }
             </div>
             <div className='Exploration-data-head'>
                 <DataPlot house={LCLID} />
@@ -100,7 +107,15 @@ function Explore() {
                         </table>
                     </div>
             </div>
-        </div>       
+            </div>       
+            :
+            <div className='Exploration-view'>
+                <div className='Exploration-data-head'>
+                    <h2>Select data to Explore</h2>
+                </div>
+            </div>
+        }
+        </span>
     );
 }
 

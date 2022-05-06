@@ -5,7 +5,7 @@ import React, { useContext } from 'react';
 import {GlobalContext} from '../../../contexts/GlobalContext'
 
 function Workspacenav() {
-    const {setPAGE} = useContext(GlobalContext)
+    const {setPAGE, PAGE} = useContext(GlobalContext)
     function changeContext(value) {
         console.log(value);
         setPAGE(value);
@@ -13,9 +13,23 @@ function Workspacenav() {
     return (
         <div className="Workspace-nav">
             <ul>
-                <li onClick={() => changeContext('Explore')}>Explore</li>
-                <li onClick={() => changeContext('Model')}>Model Parameters</li>
-                <li onClick={() => changeContext('Run')}>Run</li>
+                { PAGE === "Explore" ? 
+                    <li className='Workspace-nav-selected'>Explore</li>
+                : 
+                    <li className='Workspace-nav-not-selected' onClick={() => changeContext('Explore')}>Explore</li>
+                }
+                { PAGE === "Model" ? 
+                    <li className='Workspace-nav-selected'>Model Parameters</li>
+                : 
+                    <li className='Workspace-nav-not-selected' onClick={() => changeContext('Model')}>Model Parameters</li>
+                }
+                { PAGE === "Run" ? 
+                    <li className='Workspace-nav-selected'>Run</li>
+                : 
+                    <li className='Workspace-nav-not-selected' onClick={() => changeContext('Run')}>Run</li>
+                }
+                
+                
             </ul>
         </div>
     );

@@ -24,7 +24,12 @@ function Navigation() {
 
   return (
     <header>
-        <h1 onClick={handleClickHome}>Deep Learning Dashboard</h1>
+        <h1 onClick={handleClickHome}>
+          <span class="material-icons-outlined bolt">
+            bolt
+          </span>
+          Deep Learning Dashboard
+        </h1>
         <nav>
           <ul>
             <li onClick={handleClickHome}>HOME</li>

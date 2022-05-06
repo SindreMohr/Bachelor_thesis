@@ -17,29 +17,64 @@
     margin-top: 10px;
 }
 
+.model-form label {
+    font-weight: bolder;
+}
+
+.model-form input, .model-form select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 0px;
+    font-size: 15px;
+}
+
+.model-form {
+    color: white;
+}
+
+.layer-form {
+    background-color: rgb(24, 127, 150);
+    padding: 10px;
+}
+
 .model-form button {
     margin-top: 20px;
-    padding: 5px;
-    background-color: rgb(185, 233, 255);
-    border: 1px solid rgb(74, 153, 255);
+    padding: 5px 10px;
+    background-color: rgb(16, 89, 106);
+    border: 0px;
     border-radius: 5px;
-    font-size: 1em;
+    font-size: 1.1em;
+    transition: 0.15s ease-in-out;
+    cursor: pointer;
+    color: white;
 }
 .model-form button:hover {
-    background-color: rgb(74, 153, 255);
-    border: 1px solid rgb(185, 233, 255);
+    background-color: rgb(255, 255, 255);
+    color: rgb(24, 127, 150);
 }
 
 .blue-btn {
     margin-top: 20px;
     margin-left: 10px;
-    padding: 5px;
-    background-color: rgb(133, 216, 255);
-    border: 1px solid rgb(21, 122, 255);
+    padding: 5px 10px;
+    background-color: rgb(24, 127, 150);
     border-radius: 5px;
-    font-size: 1.3em;
+    font-size: 1.1em;
+    transition: 0.15s ease-in-out;
+    cursor: pointer;
+    color: white;
+    border: none;
 }
 .blue-btn:hover {
-    background-color: rgb(78, 199, 255);
-    border: 1px solid rgb(0, 90, 207);
+    background-color: white;
+    color: rgb(16, 89, 106);
+}
+
+
+fieldset {
+    border: none;
+}
+
+.form-bg {
+    background-color: rgb(16, 89, 106);
 }

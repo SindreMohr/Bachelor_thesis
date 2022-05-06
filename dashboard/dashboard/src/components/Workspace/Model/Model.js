@@ -60,7 +60,7 @@ function Model() {
     const Options = (
         <form className="model-form">
             <fieldset>
-                <legend>Form Parameters</legend>
+                <legend><h2>Form Parameters</h2></legend>
                 <label>
                     Select Model:
                     <select id="model_type" onChange={(e) => setModelTypeValue(e.target.value)}>
@@ -145,10 +145,10 @@ function Model() {
                 </div>
             </div>
         
-            <div className="Exploration-second-wrapper grey-bg">
+            <div className="Exploration-second-wrapper form-bg">
                 { Options }
                 { modelTypeValue === "lstm" && layerValue > 0 ?
-                    <form className="model-form">
+                    <form className="model-form layer-form">
                         <fieldset>
                             <legend>Layer select</legend>
                             <label>
@@ -164,7 +164,7 @@ function Model() {
                         </fieldset>
                     </form>
                 : modelTypeValue === "mlp" && layerValue > 0 ?
-                    <form className="model-form">
+                    <form className="model-form layer-form">
                         <fieldset>
                             <legend>Layer select</legend>
                             <label>

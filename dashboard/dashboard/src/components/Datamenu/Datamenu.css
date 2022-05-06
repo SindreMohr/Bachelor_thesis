@@ -1,13 +1,12 @@
 .Datamenu {
-    background: rgb(236, 226, 226);
+    background: rgb(16, 89, 106);
     height: calc(100vh - 38px);
     width: 300px;
     overflow-y: scroll;
 }
 
 .Datamenu-header {
-    color: black;
-    font-weight: lighter;
+    color: white;
     margin-left: 10px;
     font-size: 1.5em;
 }
@@ -21,10 +20,15 @@
     list-style-type: none;
     padding: 10px;
     cursor: pointer;
+    background-color: rgb(11, 99, 119);
+    margin-top: 2px;
+    color: white;
+    transition: 0.15s ease-in-out;
 }
 
 .Datamenu li:hover {
-    color: grey;
+    color: rgb(206, 229, 255);
+    background-color: rgb(24, 127, 150);
 }
 
 .data-menu-output {

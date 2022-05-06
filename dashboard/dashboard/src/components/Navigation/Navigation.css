@@ -1,10 +1,14 @@
 h1 {
-    margin: 5px;
+    padding: 10px;
     display: inline;
-    color: rgb(87, 87, 87);
-    font-weight: lighter;
+    color: black;
     cursor: default;
+    font-style: italic;
     user-select: none;
+}
+
+.bolt {
+    color: rgb(16, 89, 106);
 }
 
 header  {
@@ -29,6 +33,7 @@ nav ul li {
     margin-top: 0px;
     color: rgb(87, 87, 87);
     transition: 0.1s;
+    font-size: 18px;
 }
 
 

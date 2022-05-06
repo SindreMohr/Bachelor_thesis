@@ -1,10 +1,16 @@
 .add-button {
     margin-top: 20px;
-    padding: 5px;
-    background-color: rgb(133, 216, 255);
-    border: 1px solid rgb(21, 122, 255);
+    padding: 5px 10px;
+    background-color: rgb(24, 127, 150);
     border-radius: 5px;
     font-size: 1.3em;
     display: inline;
     cursor: pointer;
+    color: white;
+    transition: 0.15s ease-in-out;
+}
+
+.add-button:hover {
+    background-color: rgb(16, 89, 106);
+    color: white;
 }

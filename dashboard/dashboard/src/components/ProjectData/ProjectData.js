@@ -3,7 +3,7 @@ import {GlobalContext} from '../../contexts/GlobalContext'
 import { useContext, useState, useEffect } from 'react';
 
 function ProjectData() {
-    const { ProjectID, ProjectName, modelID, setModelID, projectDataset, setProjectDataset, LCLID, modelParam } = useContext(GlobalContext);
+    const { ProjectID, ProjectName, modelID, setModelID, projectDataset, setProjectDataset, LCLID, setPAGE, setLCLID, modelParam, setPageOverlay } = useContext(GlobalContext);
     const [datasetList, setDatasetlist] = useState(<ul></ul>);
 
     function removeFromDataset(name) {
@@ -23,12 +23,17 @@ function ProjectData() {
         let content = (
             projectDataset.map(function(obj, i){
             return (
-                <li key={i} >{obj} <span onClick={(e) => removeFromDataset(obj)} className="material-icons-outlined cross">close</span></li>
+                <li onClick={(e) => exploreData(obj)} key={i} >{obj} <span onClick={(e) => removeFromDataset(obj)} className="material-icons-outlined cross" title="Remove from dataset">close</span></li>
                 );
             })
         );
         console.log("ok")
         return content
+    }
+
+    function exploreData(name) {
+        setLCLID(name);
+        setPAGE("Explore");
     }
 
     const clearData = event => {
@@ -79,22 +84,37 @@ function ProjectData() {
 
     return (
         <div className="ProjectData">
-            <section>
-                <h3>Project: <i>{ProjectName}</i></h3>
-            </section>
-            <section>
-                <h3>Dataset:
-                </h3>
-                <ul className="project-data-list">
-                    {datasetList}
-                </ul>
-                <p onClick={clearData}>Clear dataset
-                    <span className="material-icons-outlined">
-                        delete
-                    </span>
-                </p>
-            </section>
-            <button onClick={saveProject}>Save Project</button>
+            {ProjectName ? 
+                <span>
+                    <section>
+                        <h2>Project Menu</h2>
+                        <h3>Project: <i><b>{ProjectName}</b></i></h3>
+                    </section>
+                    <section>
+                        <p className="project-data-title">Dataset:
+                        </p>
+                        <ul className="project-data-list">
+                            {datasetList}
+                        </ul>
+                        <div className="project-edit">
+                            <span onClick={saveProject} title="Save Project" class="material-icons-outlined save">
+                                save
+                            </span>
+                            <span onClick={clearData} title="Clear Dataset" className="material-icons-outlined clear">
+                                delete
+                            </span>
+                        </div>
+                    </section>
+                </span>
+            :
+                <span>
+                    <section>
+                        <h2>Project Menu</h2>
+                        <p>No project loaded</p>
+                        <p onClick={() => setPageOverlay("projects")}><i>Load project</i></p>
+                    </section>
+                </span>
+            }
 
         </div>
     );

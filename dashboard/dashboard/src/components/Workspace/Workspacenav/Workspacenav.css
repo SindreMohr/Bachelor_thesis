@@ -1,17 +1,41 @@
 .Workspace-nav {
-    background: #f5e9e9;
-    width: 100%;
+    background: rgb(11, 99, 119);
     display: flex;
+    width: 100%;
     justify-content: center;
+    position: relative;
 }
 
-.Workspace-nav ul li {
+.Workspace-nav ul {
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.Workspace-nav li {
     display: inline;
+    font-size: larger;
     padding: 0px 20px;
-    transition: 0.15s ease;
+    text-align: center;
+    padding: 20px 0px;
+}
+
+.Workspace-nav-not-selected {
+    color: white;
+    transition: 0.1s ease-in-out;
     cursor: pointer;
 }
 
-.Workspace-nav li:hover {
-    color: white;
+.Workspace-nav-not-selected:hover {
+    color: rgb(255, 255, 255);
+    background-color: rgb(24, 127, 150);
 }
+
+.Workspace-nav-selected {
+    background-color: rgb(24, 127, 150);
+    color: rgb(255, 255, 255);
+    cursor: default;
+}
+

@@ -1,13 +1,15 @@
 .ProjectData {
-    background: rgb(236, 226, 226);
+    background: rgb(72, 97, 102);
     height: calc(100vh - 38px);
     width: 390px;
     padding-left: 10px;
     overflow-y: scroll;
+    color: white;
 }
 
 .ProjectData h3 {
     margin: 0px;
+    font-weight: 300;
 }
 
 
@@ -15,9 +17,9 @@
     font-size: 25px;
     color: red;
     font-weight: bolder;
-    position: relative;
-    top: 5px;
     cursor: pointer;
+    right: 0px;
+    transition: 0.1s ease-in-out;
 }
 
 .cross:hover {
@@ -27,7 +29,25 @@
 .project-data-list {
     list-style-type: none;
     padding: 0px;
+    margin: 0px;
+    margin-top: 5px;
 }
+
+.project-data-list li {
+    padding: 5px;
+    margin-top: 2px;
+    background-color: rgb(49, 68, 71);
+    transition: 0.1s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.project-data-list li:hover {
+    background-color: rgb(64, 88, 92);
+}
+
 
 .material-icons-outlined {
     cursor: pointer;
@@ -35,4 +55,39 @@
 
 .ProjectData section {
     margin-top: 10px;
+}
+
+.project-data-title {
+    margin-bottom: 0px;
+    font-weight: bolder;
+}
+
+.clear {
+    color: white;
+    font-size: 2em;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+.clear:hover {
+    color: red;
+}
+
+.save {
+    color: white;
+    font-size: 2em;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+.save:hover {
+    color: rgb(0, 202, 27);
+}
+
+.project-edit {
+    display: inline;
+}
+
+.project-edit span {
+    margin: 10px;
 }
