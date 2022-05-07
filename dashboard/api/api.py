@@ -294,6 +294,7 @@ def run_model():
         # print(m_df)
         dict = {}
         if model_str.lower() == "dt":
+          epoch = 1
           model, dict =  run_DT(m_df,lag,train_test_split,epoch)
           
         elif model_str == "lstm":

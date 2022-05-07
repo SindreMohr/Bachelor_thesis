@@ -113,7 +113,7 @@ function Model() {
                                 <th>Epochs</th>
                                 <th>Lag</th>
                                 <th>Layer</th>
-                                <th>Prediction time [h]</th>
+                                <th>Prediction time [hh]</th>
                             </tr>
                         </thead>
                         <tbody>
