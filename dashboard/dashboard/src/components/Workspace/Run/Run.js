@@ -12,7 +12,6 @@ function Run() {
     const [datasetList, setDatasetlist] = useState(<ul></ul>);
     const [runState, setRunState] = useState(false);
 
-
     function createList() {
         let content = (
             projectDataset.map(function(obj, i){
@@ -42,7 +41,7 @@ function Run() {
         content.parameters = modelParam
         content.projectID = ProjectID
         content.mid = modelID
-
+       
         const url = "http://localhost:5000/"
         const reqOpt = {
             method: "POST",
@@ -119,21 +118,30 @@ function Run() {
                 <table className="Exploration-table">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Value</th>
-                            <th>Index</th>
+                            <th>MSE</th>
+                            <th>RMSE</th>
+                            <th>MAE</th>
+                            <th>MAPE</th>
+                            <th>Daily Peak MAPE</th>
+
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>
-                                {Results !== "" && Results.daily_peak_dates[0]}                                
+                                {Results !== "" && Results.mse.toFixed(4)}                                
                             </td>
                             <td>
-                                {Results !== "" && Results.daily_peaks[0]}
+                                {Results !== "" && Results.rmse.toFixed(4)}
                             </td>
                             <td>
-                                {Results !== "" && Results.daily_peaks_indexes[0]}
+                                {Results !== "" && Results.mae.toFixed(4)}
+                            </td>
+                            <td>
+                                {Results !== "" && Results.mape.toFixed(2)}
+                            </td>
+                            <td>
+                                {Results !== "" && Results.daily_peaks_res.toFixed(2)}
                             </td>
                         </tr>
                     </tbody>
