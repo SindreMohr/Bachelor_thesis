@@ -42,6 +42,10 @@ function Model() {
             prediction: predictionValue,
             layerDictionary: layerDict
         }
+        //dt epoch 1
+        if(modelTypeValue === "dt"){
+            ModelFormData.epoch = "1"
+        }
         console.log(ModelFormData);
         setModelParam(ModelFormData);
     }
