@@ -4,6 +4,8 @@
 
 .results-wrapper {
     padding: 10px;
+    overflow: scroll;
+    height: calc(100vh - 51px - 38px);
 }
 
 .select-data-list {
