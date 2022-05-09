@@ -8,17 +8,14 @@ function Navigation() {
   const { setPageOverlay, pageOverlay } = useContext(GlobalContext);
 
   function handleClickProject() {
-    console.log("projects");
     setPageOverlay("projects");
   }
 
   function handleClickHome() {
-    console.log("projects");
     setPageOverlay();
   }
 
   function handleClickAbout() {
-    console.log("about");
     setPageOverlay("about");
   }
 

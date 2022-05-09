@@ -46,19 +46,16 @@ function Model() {
         if(modelTypeValue === "dt"){
             ModelFormData.epoch = "1"
         }
-        console.log(ModelFormData);
         setModelParam(ModelFormData);
     }
 
     function handleSlideInput(e) {
         setSlideValue(e.target.value);
-        console.log(slideValue)
     }
 
     const updateLayer = (event) =>  {
         event.preventDefault();
         layerDict[currentLayer] = currentLayerValue;
-        console.log(layerDict);
     }
 
     const Options = (

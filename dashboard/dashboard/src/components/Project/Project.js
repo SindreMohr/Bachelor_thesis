@@ -47,12 +47,11 @@ function Project() {
 
     useEffect(() => {
         if (projectList[0]) {
-            console.log("writing");
             setProjectItems(createList());
         } else {
             setProjectItems([]);
         }
-    }, [projectList, ProjectName, random])
+    }, [projectList, ProjectName, random, setProjectItems])
 
     function exitProject() {
         setProjectName();
@@ -77,7 +76,6 @@ function Project() {
           };
         const respons = await fetch(url + "projects", reqOpt);
         const results = await respons.json();
-        console.log(results)
         let num = random + 1;
         setRandom(num);
 
@@ -104,7 +102,7 @@ function Project() {
             <li>
                 {ProjectName}
                 <span></span>
-                <span onClick={exitProject} class="material-icons-outlined project-icon" title="Load Project">close</span>
+                <span onClick={exitProject} class="material-icons-outlined project-icon" title="Exit Project">close</span>
             </li>
         </ul>
     );

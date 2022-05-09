@@ -10,8 +10,109 @@
 
 .select-data-list {
     padding: 0;
+    width: 150px;
 }
 
 .select-data-list li {
     list-style-type: none;
+    background-color: rgb(11, 99, 119);
+    margin-top: 1px;
+    padding: 5px;
+    color: white;
+}
+
+.export-button-wide {
+    padding: 20px 0px;
+    background-color: rgb(24, 127, 150);
+    color: white;
+    text-align: center;
+    font-weight: bolder;
+    font-size: 20px;
+    border-radius: 5px;
+    transition: 0.1s ease-in-out;
+}
+
+.export-button-wide:hover {
+    background-color: rgb(16, 89, 106);
+    cursor: pointer;
+}
+
+.blue-btn {
+    margin: 20px 0px;
+    padding: 5px 10px;
+    background-color: rgb(24, 127, 150);
+    border-radius: 5px;
+    font-size: 1.3em;
+    transition: 0.1s ease-in-out;
+    cursor: pointer;
+    color: white;
+    border: none;
+    margin-bottom: 5px;
+}
+.blue-btn:hover {
+    background-color: rgb(16, 89, 106);
+    color: white;
+}
+
+.export-button-small {
+    display: flex;
+    margin: 20px 0px;
+    padding: 5px 10px;
+    background-color: rgb(29, 121, 20);
+    border-radius: 5px;
+    font-size: 1.3em;
+    transition: 0.1s ease-in-out;
+    cursor: pointer;
+    color: white;
+    border: none;
+}
+.export-button-small:hover {
+    background-color: rgb(43, 156, 33);
+    color: white;
+}
+
+
+
+/* PDF STYLE */
+
+.pdf-wrapper {
+    display: none;
+  }
+@media print {
+    b {
+        font-weight: bolder;
+    }
+    .pdf-wrapper {
+        display: block;
+        width: 80%;
+        padding: 0px 10%;
+        text-align: left;
+        margin-top: 50px;
+      }
+      
+      .pdf-title {
+        font-style: normal;
+        justify-content: center;
+        padding: 50px 0px 0px 0px;
+        color: rgb(16, 89, 106);
+      }
+      
+      .pdf-h2-title {
+        margin-bottom: 5px;
+        font-size: 20px;
+      }
+    
+      .pdf-subtitle {
+          margin-bottom: 5px;
+          font-weight: bolder;
+      }
+    
+      .pdf-ul {
+          margin: 0px;
+          padding: 0px;
+      }
+    
+      .pdf-ul li {
+          list-style-type: none;
+      }
 }

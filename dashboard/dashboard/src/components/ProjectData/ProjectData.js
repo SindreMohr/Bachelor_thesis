@@ -27,7 +27,6 @@ function ProjectData() {
                 );
             })
         );
-        console.log("ok")
         return content
     }
 
@@ -38,14 +37,11 @@ function ProjectData() {
 
     const clearData = event => {
         event.preventDefault();
-        console.log(projectDataset);
         setProjectDataset([]);
         setDatasetlist(<ul></ul>);
     }
     
     async function saveProject(){
-        console.log("im saving")
-        console.log(projectDataset)
         const url = "http://localhost:5000/"
         let data = {
             houses: projectDataset,
@@ -64,7 +60,6 @@ function ProjectData() {
           };
         const respons = await fetch(url + "save_project/" + String(ProjectID), reqOpt);
         const results = await respons.json();
-        console.log(results)
         setModelID(results.mid)
         
        

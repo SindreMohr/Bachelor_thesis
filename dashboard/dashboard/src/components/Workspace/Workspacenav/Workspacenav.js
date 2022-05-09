@@ -7,7 +7,6 @@ import {GlobalContext} from '../../../contexts/GlobalContext'
 function Workspacenav() {
     const {setPAGE, PAGE} = useContext(GlobalContext)
     function changeContext(value) {
-        console.log(value);
         setPAGE(value);
     }
     return (
