@@ -4,7 +4,6 @@ import shutil
 import sqlite3
 from datetime import date, datetime, timedelta
 from sqlite3 import Error
-import time
 # Most of this stuff is re-used from lectures
 
 from datetime import datetime as dt
