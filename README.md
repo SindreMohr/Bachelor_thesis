@@ -12,7 +12,12 @@ Det finnes mange forskjellige modeller som blir brukt til å lage prediksjoner. 
 - Linær Regresjon
 
 ## How to run
-- Use `pip install -r requirements.txt` to install the dependencies
+- Use `pip install -r requirement.txt` to install the dependencies
+### Start backend server
+- Cd into dashboard/api
+- Use `python api.py`
+
+### Start frontend server
 - Cd into dashboard/dashboard
 - Use `npm install` and then `npm start` to start the server
 - Open localhost in your browser
