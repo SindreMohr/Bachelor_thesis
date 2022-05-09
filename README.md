@@ -13,5 +13,6 @@ Det finnes mange forskjellige modeller som blir brukt til å lage prediksjoner. 
 
 ## How to run
 - Use `pip install -r requirements.txt` to install the dependencies
+- Cd into dashboard/dashboard
 - Use `npm install` and then `npm start` to start the server
 - Open localhost in your browser
