@@ -33,6 +33,7 @@ function ResultsPlot() {
                 
 
                 type: 'scatter',
+                name: 'energy measurements',
 
                 mode: 'lines',
 
@@ -46,6 +47,7 @@ function ResultsPlot() {
                 y: Results.predictions,
                 
                 
+                name: 'predictions',
 
                 type: 'scatter',
 
@@ -75,6 +77,7 @@ function ResultsPlot() {
                 type: 'scatter',
 
                 mode: 'lines',
+                name: 'daily peaks',
 
                 marker: {color: 'green'},
 
@@ -88,6 +91,7 @@ function ResultsPlot() {
                 
 
                 type: 'scatter',
+                name: 'daily peak predictions',
 
                 mode: 'lines',
 
@@ -99,7 +103,7 @@ function ResultsPlot() {
             ]}
 
 
-/>   
+            />   
             
         </div>
     );

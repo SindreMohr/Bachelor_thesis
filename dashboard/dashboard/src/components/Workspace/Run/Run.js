@@ -15,6 +15,13 @@ function Run() {
     const [datasetList, setDatasetlist] = useState(<ul></ul>);
     const [runState, setRunState] = useState(false);
 
+    let xDates = Results.time.slice(-Results.predictions.length,Results.time.length);
+    let yMeasure = Results.energy_data.slice(-Results.predictions.length, Results.energy_data.length);
+
+    let ydaily_peaks = Results.daily_peaks;
+    let ydaily_peaks_pred = Results.daily_peaks_predictions;
+    let daily_peak_dates = Results.daily_peak_dates;
+
     function createList() {
         let content = (
             projectDataset.map(function(obj, i){
@@ -284,6 +291,41 @@ function Run() {
                     : null    
                     }
                     {Results !== "" && <ResultsPlot />}
+
+                    {
+                    Results ?
+
+                    <table className="Exploration-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Time</th>
+                                <th>Test Value</th>
+                                <th>prediction</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { yMeasure.map((measure,index) =>
+                            <tr key={index}>
+                                 <td>
+                                    {index}                                
+                                </td>
+                                <td>
+                                    {xDates[index]}                                
+                                </td>
+                                <td>
+                                    {measure}                                
+                                </td>
+                                <td>
+                                    {Results.predictions[index].toFixed(3)}
+                                </td>
+                            </tr>
+                            )}
+                        </tbody>
+                    </table>
+                    : null    
+                    }
+
                     </div>
                     {Results ? 
                         <span>

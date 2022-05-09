@@ -125,19 +125,19 @@ def get_project(pid):
                 lc, layers, model_res = retrieve_MLP(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
                 project["layer_count"] = lc
                 project["layers"] = layers
-                model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d').tolist()
+                model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d %H:%M:%S').tolist()
                 model_res["energy_data"] = data["energy"].tolist()
                 project["model_results"] = model_res
             elif project["mtype"] == "lstm":
                 lc, layers, model_res = retrieve_LSTM(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
                 project["layer_count"] = lc
                 project["layers"] = layers
-                model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d').tolist()
+                model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d %H:%M:%S').tolist()
                 model_res["energy_data"] = data["energy"].tolist()
                 project["model_results"] = model_res
             elif project["mtype"] == "dt":
                 model_res = retrieve_DT(project["mid"],data,project["lag"],project["batches"],project["epochs"],project["train_test_split"])
-                model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d').tolist()
+                model_res["time"] = data["tstp"].dt.strftime('%Y-%m-%d %H:%M:%S').tolist()
                 model_res["energy_data"] = data["energy"].tolist()
                 project["model_results"] = model_res
     #print(project["layer_count"])
