@@ -6,7 +6,7 @@ import {GlobalContext} from '../../../contexts/GlobalContext'
 function Model() {
 
 
-    const { setModelParam, modelParam } = useContext(GlobalContext);
+    const { setModelParam, modelParam, ProjectName } = useContext(GlobalContext);
 
     const [modelTypeValue, setModelTypeValue] = useState("lstm");
     const [slideValue, setSlideValue] = useState(70);
@@ -104,90 +104,101 @@ function Model() {
     );
   
     return (
-        <div className="Exploration-view">
-            <div className="Exploration-first-wrapper">
-                <div className="">
-                    <h2> Current Parameters </h2>
-                    <table className="Exploration-table">
-                        <thead>
-                            <tr>
-                                <th>Model</th>
-                                <th>Training [%]</th>
-                                <th>Test [%]</th>
-                                <th>Epochs</th>
-                                <th>Lag</th>
-                                <th>Layer</th>
-                                <th>Prediction time [hh]</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    {modelParam.model}                                
-                                </td>
-                                <td>
-                                    {modelParam.training}
-                                </td>
-                                <td>
-                                    {modelParam.training > 0 && 100 - modelParam.training}
-                                </td>
-                                <td>
-                                    {modelParam.epoch}
-                                </td>
-                                <td>
-                                    {modelParam.lag}
-                                </td>
-                                <td>
-                                    {modelParam.layer}
-                                </td>
-                                <td>
-                                    {modelParam.prediction}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <span>
+        {ProjectName
+            ?
+            <div className="Exploration-view">
+                <div className="Exploration-first-wrapper">
+                    <div>
+                        <h2> Current Parameters </h2>
+                        <table className="Exploration-table">
+                            <thead>
+                                <tr>
+                                    <th>Model</th>
+                                    <th>Training [%]</th>
+                                    <th>Test [%]</th>
+                                    <th>Epochs</th>
+                                    <th>Lag</th>
+                                    <th>Layer</th>
+                                    <th>Prediction time [hh]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {modelParam.model}                                
+                                    </td>
+                                    <td>
+                                        {modelParam.training}
+                                    </td>
+                                    <td>
+                                        {modelParam.training > 0 && 100 - modelParam.training}
+                                    </td>
+                                    <td>
+                                        {modelParam.epoch}
+                                    </td>
+                                    <td>
+                                        {modelParam.lag}
+                                    </td>
+                                    <td>
+                                        {modelParam.layer}
+                                    </td>
+                                    <td>
+                                        {modelParam.prediction}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        
-            <div className="Exploration-second-wrapper form-bg">
-                { Options }
-                { modelTypeValue === "lstm" && layerValue > 0 ?
+            
+                <div className="Exploration-second-wrapper form-bg">
+                    { Options }
+                    { modelTypeValue === "lstm" && layerValue > 0 ?
+                        <form className="model-form layer-form">
+                            <fieldset>
+                                <legend>Layer select</legend>
+                                <label>
+                                    <select onChange={(e) => setCurrentLayer(e.target.value)}>
+                                        {layerSelect}
+                                    </select>
+                                </label>                
+                                <label>
+                                    Value:
+                                    <input type="number" value={currentLayerValue}  onChange={(e) => setCurrentLayerValue(e.target.value)}/>
+                                </label>
+                                <button onClick={updateLayer}>Update Layer</button>
+                            </fieldset>
+                        </form>
+                    : modelTypeValue === "mlp" && layerValue > 0 ?
                     <form className="model-form layer-form">
-                        <fieldset>
-                            <legend>Layer select</legend>
-                            <label>
-                                <select onChange={(e) => setCurrentLayer(e.target.value)}>
+                            <fieldset>
+                                <legend>Layer select</legend>
+                                <label>
+                                    <select onChange={(e) => setCurrentLayer(e.target.value)}>
                                     {layerSelect}
-                                </select>
-                            </label>                
-                            <label>
-                                Value:
-                                <input type="number" value={currentLayerValue}  onChange={(e) => setCurrentLayerValue(e.target.value)}/>
-                            </label>
-                            <button onClick={updateLayer}>Update Layer</button>
-                        </fieldset>
-                    </form>
-                : modelTypeValue === "mlp" && layerValue > 0 ?
-                    <form className="model-form layer-form">
-                        <fieldset>
-                            <legend>Layer select</legend>
-                            <label>
-                                <select onChange={(e) => setCurrentLayer(e.target.value)}>
-                                {layerSelect}
-                                </select>
-                            </label>                
-                            <label>
-                                Value:
-                                <input type="number" value={currentLayerValue}  onChange={(e) => setCurrentLayerValue(e.target.value)}/>
-                            </label>
-                            <button onClick={updateLayer}>Update Layer</button>
-                        </fieldset>
-                    </form>
-                : null }
-                <button className="blue-btn" onClick={setForm}>Update model</button>
-            </div>
-        </div>       
-    );
-}
-
-export default Model;
+                                    </select>
+                                </label>                
+                                <label>
+                                    Value:
+                                    <input type="number" value={currentLayerValue}  onChange={(e) => setCurrentLayerValue(e.target.value)}/>
+                                </label>
+                                <button onClick={updateLayer}>Update Layer</button>
+                            </fieldset>
+                        </form>
+                    : null }
+                    <button className="blue-btn" onClick={setForm}>Update model</button>
+                </div>
+            </div>       
+            :
+            <span>
+                <div>
+                    <p className="default-text">Load project to set parameters</p>
+                </div>
+            </span>
+            }
+            </span>
+        );
+    }
+    
+    export default Model;
