@@ -107,47 +107,58 @@ function Run() {
 
     return (
         <div className="results-wrapper">
-            <div>
-                <h2>Run project: <i>{ProjectName}</i></h2>
-            </div>
-                {runState ? <MinimalSpinner className="fidgy-spinny" color="blue" /> : content}
-            
-                {runState ? <button loading={runState}>Currently running</button> : <button onClick={runModel}>Run model</button>}
-            <div>
-            
-                <table className="Exploration-table">
-                    <thead>
-                        <tr>
-                            <th>MSE</th>
-                            <th>RMSE</th>
-                            <th>MAE</th>
-                            <th>MAPE</th>
-                            <th>Daily Peak MAPE</th>
+            {!ProjectName 
+            ?
+            <span>
+                <div>
+                    <p>Load project to run</p>
+                </div>
+            </span>
+            : 
+            <span>
+                <div>
+                    <h2>Run project: <i>{ProjectName}</i></h2>
+                </div>
+                    {runState ? <MinimalSpinner className="fidgy-spinny" color="blue" /> : content}
+                
+                    {runState ? <button loading={runState}>Currently running</button> : <button onClick={runModel}>Run model</button>}
+                <div>
+                
+                    <table className="Exploration-table">
+                        <thead>
+                            <tr>
+                                <th>MSE</th>
+                                <th>RMSE</th>
+                                <th>MAE</th>
+                                <th>MAPE</th>
+                                <th>Daily Peak MAPE</th>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                {Results !== "" && Results.mse.toFixed(4)}                                
-                            </td>
-                            <td>
-                                {Results !== "" && Results.rmse.toFixed(4)}
-                            </td>
-                            <td>
-                                {Results !== "" && Results.mae.toFixed(4)}
-                            </td>
-                            <td>
-                                {Results !== "" && Results.mape.toFixed(2)}
-                            </td>
-                            <td>
-                                {Results !== "" && Results.daily_peaks_res.toFixed(2)}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                {Results !== "" && <ResultsPlot />}
-            </div>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    {Results !== "" && Results.mse.toFixed(4)}                                
+                                </td>
+                                <td>
+                                    {Results !== "" && Results.rmse.toFixed(4)}
+                                </td>
+                                <td>
+                                    {Results !== "" && Results.mae.toFixed(4)}
+                                </td>
+                                <td>
+                                    {Results !== "" && Results.mape.toFixed(2)}
+                                </td>
+                                <td>
+                                    {Results !== "" && Results.daily_peaks_res.toFixed(2)}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {Results !== "" && <ResultsPlot />}
+                </div>
+            </span>
+            }
         </div>       
     );
 }

@@ -78,3 +78,8 @@ fieldset {
 .form-bg {
     background-color: rgb(16, 89, 106);
 }
+
+.default-text {
+    margin-left: 10px;
+    margin-top: 20px;
+}
