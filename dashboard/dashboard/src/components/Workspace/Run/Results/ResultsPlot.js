@@ -20,6 +20,7 @@ function ResultsPlot() {
 
     return (
         <div>
+            <h3>Predictions:</h3>
             <Plot
 
             data={[
@@ -61,7 +62,8 @@ function ResultsPlot() {
             ]}
 
 
-            />   
+            />
+            <h3>Daily peak predictions:</h3>
             <Plot
 
             data={[

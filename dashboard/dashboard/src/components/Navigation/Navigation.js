@@ -22,7 +22,7 @@ function Navigation() {
   return (
     <header>
         <h1 onClick={handleClickHome}>
-          <span class="material-icons-outlined bolt">
+          <span className="material-icons-outlined bolt">
             bolt
           </span>
           Deep Learning Dashboard

@@ -10,19 +10,14 @@ function Project() {
     const [projectList, setProjectList] = useState([]);
     const [projectItems, setProjectItems] = useState([]);
 
-    const [random, setRandom] = useState(0);
-
-
     //for initing empty project
-    const {setModelParam, setProjectID, ProjectName, setProjectName, setProjectDataset, setResults} = useContext(GlobalContext);
-
+    const {setProjectID, ProjectName, setProjectName, setProjectDataset, loadingState} = useContext(GlobalContext);
 
     //form
     const [nameValue, setNameValue] = useState("Untitled project");
 
 
     useEffect(() => {
-        console.log("im running")
         fetch(`http://127.0.0.1:5000/projects`, {
             method: 'GET',
             headers: {
@@ -47,11 +42,12 @@ function Project() {
 
     useEffect(() => {
         if (projectList[0]) {
-            setProjectItems(createList());
+            const values = createList();
+            setProjectItems(values);
         } else {
             setProjectItems([]);
         }
-    }, [projectList, ProjectName, random, setProjectItems])
+    }, [projectList, ProjectName, setProjectItems])
 
     function exitProject() {
         setProjectName();
@@ -76,9 +72,7 @@ function Project() {
           };
         const respons = await fetch(url + "projects", reqOpt);
         const results = await respons.json();
-        let num = random + 1;
-        setRandom(num);
-
+        console.log(results);
         //making new project current project
         // //data.id makes it problematic as that it null ... 
         // setProjectID(data.id)
@@ -102,7 +96,7 @@ function Project() {
             <li>
                 {ProjectName}
                 <span></span>
-                <span onClick={exitProject} class="material-icons-outlined project-icon" title="Exit Project">close</span>
+                <span onClick={exitProject} className="material-icons-outlined project-icon" title="Exit Project">close</span>
             </li>
         </ul>
     );
@@ -112,7 +106,10 @@ function Project() {
             <div className='project-content'>
                 <h2>Projects</h2>
                 <h3>Current Project:</h3>
-                {ProjectName ? loadedProject : "No project loaded"}
+                {loadingState ?
+                "Loading project"
+                :ProjectName && !loadingState ? loadedProject
+                : "No project loaded"}
 
                 <h3>Saved Projects:</h3>
                 <ul className='project-list'>

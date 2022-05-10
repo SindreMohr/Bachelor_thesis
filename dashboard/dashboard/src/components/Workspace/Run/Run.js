@@ -15,12 +15,41 @@ function Run() {
     const [datasetList, setDatasetlist] = useState(<ul></ul>);
     const [runState, setRunState] = useState(false);
 
-    let xDates = Results.time.slice(-Results.predictions.length,Results.time.length);
-    let yMeasure = Results.energy_data.slice(-Results.predictions.length, Results.energy_data.length);
+    const [resultsTable, setResultsTable] = useState([]);
 
-    let ydaily_peaks = Results.daily_peaks;
-    let ydaily_peaks_pred = Results.daily_peaks_predictions;
-    let daily_peak_dates = Results.daily_peak_dates;
+    function makeTable(xDates, yMeasure) {
+        let content = (
+            yMeasure.map(function(measure, index){
+                return (
+                    <tr key={index}>
+                        <td>
+                        {index}                                
+                    </td>
+                    <td>
+                        {xDates[index]}                                
+                    </td>
+                    <td>
+                        {measure}                                
+                    </td>
+                    <td>
+                        {Results.predictions[index].toFixed(3)}
+                    </td>
+                </tr>
+                );
+            })
+        );
+        return content
+    }
+    
+    useEffect(() => {
+        if (Results.time) {
+            const xDates = Results.time.slice(-Results.predictions.length,Results.time.length);
+            const yMeasure = Results.energy_data.slice(-Results.predictions.length, Results.energy_data.length);
+            console.log(xDates);
+            console.log(yMeasure);
+            setResultsTable([]);
+        }
+    }, [Results]);
 
     function createList() {
         let content = (
@@ -39,6 +68,7 @@ function Run() {
         documentTitle: ProjectName,
         copyStyles: true,
     });
+
 
     useEffect(() => {
         if (projectDataset[0]) {
@@ -69,8 +99,8 @@ function Run() {
           };
         const respons = await fetch(url + "run-model", reqOpt);
         const results = await respons.json();
-        setResults(results)
-        setModelID(results.mid)
+        setResults(results);
+        setModelID(results.mid);
         setRunState(false);
     }
 
@@ -125,7 +155,7 @@ function Run() {
         <div ref={printContent} className="pdf-wrapper">
             <h1 className="pdf-title">Project: {ProjectName}</h1>
             <div className="pdf-content">
-                <h2 className="pdf-h2-title">Introduction:</h2>
+                <h2 className="pdf-h2-title">Introduction</h2>
                 <p>
                     This project utlizes an {modelParam.model.toUpperCase()} model to make predictions about energy consumption.
                     <br />
@@ -149,7 +179,7 @@ function Run() {
                     <li><b>MAE</b> - Mean Absolute Error</li>
                     <li><b>MAPE</b> - Mean Absolute Percentage Error</li>
                 </ul>
-                <h2 className="pdf-h2-title">Project parameters:</h2>
+                <h2 className="pdf-h2-title">Project parameters</h2>
                 <table className="Exploration-table">
                     <thead>
                         <tr>
@@ -188,11 +218,11 @@ function Run() {
                         </tr>
                     </tbody>
                 </table>
-                <h2 className="pdf-h2-title">Project dataset:</h2>
+                <h2 className="pdf-h2-title">Project dataset</h2>
                 <ul className='select-data-list'>
                     {datasetList}
                 </ul>
-                <h2 className="pdf-h2-title">Results:</h2>
+                <h2 className="pdf-h2-title">Results</h2>
                 <table className="Exploration-table">
                     <thead>
                         <tr>
@@ -224,6 +254,7 @@ function Run() {
                         </tr>
                     </tbody>
                 </table>
+                <h2 className="pdf-h2-title">Plots</h2>
                 <ResultsPlot />
             </div>
         </div>
@@ -245,7 +276,7 @@ function Run() {
                     {runState ? <p loading={runState}>Currently running</p> : <button className="blue-btn" onClick={runModel}>Run model</button>}
                     {Results ?
                         <button className='export-button-small' onClick={savePDF}>
-                            <span class="material-icons-outlined">
+                            <span className="material-icons-outlined">
                                 file_download
                             </span>
                             Export PDF
@@ -290,6 +321,7 @@ function Run() {
                     </table>
                     : null    
                     }
+
                     {Results !== "" && <ResultsPlot />}
 
                     {
@@ -298,30 +330,15 @@ function Run() {
                     <table className="Exploration-table">
                         <thead>
                             <tr>
-                                <th></th>
                                 <th>Time</th>
                                 <th>Test Value</th>
                                 <th>prediction</th>
                             </tr>
                         </thead>
                         <tbody>
-                            { yMeasure.map((measure,index) =>
-                            <tr key={index}>
-                                 <td>
-                                    {index}                                
-                                </td>
-                                <td>
-                                    {xDates[index]}                                
-                                </td>
-                                <td>
-                                    {measure}                                
-                                </td>
-                                <td>
-                                    {Results.predictions[index].toFixed(3)}
-                                </td>
-                            </tr>
-                            )}
+                            {resultsTable}
                         </tbody>
+                        
                     </table>
                     : null    
                     }

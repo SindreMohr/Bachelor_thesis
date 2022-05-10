@@ -6,6 +6,7 @@ const GlobalContextProvider = (props) => {
     const [projectDataset, setProjectDataset] = useState([])
     const [ProjectID, setProjectID] = useState(0)
     const [modelID, setModelID] = useState(null)
+    const [loadingState, setLoadingState] = useState(false);
 
     const [ProjectName, setProjectName] = useState()
 
@@ -46,7 +47,9 @@ const GlobalContextProvider = (props) => {
                 pageOverlay,
                 setPageOverlay,
                 saveData,
-                setSaveData
+                setSaveData,
+                loadingState,
+                setLoadingState,
              }}>
                {props.children}
          </GlobalContext.Provider>

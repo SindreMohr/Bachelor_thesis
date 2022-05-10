@@ -92,7 +92,7 @@ function ProjectData() {
                             {datasetList}
                         </ul>
                         <div className="project-edit">
-                            <span onClick={saveProject} title="Save Project" class="material-icons-outlined save">
+                            <span onClick={saveProject} title="Save Project" className="material-icons-outlined save">
                                 save
                             </span>
                             <span onClick={clearData} title="Clear Dataset" className="material-icons-outlined clear">

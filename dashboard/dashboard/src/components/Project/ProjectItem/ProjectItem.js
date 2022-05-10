@@ -4,10 +4,11 @@ import {GlobalContext} from '../../../contexts/GlobalContext'
 
 function ProjectItem({data}) {
     //const [info, setinfo] = useState([]);
-    const {setModelParam,setModelID, setProjectID, setProjectName,setProjectDataset,setResults} = useContext(GlobalContext);
+    const {setModelParam,setModelID, setProjectID, setProjectName,setProjectDataset,setResults, loadingState, setLoadingState} = useContext(GlobalContext);
 
     function loadProject() {
-        console.log("hey")
+        setLoadingState(true)
+        console.log(loadingState)
         //setLCLID(data[0])
         fetch(`http://127.0.0.1:5000/project/` + String(data.id), {
             method: 'GET',
@@ -18,7 +19,6 @@ function ProjectItem({data}) {
             res => res.json()
         ).then(
             data => {
-                console.log(data);
                 setProjectID(data.id)
                 setProjectName(data.name)
                 setProjectDataset(data.houses)
@@ -35,7 +35,6 @@ function ProjectItem({data}) {
                     setResults("")
                 }
                 else{
-                    console.log("loading model")
                     setModelID(data.mid)
                     setModelParam({
                         model: data.mtype,
@@ -49,8 +48,8 @@ function ProjectItem({data}) {
                     setResults(data.model_results)
                 }
             }
-        )
-
+            )
+        setLoadingState(false);
     }
 
     function deleteProject(){
