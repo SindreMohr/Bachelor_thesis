@@ -151,6 +151,14 @@ function Run() {
     </div>);
 
 
+    const predictionResult = (
+        <span>
+            <p>
+                Predicted value for {modelParam.prediction}: __ KwH
+            </p>
+        </span>
+    )
+
     const printContentVar = (
         <div ref={printContent} className="pdf-wrapper">
             <h1 className="pdf-title">Project: {ProjectName}</h1>
@@ -160,17 +168,17 @@ function Run() {
                     This project utlizes an {modelParam.model.toUpperCase()} model to make predictions about energy consumption.
                     <br />
                     {modelParam.model === "lstm" ?
-                    "A Long Short-Term Memory model is ..."
+                    "A Long Short-Term Memory model is designed to overcome the long-term dependency problem of recurrent neural networks. LSTM may retain useful data in a sequence instead of treating each vector independently."
                     : modelParam.model === "mlp" ?
-                    "A Multilayer Perceptor model is ..."
+                    "A multilayer perceptron model is an artificial neural network consisting of multiple hidden layers. With only a single layer it would be a singlelayer perceptron."
                     : modelParam.model === "dt" ?
-                    "A Decision Tree (DT) model is ..."
+                    "A Decision tree (DT) model is a learning algorithm used for classification and regression purposes. It uses a tree structure to make decisions."
                     :null}
                 </p>    
                 <p>
                     The dataset is based on data from smartmeters in London. 
                     The datacolletion was done by ACORN, and the total dataset consists of 167 817 021 data entries. 
-                    In this project we utilize the halfhourly dataset.
+                    In this project we utilize the halfhourly dataset. Which has less attributes, but a far greater amount of data.
                 </p>
                 <p className='pdf-subtitle'>Wordlist:</p>
                 <ul className="pdf-ul">
