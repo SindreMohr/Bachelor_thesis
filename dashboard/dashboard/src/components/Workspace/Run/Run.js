@@ -99,8 +99,12 @@ function Run() {
           };
         const respons = await fetch(url + "run-model", reqOpt);
         const results = await respons.json();
-        setResults(results);
-        setModelID(results.mid);
+        console.log(results)
+        if (results != null){
+            setResults(results);
+            setModelID(results.mid);
+        }
+       
         setRunState(false);
     }
 
