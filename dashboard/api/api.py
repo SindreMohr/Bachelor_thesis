@@ -272,6 +272,8 @@ def run_model():
         content = request.json["content"]
         print(content)
         house_list = content["dataset"]
+        if len(house_list) == 0:
+            return json.dumps(None)
         m_df = make_model_dataframe(house_list)
         param_dict = content["parameters"]
         model_str = param_dict["model"].lower()
@@ -303,7 +305,8 @@ def run_model():
             layers = list(layers.values())
             layers = [int(x) for x in layers]
             print(layers)
-            print("headfsaf")
+            if len(layers) <= 0:
+                return json.dumps(None)
             model, dict = run_LSTM(m_df,lag,train_test_split,epoch,layers)
             
         elif model_str == "slp" or model_str.lower() == "mlp":
@@ -312,6 +315,8 @@ def run_model():
             layers = [int(x) for x in layers]
             print(layers)
             #if slp layers=1 perhaps
+            if len(layers) <= 0:
+                return json.dumps(None)
             model, dict = run_MLP(m_df,lag,train_test_split,epoch,layers)
         else:
             return ValueError("No suitable model class was specified")
@@ -333,9 +338,9 @@ def run_model():
                 layers = param_dict["layerDictionary"]
                 layers = list(layers.values())
                 layers = [int(x) for x in layers]
-
+                if len(layers) <= 0:
+                 return json.dumps(None)
                 add_layers_to_model_db(conn, model_id,layers)
-
                 model.model.save("./saved_models/"+str(model_id))
             elif model_str == "dt":
                 filename = "./saved_models/" + str(model_id) + "/dt.sav"
@@ -350,7 +355,8 @@ def run_model():
                 layers = param_dict["layerDictionary"]
                 layers = list(layers.values())
                 layers = [int(x) for x in layers]
-
+                if len(layers) <= 0:
+                 return json.dumps(None)
                 add_layers_to_model_db(conn, model_id,layers)
                 model.model.save("./saved_models/"+str(model_id))
             elif model_str == "dt":

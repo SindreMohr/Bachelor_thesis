@@ -155,7 +155,7 @@ def add_model_db(conn, mtype, lag, batches, epochs, train_test_split):
               VALUES(?,?,?,?,?,?) '''
     try:
         cur = conn.cursor()
-        cur.execute(sql, (mtype, lag, batches,epochs,train_test_split,False))
+        cur.execute(sql, (mtype, lag, batches,epochs,train_test_split,0))
         #finding value of auto increment
         cur.execute("SELECT last_insert_rowid();")
         mid = None
@@ -264,7 +264,7 @@ def update_model(conn, mid,mtype,lag,batches,epochs,train_test_split):
 def set_project_has_run(conn,mid):
     try:
         cur = conn.cursor()
-        cur.execute("UPDATE models SET has_run=? WHERE mid = ?",(True, mid))
+        cur.execute("UPDATE models SET has_run=? WHERE mid = ?",(1, mid))
         conn.commit()
     except Error as e:
         print(e)
@@ -281,8 +281,11 @@ def delete_project(conn,pid):
              print(mid)
              print(type(mid[0]))
              if mid[0] is not None:
-                 delete_model(conn, mid[0])
-                 delete_all_project_house_db(conn, pid)
+                cur.execute("SELECT has_run FROM models WHERE mid = ?",(mid[0],))
+                for has_run in cur:
+                    print(has_run)
+                    delete_model(conn, mid[0], has_run[0])
+                delete_all_project_house_db(conn, pid)
             
         cur.execute("DELETE FROM projects WHERE pid = ?",(pid,))
         conn.commit()

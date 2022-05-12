@@ -18,7 +18,7 @@ function Model() {
     let layerDict = {};
     const [currentLayer, setCurrentLayer] = useState("1");
     const [currentLayerValue, setCurrentLayerValue] = useState("30");
-    const [layerSelect, setLayerSelect] = useState([]);
+    const [layerSelect, setLayerSelect] = useState([30]);
 
     useEffect(() => {
         let result = [];

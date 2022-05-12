@@ -4,7 +4,7 @@ import {GlobalContext} from '../../../contexts/GlobalContext'
 
 function ProjectItem({data}) {
     //const [info, setinfo] = useState([]);
-    const {setModelParam,setModelID, setProjectID, setProjectName,setProjectDataset,setResults, loadingState, setLoadingState} = useContext(GlobalContext);
+    const {setModelParam,setModelID, ProjectID ,setProjectID, setProjectName,setProjectDataset,setResults, loadingState, setLoadingState} = useContext(GlobalContext);
 
     function loadProject() {
         setLoadingState(true)
@@ -62,9 +62,13 @@ function ProjectItem({data}) {
         }).then(
             res => res.json()
         ).then(
-            data => {
-              console.log(data)
-              loadProject() 
+            output => {
+              console.log(output)
+              if(data.id === ProjectID){
+                setProjectName();
+                setProjectID();
+                setProjectDataset([]);
+              }
             }
         )
     }
