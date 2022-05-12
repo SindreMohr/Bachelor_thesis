@@ -332,25 +332,6 @@ function Run() {
 
                     {Results !== "" && <ResultsPlot />}
 
-                    {
-                    Results ?
-
-                    <table className="Exploration-table">
-                        <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>Test Value</th>
-                                <th>prediction</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {resultsTable}
-                        </tbody>
-                        
-                    </table>
-                    : null    
-                    }
-
                     </div>
                     {Results ? 
                         <span>
